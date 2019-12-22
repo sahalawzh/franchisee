@@ -11,6 +11,7 @@ Vue.prototype.$axios = axios
 axios.defaults.withCredentials = true
 // 默认一分钟超时
 axios.defaults.timeout = 60000
+axios.defaults.baseURL =  process.env.VUE_APP_BASE_API
 // axios.interceptors.push((request, next) => {
 //   if (window.localStorage.getItem('token')) {
 //     axios.defaults.headers.common['token'] = window.localStorage.getItem('gdlwzn_login')

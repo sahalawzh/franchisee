@@ -76,8 +76,8 @@ export default {
     }
     return {
       form: {
-        username: 'fe无限三维',
-        password: '123456',
+        username: process.env.NODE_ENV === 'development' ? 'fe无限三维' : '',
+        password: process.env.NODE_ENV === 'development' ? '123456' : '',
         phone: '',
         checkCode: '',
         code: '',

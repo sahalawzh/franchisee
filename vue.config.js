@@ -33,12 +33,12 @@ function getEntry(globPath) {
 	});
 	return entries;
 }
-
+console.log(process.env.VUE_APP_BASE_API)
 let pages = getEntry('./src/pages/**?/*.html');
 //配置end
 module.exports = {
   lintOnSave: false, //禁用eslint
-	productionSourceMap: false,
+	productionSourceMap: true,
 	pages,
 	devServer: {
 		index: '/index.html', //默认启动serve 打开index页面

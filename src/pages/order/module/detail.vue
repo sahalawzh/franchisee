@@ -115,12 +115,15 @@
       </el-form-item>
     </el-form>
 
-    <img src="../../../assets/order/cart-settle.png" @click="handleToCart" class="cart-settle" alt="">
+    <div class="cart-box">
+      <img src="../../../assets/order/cart-settle.png" @click="handleToCart" class="cart-settle" alt="">
+      <span class="cart-box__badge">{{ cartNum < 100 ? cartNum : '99+' }}</span>
+    </div>
   </div>
 </template>
 <script>
 import axios from 'axios'
-import { getListclassiFication, getListDstricts, getScanResultByPhone, postAddCart } from '@/service/http'
+import { getListclassiFication, getListDstricts, getScanResultByPhone, postAddCart, getCartNum } from '@/service/http'
 import storage from '@/utils/storage'
 import isEmpty from '@/utils/isEmpty'
 
@@ -198,7 +201,8 @@ export default {
       size: '',
       func: '',
       shoesType: '',
-      scanData: []
+      scanData: [],
+      cartNum: '',
     }
   },
   methods: {
@@ -262,7 +266,7 @@ export default {
     const phoneScanParams = {
       phone
     }
-    axios.all([getListclassiFication(ficationParams), getListDstricts(), getScanResultByPhone(phoneScanParams)]).then(res => {
+    axios.all([getListclassiFication(ficationParams), getListDstricts(), getScanResultByPhone(phoneScanParams), getCartNum()]).then(res => {
       const [ diseaseType, size, func, shoesType] = res[0].data
       this.diseaseType = diseaseType
       this.size = size
@@ -281,6 +285,7 @@ export default {
       })
       this.areaData = res[1].data
       this.scanData = res[2].data
+      this.cartNum = res[3].data
     }).catch(err => {
       console.log(err)
     })
@@ -290,10 +295,23 @@ export default {
 <style lang="less" scoped>
 .page-order {
   position: relative;
-  .cart-settle {
+  .cart-box {
     position: fixed;
     right: 60px;
     bottom: 120px;
+    &__badge {
+      position: absolute;
+      right: 10px;
+      top: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #F34234;
+      color: #fff;
+      line-height: 30px;
+      text-align: center;
+      font-size: 14px;
+    }
   }
   .main-title {
     color: #000;

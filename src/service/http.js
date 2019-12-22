@@ -121,6 +121,14 @@ const postPhoneLogin = (data, version = 'v1') => {
   return ajax.post(url, data)
 }
 
+// /*
+// * 购物车数量
+// */
+const getCartNum = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_CART_NUM || apiConfig['v1'].GET_CART_NUM
+  return ajax.get(url, data)
+}
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -136,5 +144,6 @@ export {
   postRegister,
   getVerify,
   postCheckPhone,
-  postPhoneLogin
+  postPhoneLogin,
+  getCartNum
 }
