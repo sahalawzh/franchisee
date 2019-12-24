@@ -3,11 +3,11 @@
 
     <el-row class="panel-box">
       <el-col :span="8">
-        <div class="panel-item" :class="{'panel-item__hover2': mask_active === 1}" @mouseover="handleEnter(1)" @mouseleave="handleLeave(1)">
+        <div class="panel-item" @click="handleToPage" :class="{'panel-item__hover2': mask_active === 1}" @mouseover="handleEnter(1)" @mouseleave="handleLeave(1)">
           <div class="panel-title panel-title__one">3D打印功能性定制鞋垫</div>
           <div class="panel-content">
             
-            <el-button class="panel-shape" @click="handleToShape" v-if="isLogin" type="primary">我的足型报告<i class="el-icon-right"></i></el-button>
+            <el-button class="panel-shape" v-if="isLogin" type="primary">我的足型报告<i class="el-icon-right"></i></el-button>
             
             <p v-else>
               为国内外有足部治疗及保健需求的人群，结合惠普高精度3D打印而研发出定制功能性矫形鞋垫。
@@ -22,7 +22,7 @@
         </div>
       </el-col>
       <el-col :span="8">
-        <div class="panel-item" :class="{'panel-item__hover2': mask_active === 2}" @mouseover="handleEnter(2)" @mouseleave="handleLeave(2)">
+        <div class="panel-item" @click="handleToPage" :class="{'panel-item__hover2': mask_active === 2}" @mouseover="handleEnter(2)" @mouseleave="handleLeave(2)">
           <div class="panel-item__logo">
             <img v-if="mask_active === 2" src="../../assets/common/logo_mask.png" alt=""/>
             <img v-else src="../../assets/common/logo01.png" alt=""/>
@@ -39,7 +39,7 @@
         </div>
       </el-col>
       <el-col :span="8">
-        <div class="panel-item" :class="{'panel-item__hover2': mask_active === 3}" @mouseover="handleEnter(3)" @mouseleave="handleLeave(3)">
+        <div class="panel-item" @click="handleToPage" :class="{'panel-item__hover2': mask_active === 3}" @mouseover="handleEnter(3)" @mouseleave="handleLeave(3)">
           <div class="login-box">
             <drop-down :isIndex="true" :isLogin="isLogin" @login-status="handleLoginStatus"></drop-down>
           </div>
@@ -63,28 +63,35 @@
 import Login from '@/components/login'
 import DropDown from '@/components/dropDown'
 import auth from '@/utils/auth'
+import loginMixins from '@/mixins/login'
 export default {
   data () {
     return {
-      mask_active: 0,
-      isLogin: false,
-      loginVisible: false
+      mask_active: 0
     }
   },
+  mixins: [loginMixins],
   components: {
     Login,
     DropDown
   },
-  created () {
-    this.isLogin = auth.checkAuth()
-  },
   methods: {
-    handleLoginStatus ({ loginStatus, loginVisible }) {
-      this.isLogin = loginStatus
-      this.loginVisible = loginVisible
-    },
-    handleToShape () {
-      window.location.href = 'footShape.html'
+    handleToPage () {
+      let val = this.mask_active
+      console.log(val)
+      switch (val) {
+        case 1:
+          window.location.href = 'footShape.html'
+          break
+        case 2:
+          window.open( 'https://www.gdlwzn.com/', '_blank')
+          break
+        case 3:
+          window.open( 'business.html', '_blank')
+          break
+        default:
+          break
+      }
     },
     handleEnter (val) {
       this.mask_active = val

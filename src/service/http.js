@@ -121,11 +121,35 @@ const postPhoneLogin = (data, version = 'v1') => {
   return ajax.post(url, data)
 }
 
-// /*
-// * 购物车数量
-// */
+/*
+* 购物车数量
+*/
 const getCartNum = (data, version = 'v1') => {
   let url = apiConfig[version] && apiConfig[version].GET_CART_NUM || apiConfig['v1'].GET_CART_NUM
+  return ajax.get(url, data)
+}
+
+/*
+* 购物车数量
+*/
+const postAddOrder = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_ADD_ORDER || apiConfig['v1'].POST_ADD_ORDER
+  return ajax.post(url, data)
+}
+
+/*
+* 获取购物车金额
+*/
+const getCartPrice = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_CART_PRICE || apiConfig['v1'].GET_CART_PRICE
+  return ajax.get(url, data)
+}
+
+/*
+* 获取手机登录验证码
+*/
+const getLoginCode = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_LOGIN_CODE || apiConfig['v1'].GET_LOGIN_CODE
   return ajax.get(url, data)
 }
 
@@ -145,5 +169,8 @@ export {
   getVerify,
   postCheckPhone,
   postPhoneLogin,
-  getCartNum
+  getCartNum,
+  postAddOrder,
+  getCartPrice,
+  getLoginCode
 }

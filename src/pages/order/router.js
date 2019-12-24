@@ -20,7 +20,8 @@ const router = new Router({
     {
       path: '/pay',
       name: 'pay',
-      component: () => import(/* webpackChunkName: "pay" */ './module/pay.vue')
+      component: () => import(/* webpackChunkName: "pay" */ './module/pay.vue'),
+      props: true
     },
     {
       path: '/success',

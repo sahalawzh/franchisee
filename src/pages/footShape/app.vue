@@ -5,8 +5,6 @@
     <el-main class="main-container">
 
       <el-row class="shape-advertise">
-        <!-- <div class="shape-advertise" style="background-image: url('../../assets/shape/advertise.png')">
-        </div> -->
         <el-image
           :src="url"
           fit="cover"></el-image>
@@ -18,7 +16,7 @@
               <p class="feet-desc">
                 每个人的双脚都是不一样的，走路时的运动习惯也不尽相同。足部受力的不均匀，不但会导致足部问题，还会引起身体其他部位的不适。
               </p>
-              <div class="experience-btn"><el-link href="order.html">定制我的专属鞋垫<i class="el-icon-right"></i></el-link></div>
+              <div class="experience-btn"><el-link href="order.html">{{ loginInfo.experienceBtnTxt }}<i class="el-icon-right"></i></el-link></div>
             </el-col>
             <el-col :span="6" :offset="6">
               <div>
@@ -31,11 +29,12 @@
           </div>
       </el-row>
 
-      <el-row>
+      <el-row v-if="isLogin">
         <el-col :span="6" class="shape-action">
           <div class="record-title">
             <i class="el-icon-s-data"></i>
             <span>我的脚型数据</span>
+             <el-button type="primary" class="record-title__btn" round>对比</el-button>
           </div>
           <div class="record-list">
             <div class="record-list__time">
@@ -225,15 +224,33 @@
     </el-main>
 
     <default-footer></default-footer>
+
+    
   </el-container>
 </template>
 <script>
-import DefaultHeader from '../../components/defaultHeader'
-import DefaultFooter from '../../components/defaultFooter'
+import DefaultHeader from '@/components/defaultHeader'
+import DefaultFooter from '@/components/defaultFooter'
+import loginMixins from '@/mixins/login'
+// import Auth from '@/utils/auth'
 export default {
   components: {
     DefaultHeader,
     DefaultFooter
+  },
+  mixins: [loginMixins],
+  computed: {
+    loginInfo () {
+      console.log(this.isLogin)
+      if (this.isLogin) {
+        return {
+          experienceBtnTxt: '定制我的专属鞋垫'
+        }
+      }
+      return {
+        experienceBtnTxt: '立即体验'
+      }
+    }
   },
   methods: {
     renderHeader (arr) {
@@ -390,10 +407,18 @@ export default {
     padding: 0 39px 26px 80px;
     box-sizing: border-box;
     .record-title {
+      position: relative;
       height: 74px;
       line-height: 74px;
-      font-size: 24px;
+      font-size: 22px;
       color: #333;
+      &__btn {
+        position: absolute;
+        right: 0;
+        top: 23px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
     }
     .record-list {
       position: relative;
@@ -599,6 +624,9 @@ export default {
       p {
         margin-top: 6px;
       }
+    }
+    &__insole {
+      text-align: center;
     }
   }
 }

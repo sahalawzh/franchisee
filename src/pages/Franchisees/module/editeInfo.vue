@@ -34,7 +34,7 @@
     </el-form>
     
     <el-row class="submit-btn">
-      <el-button type="primary">提交注册信息</el-button>
+      <el-button type="primary" @click="handleSubmit">提交注册信息</el-button>
     </el-row>
   </div>
 </template>
@@ -43,6 +43,11 @@ export default {
   data () {
     return {
       areaData: []
+    }
+  },
+  methods: {
+    handleSubmit () {
+      this.$router.push({path: '/succeed'})
     }
   }
 }

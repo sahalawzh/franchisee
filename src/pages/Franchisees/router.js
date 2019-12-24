@@ -26,6 +26,11 @@ const router = new Router({
       path: '/succeed',
       name: 'succeed',
       component: () => import(/* webpackChunkName: "succeed" */ './module/succeed.vue')
+    },
+    {
+      path: '/checkout',
+      name: 'checkout',
+      component: () => import(/* webpackChunkName: "checkout" */ './module/checkout.vue')
     }
   ]
 })

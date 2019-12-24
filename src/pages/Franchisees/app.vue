@@ -4,7 +4,7 @@
     <el-main class="main-franchisees">
       <el-row>
         <div class="word-tip">轻松五步，成为加盟商</div>
-        <el-steps class="step-wrap" :active="2" align-center>
+        <el-steps class="step-wrap" :active="stepActive" align-center>
           <el-step description="阅读加盟协议"></el-step>
           <el-step description="缴纳加盟费用"></el-step>
           <el-step description="填写注册信息"></el-step>
@@ -39,6 +39,23 @@ export default {
   components: {
     DefaultHeader,
     DefaultFooter
+  },
+  computed: {
+    stepActive () {
+      let path = this.$route.path
+      switch (path) {
+        case '/':
+          return 1
+        case '/payment':
+          return 2
+        case '/editeInfo':
+          return 3
+        case '/succeed':
+          return 4
+        case '/checkout':
+          return 5
+      }
+    }
   }
 }
 </script>
@@ -61,6 +78,7 @@ export default {
       }
     }
     .franchisees-content {
+      min-height: 380px;
       background:rgba(255,255,255,1);
       box-shadow:0px 5px 38px 0px rgba(10,2,5,0.17);
       padding: 60px 100px 100px;

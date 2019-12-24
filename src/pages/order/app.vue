@@ -75,7 +75,6 @@ export default {
   position: relative;
   img {
     width: 100%;
-    height: 260px;
   }
   &__info {
     position: absolute;

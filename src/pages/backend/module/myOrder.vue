@@ -17,7 +17,7 @@
       <el-table-column
         prop="scan"
         label="扫描数据"
-        width="220">
+        width="200">
       </el-table-column>
       <el-table-column
         width="220"
@@ -31,13 +31,18 @@
       </el-table-column>
       <el-table-column
         prop="num"
-        width="140"
+        width="100"
         label="数量">
       </el-table-column>
       <el-table-column
         prop="price"
-        width="140"
+        width="100"
         label="价格">
+      </el-table-column>
+      <el-table-column
+        prop="address"
+        width="220"
+        label="地址">
       </el-table-column>
       <el-table-column
         label="操作">
@@ -79,7 +84,8 @@ export default {
           type: '皮鞋'
         },
         num: 1,
-        price: 266
+        price: 266,
+        address: '详细地址'
       }],
       currentPage4: 4
     };

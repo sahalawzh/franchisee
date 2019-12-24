@@ -1,4 +1,4 @@
-import { getRegisterCode, getVerify } from '@/service/http'
+import { getRegisterCode, getVerify, getLoginCode } from '@/service/http'
 import randomCode from '@/utils/randomCode'
 
 export default {
@@ -27,14 +27,15 @@ export default {
     handleRandomCode () {
       this.handleGetVerify()
     },
-    handleGetCode (phone) {
+    handleGetCode (phone, type) {
       this.$refs.form.validateField('phone', (errMsg) => {
         if (!errMsg && !this.disabledBtn) {
           this.disabledBtn = true
           let timer = null
           const separationTime = process.env.NODE_ENV === 'development' ? 100 : 1000
           let time = 60
-          getRegisterCode({ phone }).then(res => {
+          let API = type === 'login' ? getLoginCode : getRegisterCode
+          API({ phone }).then(res => {
             this.$message({
               message: '消息已发送',
               type: 'success'

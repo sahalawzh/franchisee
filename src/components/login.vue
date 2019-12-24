@@ -26,7 +26,7 @@
         </el-form-item>
         <el-form-item prop="code">
           <el-input v-model="form.code" autocomplete="off" placeholder="手机验证码">
-            <el-button slot="append" :disabled="disabledBtn" @click="handleGetCode(form.phone)" class="code-btn">{{ codeBtnText }}</el-button>
+            <el-button slot="append" :disabled="disabledBtn" @click="handleGetCode(form.phone, 'login')" class="code-btn">{{ codeBtnText }}</el-button>
           </el-input>
         </el-form-item>
       </template>

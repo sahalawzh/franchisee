@@ -3,9 +3,20 @@
     <i class="el-icon-success"></i>
     <div class="succeed-title">注册成功</div>
     <div class="succeed-desc">请留意您绑定的银行账户信息</div>
-    <el-button type="primary">验证银行账号</el-button>
+    <el-button type="primary" @click="handleToCheckout">验证银行账号</el-button>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    handleToCheckout () {
+      this.$router.push({path: '/checkout'})
+    }
+  }
+}
+</script>
+
 <style lang="less" scoped>
 .succeed-box {
   text-align: center;

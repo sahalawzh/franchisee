@@ -8,10 +8,21 @@
       <el-radio v-model="radio1" label="2" border>微信支付</el-radio>
     </div>
     <el-row class="submit-btn">
-      <el-button type="danger">总价：￥ 34545656.00，立即支付</el-button>
+      <el-button type="danger" @click="handleToPay">总价：￥ 34545656.00，立即支付</el-button>
     </el-row>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    handleToPay () {
+      this.$router.push({path: '/editeInfo'})
+    }
+  }
+}
+</script>
+
 <style lang="less" scoped>
 .pay-container {
   margin-bottom: 140px;

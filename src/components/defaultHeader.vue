@@ -1,31 +1,36 @@
 <template>
-  <el-header height="90px">
-    <div class="lwzx-site">
-      <img src="../assets/common/lwzx-img.png" class="lwzx-img">
-      <img src="../assets/common/lwzx-logo.png" class="lwzx-logo">
-    </div>
-    <div class="lwzx-action">
-      <el-link :underline="false" icon="el-icon-s-home" class="icon-home" href="/index.html">首页</el-link>
+  <div>
+    <el-header height="90px">
+        
+      <div class="lwzx-site">
+        <img src="../assets/common/lwzx-img.png" class="lwzx-img" @click="handleLogo('index')">
+        <img src="../assets/common/lwzx-logo.png" class="lwzx-logo" @click="handleLogo('footShape')">
+      </div>
+      <div class="lwzx-action">
+        <el-link :underline="false" icon="el-icon-s-home" class="icon-home" href="/index.html">首页</el-link>
 
-      <drop-down></drop-down>
-    </div>
-  </el-header>
+        <drop-down :isLogin="isLogin" @login-status="handleLoginStatus"></drop-down>
+      </div>
+
+    </el-header>
+    <Login @login-status="handleLoginStatus" v-model="loginVisible"></Login>
+  </div>
 </template>
 <script>
-// import storage from '@/utils/storage'
-// import auth from '@/utils/auth'
 import DropDown from '@/components/dropDown'
+import loginMixins from '@/mixins/login'
+import Login from '@/components/login'
+
 export default {
   components: {
+    Login,
     DropDown
   },
-  computed: {
-    // hasLogin () {
-    //   return auth.checkAuth()
-    // },
-    // user () {
-    //   return this.hasLogin && storage.get('gdlwzn_login')
-    // }
+  mixins: [loginMixins],
+  methods: {
+    handleLogo (page) {
+      window.location.href = page + '.html'
+    }
   }
 }
 </script>
@@ -42,10 +47,12 @@ export default {
   height: 100%;
   .lwzx-img {
     padding-right: 20px;
+    cursor: pointer;
   }
   .lwzx-logo {
     padding-left: 24px;
     border-left: 1px solid #999;
+    cursor: pointer;
   }
 }
 .lwzx-action {

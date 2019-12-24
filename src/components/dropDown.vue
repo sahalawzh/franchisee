@@ -37,23 +37,16 @@ export default {
       window.location.href = `/backend.html#/${router}`
     },
     handleLogout () {
+      storage.remove('gdlwzn_login')
       if (this.isIndex) {
-        storage.remove('gdlwzn_login')
         this.$emit('login-status', { loginStatus: false })
         this.hasLogin = false
       } else {
-        if (storage.get('gdlwzn_login')) {
-          storage.remove('gdlwzn_login')
-        }
-        window.location.href = '/index.html'
+        window.location.href = `/index.html`
       }
     },
     handleOpenLogin () {
-      if (this.isIndex) {
-        this.$emit('login-status', { loginVisible: true })
-      } else {
-        window.location.href = '/index.html'
-      }
+      this.$emit('login-status', { loginVisible: true })
     }
   },
   watch: {

@@ -12,11 +12,14 @@ const v1 = {
   GET_LISTDISTRICTS: `${API_URL_SUFFIX}/districts/listDistricts`, // 地区列表
   GET_SCAN_RESULT_BY_PHONE: `${API_URL_SUFFIX}/data/getScanResultByPhone`, // 根据手机号获取数据
   GET_REGISTER_CODE: `${API_URL_SUFFIX}/member/getRegisterCode`, // 注册获取手机验证码
+  GET_LOGIN_CODE: `${API_URL_SUFFIX}/member/getLoginCode`, // 获取手机登录验证码
   POST_REGISTER: `${API_URL_SUFFIX}/member/register`, // 个人注册
   GET_VERIFY: `${API_URL_SUFFIX}/member/getVerify`, // 随机码生成,
   POST_CHECK_PHONE: `${API_URL_SUFFIX}/member/checkPhone`, // 判断有没有注册过
   POST_PHONE_LOGIN: `${API_URL_SUFFIX}/member/phoneLogin`, // 手机快速登录
-  GET_CART_NUM: `${API_URL_SUFFIX}/cart/getCartNum` // 购物车数量
+  GET_CART_NUM: `${API_URL_SUFFIX}/cart/getCartNum`, // 购物车数量
+  POST_ADD_ORDER: `${API_URL_SUFFIX}/order/addOrder`, // 创建订单
+  GET_CART_PRICE: `${API_URL_SUFFIX}/cart/getCartPrice` // 获取购物车金额
 }
 
 export {

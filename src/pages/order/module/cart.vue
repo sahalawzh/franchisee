@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-table
+      v-loading="loading"
       ref="multipleTable"
       :data="tableData"
       tooltip-effect="dark"
@@ -74,35 +75,43 @@
     </el-table>
 
 
-    <!-- <el-pagination
-      @size-change="handleSizeChange"
+    <el-pagination
+      v-if="totalCount"
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :current-page="curtPage"
+      :page-sizes="[2, 200, 300, 400]"
+      :page-size="limit"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
-    </el-pagination> -->
+      :total="totalCount">
+    </el-pagination>
 
     <el-row class="submit-btn">
-      <el-button type="danger">总价：￥ 34545656.00，提交订单</el-button>
+      <el-button type="danger" @click="handleToPay" :disabled="!ids">总价：￥{{ countPrice }}，提交订单</el-button>
     </el-row>
 
   </div>
 </template>
 <script>
-import { getSearchCart, deleteCart } from '@/service/http'
+import { getSearchCart, deleteCart, getCartPrice } from '@/service/http'
 export default {
-  data() {
+  data () {
     return {
       tableData: [],
-      multipleSelection: [],
-      currentPage4: 4
+      multipleCart: [],
+      curtPage: 1,
+      limit: 2,
+      totalCount: 1,
+      countPrice: '0.00',
+      ids: '',
+      loading: false
     }
   },
   methods: {
+    handleToPay () {
+      let ids = this.ids
+      this.$router.push({name: 'pay', query: { ids } })
+    },
     handleDeleteRow (index, item) {
-      console.log(item)
       this.$confirm('是否删除该购物车?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -119,25 +128,50 @@ export default {
     deleteCart (index, item) {
       let cartId = item.cartId
       deleteCart(cartId).then(res => {
-        console.log(res)
         this.tableData.splice(index, 1)
       }).catch(err => {
         console.log(err)
       })
     },
     getCartData () {
-      getSearchCart().then(res => {
-        console.log(res)
-        this.tableData = res.data
+      const { curtPage, limit } = this
+      const params = {
+        curtPage,
+        limit
+      }
+      this.loading = true
+      getSearchCart(params).then(res => {
+        const { carts, totalCount } = res.data
+        this.tableData = carts
+        this.totalCount = totalCount
+        this.loading = false
+      }).catch(err => {
+        this.loading = false
+        console.log(err)
+      })
+    },
+    handleCurrentChange (val) {
+      this.curtPage = val
+      this.getCartData()
+    },
+    handleCartPrice () {
+      let ids = []
+      this.multipleCart.forEach(item => {
+        ids.push(item.cartId)
+      })
+      const param = {
+        ids: ids.join('_')
+      }
+      getCartPrice(param).then(res => {
+        this.countPrice = res.data
+        this.ids = param.ids
       }).catch(err => {
         console.log(err)
       })
     },
-    // handleSizeChange (val) {
-    //   console.log(val)
-    // },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.multipleCart = val
+      this.handleCartPrice()
     }
   },
   created () {
