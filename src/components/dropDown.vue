@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click.stop>
     <span v-if="hasLogin">欢迎回来，<el-dropdown>
         <el-link :underline="false" type="primary" class="el-dropdown-link">{{ userName }}</el-link>
         <el-dropdown-menu slot="dropdown">
