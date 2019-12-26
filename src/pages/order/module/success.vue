@@ -3,7 +3,9 @@
     <el-divider></el-divider>
     <img src="../../../assets/order/pay-success.png" class="pay-success" alt="">
     <div class="success-text">购买成功</div>
-    <el-link icon="el-icon-s-home">回到首页</el-link>
+    <router-link to="/">
+      <el-link icon="el-icon-s-home">回到首页</el-link>
+    </router-link>
   </div>
 </template>
 <style lang="less" scoped>

@@ -19,7 +19,10 @@ const v1 = {
   POST_PHONE_LOGIN: `${API_URL_SUFFIX}/member/phoneLogin`, // 手机快速登录
   GET_CART_NUM: `${API_URL_SUFFIX}/cart/getCartNum`, // 购物车数量
   POST_ADD_ORDER: `${API_URL_SUFFIX}/order/addOrder`, // 创建订单
-  GET_CART_PRICE: `${API_URL_SUFFIX}/cart/getCartPrice` // 获取购物车金额
+  GET_CART_PRICE: `${API_URL_SUFFIX}/cart/getCartPrice`, // 获取购物车金额
+  POST_WX_PAY: `${API_URL_SUFFIX}/wxPay/pay`, // 微信支付
+  GET_CHECK_PAY: `${API_URL_SUFFIX}/wxPay/checkPay`, // 微信是否有支付
+  GET_SEARCH_ORDER: `${API_URL_SUFFIX}/order/searchOrder` // 查询订单
 }
 
 export {

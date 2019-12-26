@@ -1,21 +1,21 @@
 <template>
-  <div>
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="全部" name="all"></el-tab-pane>
-      <el-tab-pane label="待付款" name="awaitPay"></el-tab-pane>
-      <el-tab-pane label="待发货" name="awaitShipped"></el-tab-pane>
-      <el-tab-pane label="已发货" name="shipped"></el-tab-pane>
+  <div v-loading="loading">
+    <el-tabs v-model="orderProcess" @tab-click="handleClick">
+      <el-tab-pane label="全部" name="-1"></el-tab-pane>
+      <el-tab-pane label="待付款" name="0"></el-tab-pane>
+      <el-tab-pane label="待发货" name="1"></el-tab-pane>
+      <el-tab-pane label="已发货" name="2"></el-tab-pane>
     </el-tabs>
     <el-table
       :data="tableData"
       style="width: 100%">
       <el-table-column
-        prop="name"
+        prop="consignee"
         label="用户"
         width="140">
       </el-table-column>
       <el-table-column
-        prop="scan"
+        prop="scanTime"
         label="扫描数据"
         width="200">
       </el-table-column>
@@ -23,10 +23,10 @@
         width="220"
         label="客户资料">
         <template slot-scope="scope">
-          <div>{{ scope.row.info.symptom }}</div>
-          <div>{{ scope.row.info.size }}</div>
-          <div>{{ scope.row.info.group }}</div>
-          <div>{{ scope.row.info.type }}</div>
+          <div>{{ scope.row.diseaseName }}</div>
+          <div>{{ scope.row.sizeName }}</div>
+          <div>{{ scope.row.functionName }}</div>
+          <div>{{ scope.row.shoeName }}</div>
         </template>
       </el-table-column>
       <el-table-column
@@ -38,67 +38,81 @@
         prop="price"
         width="100"
         label="价格">
+        <template slot-scope="scope">
+          <div>￥{{ scope.row.price }}</div>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="address"
         width="220"
         label="地址">
+        <template slot-scope="scope">
+          <div>{{ scope.row.province }}{{ scope.row.city }}{{ scope.row.detailAddress }}</div>
+        </template>
       </el-table-column>
       <el-table-column
         label="操作">
         <template slot-scope="scope">
           <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button
+            v-if="orderProcess === 0"
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            @click="handleDelete(scope.$index, scope.row)">立即付款</el-button>
+          <div v-else-if="orderProcess === 1">鞋垫制作中，待发货</div>
+          <div v-else-if="orderProcess === 2">查看物流</div>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
-      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :current-page="start"
+      :page-sizes="[limits, 200, 300, 400]"
+      :page-size="limits"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="totalCount">
     </el-pagination>
   </div>
 </template>
 <script>
+import { getSearchOrder } from '@/service/http'
 export default {
   data() {
     return {
-      activeName: 'all',
-      tableData: [{
-        name: '李某某',
-        tel: '1688816888',
-        scan: '2019-10-11 10:22:00',
-        info: {
-          symptom: '扁平足',
-          size: '42号',
-          group: '儿童',
-          type: '皮鞋'
-        },
-        num: 1,
-        price: 266,
-        address: '详细地址'
-      }],
-      currentPage4: 4
-    };
+      loading: false,
+      orderProcess: '-1',
+      tableData: [],
+      start: 1,
+      limits: 5,
+      totalCount: 1
+    }
+  },
+  created () {
+    this.getOrderList()
   },
   methods: {
-    handleClick(tab, event) {
-      console.log(tab, event);
+    getOrderList () {
+      this.loading = true
+      const { orderProcess, start, limits } = this
+      const params = {
+        orderProcess,
+        start,
+        limits
+      }
+      getSearchOrder(params).then(res => {
+        this.loading = false
+        const { data } = res
+        this.tableData = data.data || []
+        this.totalCount = data.total
+      }).catch(err => {
+        console.log(err)
+      })
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+    handleClick(tab, event) {
+      this.orderProcess = tab.name
+      this.getOrderList()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.start = val
+      this.getOrderList()
     }
   }
 }

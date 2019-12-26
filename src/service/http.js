@@ -130,7 +130,7 @@ const getCartNum = (data, version = 'v1') => {
 }
 
 /*
-* 购物车数量
+* 创建订单
 */
 const postAddOrder = (data, version = 'v1') => {
   let url = apiConfig[version] && apiConfig[version].POST_ADD_ORDER || apiConfig['v1'].POST_ADD_ORDER
@@ -153,6 +153,30 @@ const getLoginCode = (data, version = 'v1') => {
   return ajax.get(url, data)
 }
 
+/*
+* 微信支付
+*/
+const postWxPay = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_WX_PAY || apiConfig['v1'].POST_WX_PAY
+  return ajax.post(url, data)
+}
+
+/*
+* 是否支付
+*/
+const postCheckPay = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_CHECK_PAY || apiConfig['v1'].GET_CHECK_PAY
+  return ajax.get(url, data)
+}
+
+/*
+* 查询订单
+*/
+const getSearchOrder = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_SEARCH_ORDER || apiConfig['v1'].GET_SEARCH_ORDER
+  return ajax.get(url, data)
+}
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -172,5 +196,8 @@ export {
   getCartNum,
   postAddOrder,
   getCartPrice,
-  getLoginCode
+  getLoginCode,
+  postWxPay,
+  postCheckPay,
+  getSearchOrder
 }

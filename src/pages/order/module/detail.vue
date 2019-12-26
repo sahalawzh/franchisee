@@ -153,7 +153,7 @@ export default {
       },
       scan: {
         scanId: '',
-        scanDataTime: ''
+        scanTime: ''
       },
       form: {
         diseaseId: '',
@@ -210,9 +210,10 @@ export default {
       this.$router.push({path: '/cart'})
     },
     handleScan (val) {
-      this.scan.scanDataTime = this.scanData.filter(item => item.id === val)[0].scanTime
+      this.scan.scanTime = this.scanData.filter(item => item.id === val)[0].scanTime
     },
     handleSubmit () {
+      console.log(this.form.city)
       if (isEmpty(this.scan)) {
         this.$message({
           message: '脚型数据不能为空',
@@ -273,12 +274,11 @@ export default {
       this.func = func
       this.shoesType = shoesType
       res[1].data.forEach(item => {
-        item.value = item.id
-        item.label = item.name
+        item.value = item.label = item.name
         item.children = []
         item.list.forEach(_item => {
           item.children.push({
-            value: _item.id,
+            value: _item.name,
             label: _item.name
           })
         })

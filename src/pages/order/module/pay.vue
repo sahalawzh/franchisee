@@ -3,42 +3,107 @@
     <el-divider></el-divider>
     <div class="pay-label">支付方式</div>
     <div class="pay-way">
-      <el-radio v-model="payType" label="1" border>支付宝支付</el-radio>
-      <el-radio v-model="payType" label="2" border>微信支付</el-radio>
+      <el-radio v-model="payType" @change="handleChangeWay" label="weixin" border>微信支付</el-radio>
+      <el-radio v-model="payType" @change="handleChangeWay" label="zhifubao" border disabled>支付宝支付</el-radio>
     </div>
     <el-row class="submit-btn">
-      <el-button type="danger" :disabled="!ids">总价：￥ {{ countPrice }}，立即支付</el-button>
+      <el-popover
+        placement="top"
+        :title="payType === 'weixin' ? '微信支付' : '支付宝支付'"
+        trigger="manual"
+        v-model="visible">
+        <div id="qrcode"></div> <!-- 创建一个div，并设置id为qrcode -->
+        <el-button slot="reference" type="danger" :loading="btnLoading" @click="handleToPay" :disabled="!ids">总价：￥ {{ countPrice }}，立即支付</el-button>
+      </el-popover>
     </el-row>
+    
   </div>
 </template>
 <script>
-import { getCartPrice } from '@/service/http'
+import { getCartPrice, postWxPay, postCheckPay } from '@/service/http'
+import QRCode from 'qrcodejs2'
 export default {
   data () {
     return {
       payType: 'weixin',
       ids: '',
       countPrice: '0.00',
-      loading: false
+      loading: false,
+      orderNo: '',
+      btnLoading: false,
+      timer: null,
+      visible: false
     }
   },
   methods: {
+    handleChangeWay (val) {
+      this.payType = val
+    },
+    updateOrderStatus () {
+      const { orderNo } = this
+      postCheckPay({ orderNo }).then(res => {
+        if (res.data === 1) { // 已支付
+          clearInterval(this.timer)
+          this.$router.push({name: 'success'})
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleToPay () {
+      if (this.visible) {
+        this.visible = false
+        clearInterval(this.timer)
+        return
+      }
+      this.btnLoading = true
+      const { orderNo } = this
+      postWxPay({ orderNo }).then(res => {
+        this.btnLoading = false
+        var code_url = res.data.code_url
+        let qrcodeEl = document.getElementById('qrcode')
+        qrcodeEl.innerHTML = ''
+        let qrcode = new QRCode(qrcodeEl, {
+          render: 'canvas',
+          width: 160,  
+          height: 160,
+          text: code_url, // 二维码地址
+          colorDark : "#000",
+          colorLight : "#fff"
+        })
+        this.visible = true
+        this.timer = setInterval(() => {
+          this.updateOrderStatus()
+        }, 2000)
+      }).catch(err => {
+        this.btnLoading = false
+      })
+    },
     handleCartPrice () {
       const param = {
-        ids: this.ids
+        orderNo: this.orderNo
       }
       this.loading = true
-      getCartPrice(param).then(res => {
-        this.countPrice = res.data
+      postCheckPay(param).then(res => {
+        console.log(res)
         this.loading = false
       }).catch(err => {
         this.loading = false
         console.log(err)
       })
+      // getCartPrice(param).then(res => {
+      //   this.countPrice = res.data
+      //   this.loading = false
+      // }).catch(err => {
+      //   this.loading = false
+      //   console.log(err)
+      // })
     }
   },
   created () {
-    this.ids = this.$route.query.ids
+    const { ids, orderNo } = this.$route.query
+    this.ids = ids
+    this.orderNo = orderNo
     this.handleCartPrice()
   }
 }

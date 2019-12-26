@@ -22,7 +22,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="scanDataTime"
+        prop="scanTime"
         label="扫描数据"
         width="180">
       </el-table-column>
@@ -79,20 +79,20 @@
       v-if="totalCount"
       @current-change="handleCurrentChange"
       :current-page="curtPage"
-      :page-sizes="[2, 200, 300, 400]"
+      :page-sizes="[limit, 200, 300, 400]"
       :page-size="limit"
       layout="total, sizes, prev, pager, next, jumper"
       :total="totalCount">
     </el-pagination>
 
     <el-row class="submit-btn">
-      <el-button type="danger" @click="handleToPay" :disabled="!ids">总价：￥{{ countPrice }}，提交订单</el-button>
+      <el-button type="danger" :loading="btnLoading" @click="handleToSubmit" :disabled="!ids">总价：￥{{ countPrice }}，提交订单</el-button>
     </el-row>
 
   </div>
 </template>
 <script>
-import { getSearchCart, deleteCart, getCartPrice } from '@/service/http'
+import { getSearchCart, deleteCart, getCartPrice, postAddOrder } from '@/service/http'
 export default {
   data () {
     return {
@@ -103,13 +103,23 @@ export default {
       totalCount: 1,
       countPrice: '0.00',
       ids: '',
-      loading: false
+      loading: false,
+      btnLoading: false
     }
   },
   methods: {
-    handleToPay () {
+    handleToSubmit () {
+      this.btnLoading = true
       let ids = this.ids
-      this.$router.push({name: 'pay', query: { ids } })
+      postAddOrder({ ids }).then(res => {
+        console.log(res)
+        let orderNo = res.data
+        this.btnLoading = false
+        this.$router.push({name: 'pay', query: { ids, orderNo } })
+      }).catch(err => {
+        this.btnLoading = false
+        console.log(err)
+      })
     },
     handleDeleteRow (index, item) {
       this.$confirm('是否删除该购物车?', '提示', {
