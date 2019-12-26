@@ -18,7 +18,7 @@
       <div class="info-detail__item">
         <div class="label-name">银行卡</div>
         <div class="value-content">
-          <div class="back-name">交通银行<el-link class="bind-link" type="primary">点击绑定</el-link></div>
+          <div class="back-name">交通银行<el-button type="text" class="bind-link">点击下载</el-button></div>
           <div>1666665555</div>
         </div>
       </div>
@@ -29,14 +29,14 @@
             <div class="address-item__name">xx（收）</div>
             <div class="address-item__detail">广东  佛山市  时代创业小镇   18144506663</div>
             <div class="address-item__action">
-              <el-link type="primary" :underline="false" class="action-btn">修改</el-link><el-link type="primary" :underline="false" class="action-btn">删除</el-link>
+              <el-button type="text">修改</el-button><el-divider direction="vertical"></el-divider><el-button type="text">删除</el-button>
             </div>
           </div>
           <div class="address-item">
             <div class="address-item__name">xx（收）</div>
             <div class="address-item__detail">广东  佛山市  时代创业小镇   18144506663</div>
             <div class="address-item__action">
-              <el-link type="primary" :underline="false" class="action-btn">修改</el-link><el-link type="primary" :underline="false" class="action-btn">删除</el-link>
+              <el-button type="text">修改</el-button><el-divider direction="vertical"></el-divider><el-button type="text">删除</el-button>
             </div>
           </div>
           <!-- <el-link class="el-icon-plus" type="primary" @click="handleAddAdress">添加新地址</el-link> -->
@@ -44,7 +44,7 @@
       </div>
       <div class="info-detail__item">
         <div class="label-name">加盟协议</div>
-        <div class="value-content"><el-link type="primary">点击下载</el-link></div>
+        <div class="value-content"><el-button type="text" class="down-btn">点击下载</el-button></div>
       </div>
     </div>
 
@@ -135,6 +135,9 @@ export default {
     .bind-link {
       margin-left: 10%;
     }
+    .down-btn {
+      margin-top: -15px;
+    }
     .address-item {
       position: relative;
       padding-bottom: 16px;
@@ -155,20 +158,6 @@ export default {
         position: absolute;
         bottom: 16px;
         right: 40px;
-        .action-btn {
-          position: relative;
-          padding-left: 20px;
-          padding-right: 20px;
-          &:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 4px;
-            width: 1px;
-            height: 70%;
-            background-color: #eee;
-          }
-        }
       }
     }
   }

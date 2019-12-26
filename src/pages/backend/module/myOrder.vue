@@ -53,12 +53,12 @@
         label="操作">
         <template slot-scope="scope">
           <el-button
-            v-if="orderProcess === 0"
+            v-if="scope.row.orderProcess === 0"
             size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)">立即付款</el-button>
-          <div v-else-if="orderProcess === 1">鞋垫制作中，待发货</div>
-          <div v-else-if="orderProcess === 2">查看物流</div>
+          <div v-else-if="scope.row.orderProcess === 1">鞋垫制作中，待发货</div>
+          <el-button type="text" @click="handleOpenFlow">查看物流</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -70,6 +70,62 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="totalCount">
     </el-pagination>
+
+    <el-dialog
+      title="物流信息"
+      :visible.sync="dialogVisible"
+      :show-close="false"
+      width="40%"
+      center>
+      <div class="flow-box">
+        <el-scrollbar style="height: 100%;">
+          <el-timeline>
+            <el-timeline-item timestamp="2018/4/12" placement="top">
+              <el-card>
+                <h4>更新 Github 模板</h4>
+                <p>王小虎 提交于 2018/4/12 20:46</p>
+              </el-card>
+            </el-timeline-item>
+            <el-timeline-item timestamp="2018/4/3" placement="top">
+              <el-card>
+                <h4>更新 Github 模板</h4>
+                <p>王小虎 提交于 2018/4/3 20:46</p>
+              </el-card>
+            </el-timeline-item>
+            <el-timeline-item timestamp="2018/4/2" placement="top">
+              <el-card>
+                <h4>更新 Github 模板</h4>
+                <p>王小虎 提交于 2018/4/2 20:46</p>
+              </el-card>
+            </el-timeline-item>
+            <el-timeline-item timestamp="2018/4/2" placement="top">
+              <el-card>
+                <h4>更新 Github 模板</h4>
+                <p>王小虎 提交于 2018/4/2 20:46</p>
+              </el-card>
+            </el-timeline-item>
+            <el-timeline-item timestamp="2018/4/2" placement="top">
+              <el-card>
+                <h4>更新 Github 模板</h4>
+                <p>王小虎 提交于 2018/4/2 20:46</p>
+              </el-card>
+            </el-timeline-item>
+            <el-timeline-item timestamp="2018/4/2" placement="top">
+              <el-card>
+                <h4>更新 Github 模板</h4>
+                <p>王小虎 提交于 2018/4/2 20:46</p>
+              </el-card>
+            </el-timeline-item>
+            <el-timeline-item timestamp="2018/4/2" placement="top">
+              <el-card>
+                <h4>更新 Github 模板</h4>
+                <p>王小虎 提交于 2018/4/2 20:46</p>
+              </el-card>
+            </el-timeline-item>
+          </el-timeline>
+        </el-scrollbar>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -82,13 +138,18 @@ export default {
       tableData: [],
       start: 1,
       limits: 5,
-      totalCount: 1
+      totalCount: 1,
+      dialogVisible: false
     }
   },
   created () {
     this.getOrderList()
   },
   methods: {
+    handleOpenFlow () {
+      this.dialogVisible = true
+      console.log()
+    },
     getOrderList () {
       this.loading = true
       const { orderProcess, start, limits } = this
@@ -117,10 +178,18 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .el-pagination {
   margin-top: 30px;
   text-align: right;
+}
+.flow-box {
+  padding: 0 30px;
+  height: 500px;
+  .el-scrollbar__wrap {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
 }
 </style>
 

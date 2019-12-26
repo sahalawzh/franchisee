@@ -41,7 +41,7 @@
       <el-col :span="8">
         <div class="panel-item" @click.stop="handleToPage" :class="{'panel-item__hover2': mask_active === 3}" @mouseover="handleEnter(3)" @mouseleave="handleLeave(3)">
           <div class="login-box">
-            <drop-down :isIndex="true" :isLogin="isLogin" @login-status="handleLoginStatus"></drop-down>
+            <drop-down :isIndex="isLogin" :isLogin="isLogin" @login-status="handleLoginStatus"></drop-down>
           </div>
 
           <div class="panel-title">创业同行</div>

@@ -46,7 +46,11 @@ export default {
       }
     },
     handleOpenLogin () {
-      this.$emit('login-status', { loginVisible: true })
+      if (this.isIndex || window.location.pathname === '/index.html') {
+        this.$emit('login-status', { loginVisible: true })
+      } else {
+        window.location.href = `/index.html`
+      }
     }
   },
   watch: {

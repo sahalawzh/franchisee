@@ -7,7 +7,7 @@
         <div class="person-info">
           <img src="../../assets/common/head-photo.png" alt="">
           <div class="greet-word">欢迎回来</div>
-          <div class="user-name">XXX</div>
+          <div class="user-name">{{ username }}</div>
         </div>
         <el-menu
           router
@@ -44,22 +44,27 @@
   </el-container>
 </template>
 <script>
-import DefaultHeader from '../../components/defaultHeader'
-import DefaultFooter from '../../components/defaultFooter'
+import DefaultHeader from '@/components/defaultHeader'
+import DefaultFooter from '@/components/defaultFooter'
 import storage from '@/utils/storage'
 export default {
   components: {
     DefaultHeader,
     DefaultFooter
   },
+  computed: {
+  },
   data () {
     return {
-      role: 0
+      role: 0,
+      username: ''
     }
   },
   created () {
     if (storage.get('gdlwzn_login')) {
-      this.role = storage.get('gdlwzn_login').type
+      const { type, username } = storage.get('gdlwzn_login')
+      this.role = type
+      this.username = username
     }
   },
   methods: {
@@ -72,7 +77,7 @@ export default {
   flex-direction: column !important;
 }
 .el-aside {
-  background-color: #205299;
+  background-color: #205299;  
   color: #333;
   text-align: center;
   min-height: calc(100vh - 90px);

@@ -213,8 +213,7 @@ export default {
       this.scan.scanTime = this.scanData.filter(item => item.id === val)[0].scanTime
     },
     handleSubmit () {
-      console.log(this.form.city)
-      if (isEmpty(this.scan)) {
+      if (isEmpty(this.scan) || !this.scan.scanId) {
         this.$message({
           message: '脚型数据不能为空',
           type: 'warning'
