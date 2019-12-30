@@ -177,6 +177,54 @@ const getSearchOrder = (data, version = 'v1') => {
   return ajax.get(url, data)
 }
 
+/*
+* 查询订单金额
+*/
+const getOrderPrice = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_ORDER_PRICE || apiConfig['v1'].GET_ORDER_PRICE
+  return ajax.get(url, data)
+}
+
+/*
+* 修改忘记密码
+*/
+const updateForget = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_UPDATE_FORGET || apiConfig['v1'].POST_UPDATE_FORGET
+  return ajax.post(url, data)
+}
+
+/*
+* 获取忘记密码手机验证码
+*/
+const getForgetCode = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_FORGET_CODE || apiConfig['v1'].GET_FORGET_CODE
+  return ajax.get(url, data)
+}
+
+/*
+* 修改密码
+*/
+const postUpdatePassword = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_UPDATE_PASSWORD || apiConfig['v1'].POST_UPDATE_PASSWORD
+  return ajax.post(url, data)
+}
+
+/*
+* 获取用户足行list
+*/
+const getScan = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_SCAN || apiConfig['v1'].GET_SCAN
+  return ajax.get(url, data)
+}
+
+/*
+* 获取具体足行信息
+*/
+const getScanData = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_SCAN_DATA || apiConfig['v1'].GET_SCAN_DATA
+  return ajax.get(url, data)
+}
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -199,5 +247,11 @@ export {
   getLoginCode,
   postWxPay,
   postCheckPay,
-  getSearchOrder
+  getSearchOrder,
+  getOrderPrice,
+  updateForget,
+  getForgetCode,
+  postUpdatePassword,
+  getScan,
+  getScanData
 }

@@ -54,7 +54,7 @@
   </el-dialog>
 </template>
 <script>
-import { postMemberLogin, postPhoneLogin, postCheckPhone  } from '@/service/http'
+import { postMemberLogin, postPhoneLogin, postCheckPhone } from '@/service/http'
 import storage from '@/utils/storage'
 import auth from '@/utils/auth'
 import commonMixins from '@/mixins/common'

@@ -20,7 +20,7 @@
         label="手机号"
         width="240">
         <template slot-scope="scope">
-          <el-radio v-model="scan.scanId" @change="handleScan" :label="scope.row.id"></el-radio>{{ scope.row.phone }}</template>
+          <el-radio v-model="scan.scanId" @change="handleScan" :label="scope.row.id">&nbsp;</el-radio>{{ scope.row.phone }}</template>
       </el-table-column>
       <el-table-column
         prop="userName"
@@ -261,6 +261,10 @@ export default {
   created () {
     const ficationParams = {
       linkType: 0
+    }
+    if (!storage.get('gdlwzn_login')) {
+      window.location.href = 'index.html'
+      return
     }
     let phone = storage.get('gdlwzn_login').phone
     const phoneScanParams = {

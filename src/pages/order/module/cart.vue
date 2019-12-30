@@ -115,7 +115,7 @@ export default {
         console.log(res)
         let orderNo = res.data
         this.btnLoading = false
-        this.$router.push({name: 'pay', query: { ids, orderNo } })
+        this.$router.push({name: 'pay', query: { orderNo, orderType: 0 } })
       }).catch(err => {
         this.btnLoading = false
         console.log(err)
@@ -170,7 +170,8 @@ export default {
         ids.push(item.cartId)
       })
       const param = {
-        ids: ids.join('_')
+        ids: ids.join('_'),
+        orderType: 0
       }
       getCartPrice(param).then(res => {
         this.countPrice = res.data

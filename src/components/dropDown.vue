@@ -67,7 +67,7 @@ export default {
     },
     userName () {
       if (this.user) {
-        return this.user.realname || this.user.username
+        return this.user.username
       } else {
         this.hasLogin = false
       }

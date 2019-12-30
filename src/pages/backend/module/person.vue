@@ -23,6 +23,10 @@
         </div>
       </div>
       <div class="info-detail__item">
+        <div class="label-name">修改密码</div>
+        <div class="value-content"><el-button type="text" @click="handleSetPassword" class="password-btn">设置</el-button></div>
+      </div>
+      <div class="info-detail__item">
         <div class="label-name">地址</div>
         <div class="value-content">
           <div class="address-item">
@@ -47,6 +51,24 @@
         <div class="value-content"><el-button type="text" class="down-btn">点击下载</el-button></div>
       </div>
     </div>
+
+    <el-dialog title="密码设置" class="address-dialog" :visible.sync="passwordVisible">
+      <el-form :model="passwordForm" label-width="100px" ref="passwordForm" :hide-required-asterisk="true" :rules="rulesPassword">
+        <el-form-item label="当前密码" prop="oldPassword" required>
+          <el-input v-model="passwordForm.oldPassword" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="password">
+          <el-input v-model="passwordForm.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认新密码" prop="confirmPassword">
+          <el-input v-model="passwordForm.confirmPassword" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="danger" :loading="passwordBtnLoading"  @click="handleSavePassword">保 存</el-button>
+        </el-form-item>
+
+      </el-form>
+    </el-dialog>
 
     <el-dialog title="收货地址" class="address-dialog" :visible.sync="dialogFormVisible">
       <el-form :model="addressForm" label-width="100px" >
@@ -78,12 +100,30 @@
   </div>
 </template>
 <script>
-import { getMemberMessage } from '@/service/http'
+import { getMemberMessage, postUpdatePassword } from '@/service/http'
 export default {
   data () {
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.passwordForm.confirmPassword !== '') {
+          this.$refs.passwordForm.validateField('confirmPassword')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.passwordForm.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
       message: '',
-      circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
       dialogFormVisible: false,
       addressForm: {
         consignee: '',
@@ -92,10 +132,54 @@ export default {
         detailAddress: '',
         default: true
       },
-      areaData: []
+      areaData: [],
+      passwordVisible: false,
+      passwordForm: {
+        oldPassword: '',
+        password: '',
+        confirmPassword: ''
+      },
+      passwordBtnLoading: false,
+      rulesPassword: {
+        oldPassword: [
+          { required: true, message: '请输入当前密码', trigger: 'blur' }
+        ],
+        password: [
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        confirmPassword: [
+          { validator: validatePass2, trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
+    handleSavePassword () {
+      this.$refs.passwordForm.validate((valid) => {
+        if (valid) {
+          const params = Object.assign({}, this.passwordForm)
+          this.passwordBtnLoading = true
+          postUpdatePassword(params).then(res => {
+            console.log(res)
+            this.$notify({
+              title: '更改成功',
+              message: res.data,
+              type: 'success',
+              onClose () {
+                this.passwordBtnLoading = false
+                this.passwordVisible = false
+              }
+            })
+          }).catch(err => {
+            console.log(err)
+            this.passwordBtnLoading = false
+          })
+        }
+      })
+    },
+    handleSetPassword () {
+      this.passwordVisible = true
+    },
     handleAddAdress () {
       this.dialogFormVisible = true
     },
@@ -133,7 +217,12 @@ export default {
       margin-bottom: 10px;
     }
     .bind-link {
-      margin-left: 10%;
+      padding-top: 0;
+      margin-left: 6%;
+    }
+    .password-btn {
+      padding-top: 0;
+      padding-bottom: 0;
     }
     .down-btn {
       margin-top: -15px;

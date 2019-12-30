@@ -34,35 +34,35 @@
           <div class="record-title">
             <i class="el-icon-s-data"></i>
             <span>我的脚型数据</span>
-             <el-button type="primary" class="record-title__btn" round>对比</el-button>
+             <!-- <el-button type="primary" class="record-title__btn" round>对比</el-button> -->
           </div>
-          <div class="record-list">
-            <div class="record-list__time">
-              <el-radio v-model="radio" label="1">2019-11.05 10:12:00</el-radio>
+
+          <template v-if="scanList.length">
+            <div class="record-list">
+              <div class="record-list__time" v-for="(item, index) in scanList" :key="item.id">
+                <span class="first-item" v-if="index === 0">{{ item.scanTime }}</span>
+                <el-radio v-else v-model="currentScan" @change="handleCheckCompare" :label="item.id">{{ item.scanTime }}</el-radio>
+              </div>
             </div>
-            <div class="record-list__time">
-              <el-radio v-model="radio" label="1">2019-11.05 10:12:00</el-radio>
+            <div class="page-count">共{{ totalPage }}页</div>
+            
+            <el-pagination
+              small
+              layout="prev, pager, next, jumper"
+              :total="totalPage">
+            </el-pagination>
+          </template>
+
+          <template v-else>
+            <div class="record-empty">
+              <img src="../../assets/shape/foot-shape.png" class="foot-shape" alt="">
+              <p>还没有测量的脚型数据</p>
+              <img src="../../assets/shape/service-qrcode.png" class="service-qrcode" alt="">
+              <p>扫描加客服</p>
+              <p>免费测量脚步数据</p>
             </div>
-            <div class="record-list__time">
-              <el-radio v-model="radio" label="1">2019-11.05 10:12:00</el-radio>
-            </div>
-            <div class="record-list__time">
-              <el-radio v-model="radio" label="1">2019-11.05 10:12:00</el-radio>
-            </div>
-            <div class="record-list__time">
-              <el-radio v-model="radio" label="1">2019-11.05 10:12:00</el-radio>
-            </div>
-            <div class="record-list__time">
-              <el-radio v-model="radio" label="1">2019-11.05 10:12:00</el-radio>
-            </div>
-          </div>
-          <div class="page-count">共29页</div>
-          
-          <el-pagination
-            small
-            layout="prev, pager, next, jumper"
-            :total="16">
-        </el-pagination>
+          </template>
+
         </el-col>
         <el-col :span="18" class="shape-data">
           <el-table
@@ -78,15 +78,17 @@
               :render-header="renderTdHeader"
               class="td-cell">
               <template scope="scope">
-                <span class="column-left">{{ scope.row.currentLeft }}</span>
-                <span class="column-right">{{ scope.row.currentRight }}</span>
+                <span class="column-left">{{ scope.row.l_value }}</span>
+                <span class="column-right">{{ scope.row.r_value }}</span>
               </template>
             </el-table-column>
             <el-table-column
               :render-header="renderTdHeader">
               <template scope="scope">
-                <span class="column-left">{{ scope.row.currentLeft }}</span>
-                <span class="column-right">{{ scope.row.currentRight }}</span>
+                <div v-if="currentScan">
+                  <span class="column-left">{{ scope.row[`l_value_${currentScan}`] }}</span>
+                  <span class="column-right">{{ scope.row[`r_value_${currentScan}`] }}</span>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -233,6 +235,9 @@ import DefaultHeader from '@/components/defaultHeader'
 import DefaultFooter from '@/components/defaultFooter'
 import loginMixins from '@/mixins/login'
 // import Auth from '@/utils/auth'
+import { getScan, getScanData } from '@/service/http'
+import handleScanData from './utils/handleScanData'
+import deepCopy from '@/utils/deepCopy'
 export default {
   components: {
     DefaultHeader,
@@ -241,7 +246,6 @@ export default {
   mixins: [loginMixins],
   computed: {
     loginInfo () {
-      console.log(this.isLogin)
       if (this.isLogin) {
         return {
           experienceBtnTxt: '定制我的专属鞋垫'
@@ -253,6 +257,40 @@ export default {
     }
   },
   methods: {
+    handleCheckCompare (val) {
+      this.currentScan = val
+      this.getScanDetail(val)
+    },
+    getScanDetail (id) {
+      getScanData({ id }).then(res => {
+        console.log(res)
+        const [ leftData, rightData ] = res.data
+
+        this.tableData = handleScanData(leftData, rightData, this.currentScan).map((o, i) => {
+          return {
+            ...o,
+            ...this.tableData[i]
+          }
+        })
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getScanList () {
+      const { start, limits } = this
+      const params = {
+        start,
+        limits
+      }
+      getScan(params).then(res => {
+        const { data, total } = res.data
+        this.scanList = data
+        this.totalPage = total
+        this.getScanDetail(data[0].id)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     renderHeader (arr) {
       return (
         <div class="cell-header">
@@ -276,55 +314,17 @@ export default {
   },
   data () {
     return {
-      tableData: [{
-        label: '脚长(mm)',
-        currentLeft: '192.6',
-        currentRight: '178.8'
-      }, {
-        label: '脚宽(mm)',
-        currentLeft: '192.6',
-        currentRight: '178.8'
-      }, {
-        label: '跖趾围长(mm)',
-        currentLeft: '192.6',
-        currentRight: '178.8'
-      }, {
-        label: '前跗骨围长(mm)',
-        currentLeft: '192.6',
-        currentRight: '178.8'
-      }, {
-        label: '兜根围长(mm)',
-        currentLeft: '192.6',
-        currentRight: '178.8'
-      }, {
-        label: '腰围围度(mm)',
-        currentLeft: '192.6',
-        currentRight: '178.8'
-      }, {
-        label: '背围围度(mm)',
-        currentLeft: '192.6',
-        currentRight: '178.8'
-      }, {
-        label: '踝围围长(mm)',
-        currentLeft: '192.6',
-        currentRight: '178.8'
-      }, {
-        label: '足弓高度(mm)',
-        currentLeft: '192.6',
-        currentRight: '178.8'
-      },{
-        label: '足弓类型(诊断结果)',
-        currentLeft: '4型常态足',
-        currentRight: '5型轻度扁平足'
-      },{
-        label: '脚型类型(诊断结果)',
-        currentLeft: '埃及脚',
-        currentRight: '埃及脚'
-      }],
-      radio: '1',
-      currentPage3: 2,
+      start: 1,
+      limits: 6,
+      totalPage: '',
+      tableData: [],
+      scanList: [],
+      currentScan: '',
       url: require('../../assets/shape/advertise.png')
     }
+  },
+  created () {
+    this.getScanList()
   }
 }
 </script>
@@ -408,21 +408,26 @@ export default {
     box-sizing: border-box;
     .record-title {
       position: relative;
-      height: 74px;
-      line-height: 74px;
-      font-size: 22px;
+      height: 64px;
+      line-height: 64px;
+      font-size: 20px;
       color: #333;
+      border-bottom: 1px solid #fff;
+      i {
+        color: #999;
+        font-size: 18px;
+        margin-right: 4px;
+      }
       &__btn {
         position: absolute;
         right: 0;
-        top: 23px;
+        top: 22px;
         padding: 6px 12px;
         font-size: 12px;
       }
     }
     .record-list {
       position: relative;
-      border-top: 1px solid #fff;
       min-height: 288px;
       box-sizing: border-box;
       &__time {
@@ -431,12 +436,28 @@ export default {
         line-height: 48px;
         box-sizing: border-box;
         border-bottom: 1px solid #fff;
+        .first-item {
+          font-size: 14px;
+          color: #0096D6;
+          padding-left: 24px;
+        }
       }
     }
     .page-count {
       text-align: right;
       color: #333;
       padding: 12px 0 30px;
+    }
+    .record-empty {
+      color: #999;
+      font-size: 12px;
+      text-align: center;
+      .foot-shape {
+        margin: 20px 0 10px;
+      }
+      .service-qrcode {
+        margin-top: 30px;
+      }
     }
   }
   .shape-data {
@@ -452,7 +473,8 @@ export default {
         }
       }
       .column-left {
-        padding-right: 60px;
+        display: inline-block;
+        min-width: 100px;
         border-right: 1px solid #ddd;
       }
       .column-right {

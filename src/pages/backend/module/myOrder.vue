@@ -53,12 +53,12 @@
         label="操作">
         <template slot-scope="scope">
           <el-button
-            v-if="scope.row.orderProcess === 0"
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">立即付款</el-button>
+            v-if="scope.row.orderProcess === 0"
+            @click="handleToPay(scope.row)">立即付款</el-button>
           <div v-else-if="scope.row.orderProcess === 1">鞋垫制作中，待发货</div>
-          <el-button type="text" @click="handleOpenFlow">查看物流</el-button>
+          <el-button v-else-if="scope.row.orderProcess === 2" type="text" @click="handleOpenFlow">查看物流</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -129,10 +129,11 @@
   </div>
 </template>
 <script>
-import { getSearchOrder } from '@/service/http'
+import { getSearchOrder, postWxPay } from '@/service/http'
 export default {
   data() {
     return {
+      payType: 'weixin',
       loading: false,
       orderProcess: '-1',
       tableData: [],
@@ -146,9 +147,11 @@ export default {
     this.getOrderList()
   },
   methods: {
+    handleToPay (item) {
+      window.location.href = `/order.html#/pay?orderNo=${item.orderNo}&orderType=1`
+    },
     handleOpenFlow () {
       this.dialogVisible = true
-      console.log()
     },
     getOrderList () {
       this.loading = true

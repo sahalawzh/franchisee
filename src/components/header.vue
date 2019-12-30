@@ -4,14 +4,16 @@
       <div class="nav-wrap">
         <img src="../assets/common/logo_white.png" alt="">
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-          <el-menu-item index="1">3D打印功能性定制鞋垫</el-menu-item>
-          <el-menu-item index="2">在线打印</el-menu-item>
-          <el-menu-item index="3"><a href="https://www.ele.me" target="_blank">创业同行</a></el-menu-item>
+          <el-menu-item index="1"><a href="footShape.html">3D打印功能性定制鞋垫</a></el-menu-item>
+          <el-menu-item index="2"><a href="https://www.gdlwzn.com/" target="_blank">在线打印</a></el-menu-item>
+          <el-menu-item index="3"><a href="business.html" target="_blank">创业同行</a></el-menu-item>
         </el-menu>
       </div>
       <div class="cart-box">
-        <img src="../assets/common/cart.png" class="cart-icon" alt="">
-        <div>购物车</div>
+        <el-link href="order.html#/cart">
+          <img src="../assets/common/cart.png" class="cart-icon" alt="">
+          <div>购物车</div>
+        </el-link>
       </div>
     </div>
   </div>

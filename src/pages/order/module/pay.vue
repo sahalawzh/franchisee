@@ -13,26 +13,27 @@
         trigger="manual"
         v-model="visible">
         <div id="qrcode"></div> <!-- 创建一个div，并设置id为qrcode -->
-        <el-button slot="reference" type="danger" :loading="btnLoading" @click="handleToPay" :disabled="!ids">总价：￥ {{ countPrice }}，立即支付</el-button>
+        <el-button slot="reference" type="danger" :loading="btnLoading" @click="handleToPay" :disabled="nocanPay">总价：￥ {{ countPrice }}，立即支付</el-button>
       </el-popover>
     </el-row>
     
   </div>
 </template>
 <script>
-import { getCartPrice, postWxPay, postCheckPay } from '@/service/http'
+import { getOrderPrice, postWxPay, postCheckPay  } from '@/service/http'
 import QRCode from 'qrcodejs2'
 export default {
   data () {
     return {
       payType: 'weixin',
-      ids: '',
       countPrice: '0.00',
       loading: false,
       orderNo: '',
       btnLoading: false,
       timer: null,
-      visible: false
+      visible: false,
+      nocanPay: true,
+      orderType: 0
     }
   },
   methods: {
@@ -57,8 +58,12 @@ export default {
         return
       }
       this.btnLoading = true
-      const { orderNo } = this
-      postWxPay({ orderNo }).then(res => {
+      const { orderNo, orderType } = this
+      const params = {
+        orderNo,
+        orderType
+      }
+      postWxPay(params).then(res => {
         this.btnLoading = false
         var code_url = res.data.code_url
         let qrcodeEl = document.getElementById('qrcode')
@@ -79,32 +84,25 @@ export default {
         this.btnLoading = false
       })
     },
-    handleCartPrice () {
-      const param = {
-        orderNo: this.orderNo
-      }
+    getOrderAmount () {
       this.loading = true
-      postCheckPay(param).then(res => {
-        console.log(res)
+      const { orderNo } = this
+      this.nocanPay = true
+      getOrderPrice({ orderNo }).then(res => {
+        this.countPrice = res.data
         this.loading = false
+        this.nocanPay = false
       }).catch(err => {
         this.loading = false
         console.log(err)
       })
-      // getCartPrice(param).then(res => {
-      //   this.countPrice = res.data
-      //   this.loading = false
-      // }).catch(err => {
-      //   this.loading = false
-      //   console.log(err)
-      // })
     }
   },
   created () {
-    const { ids, orderNo } = this.$route.query
-    this.ids = ids
+    const { orderNo, orderType } = this.$route.query
     this.orderNo = orderNo
-    this.handleCartPrice()
+    this.orderType = orderType
+    this.getOrderAmount()
   }
 }
 </script>
