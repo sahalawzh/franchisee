@@ -4,7 +4,7 @@ const v1 = {
   POST_MEMBER_LOGIN: `${API_URL_SUFFIX}/member/login`, // 登录
   GET_MEMBER_MESSAGE: `${API_URL_SUFFIX}/member/getMemberMessage`, // 用户信息
   GET_FRANCHISEEMESSAGE: `${API_URL_SUFFIX}/franchisee/getFranchiseeMessage`, // 加盟商个人信息
-  GET_LISTCLASSIFICATION: `${API_URL_SUFFIX}/common/classification/listclassification`, // 创建订单的选项
+  GET_LISTCLASSIFICATION: `${API_URL_SUFFIX}/common/classification/listClassification`, // 创建订单的选项
   POST_ADD_CART: `${API_URL_SUFFIX}/cart/addCart`, // 加入购物车
   GET_SEARCH_CART: `${API_URL_SUFFIX}/cart/searchCart`, // 查看购物车
   PUT_UPDATE_CART: `${API_URL_SUFFIX}/cart/updateCart`, // 修改购物车

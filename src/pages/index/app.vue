@@ -10,7 +10,7 @@
             <el-button class="panel-shape" v-if="isLogin" type="primary">我的足型报告<i class="el-icon-right"></i></el-button>
             
             <p v-else>
-              为国内外有足部治疗及保健需求的人群，结合惠普高精度3D打印而研发出定制功能性矫形鞋垫。
+              为国内外有足部治疗及保健需求的人群，结合惠普高精度3D打印而研发出定制功能性鞋垫。
             </p>
             <div class="statistics-box">
               <div class="statistics-box__title">据统计</div>
@@ -32,7 +32,7 @@
             <p>
               可在线上传模型，一秒报价，下单打印，最快24小时发货。材料丰富设备齐全，惠普尼龙可实现批量化生产。
             </p>
-            <div class="more-service">更多需要请可联系客服。</div>
+            <div class="more-service">更多需要请联系客服。</div>
           </div>
           <img src="../../assets/index/online-printer.png" class="panel-bg">
           <div class="panel-item__mask" v-if="mask_active === 2"></div>
@@ -47,7 +47,7 @@
           <div class="panel-title">创业同行</div>
           <div class="panel-content">
             <p>
-              兰湾足行邀您创业同行，共享经济，利他原则，<span class="stress-text">我们承诺<span class="stress-text__big">90</span>%利润让利给您</span>，我们承诺一年内达不到市场应用的成果，我们全额退回投资资金。
+              兰湾足行邀您创业同行，共享经济，利他原则，<span class="stress-text">我们承诺<span class="stress-text__big">90</span>%利润让利给您</span>，我们承诺一年内达不到市场应有的成果，我们全额退回投资资金。
             </p>
           </div>
           <img src="../../assets/index/business-peer.png" class="panel-bg">
@@ -56,7 +56,7 @@
       </el-col>
     </el-row>
 
-    <Login @login-status="handleLoginStatus" v-model="loginVisible"></Login>
+    <Login @login-status="handleLoginStatus" v-model="loginVisible" :isIndex="true"></Login>
   </div>
 </template>
 <script>
@@ -78,7 +78,6 @@ export default {
   methods: {
     handleToPage () {
       let val = this.mask_active
-      console.log(val)
       switch (val) {
         case 1:
           window.location.href = 'footShape.html'
@@ -134,7 +133,7 @@ export default {
         bottom: 0;
         left: 0;
         width: 100%;
-        height: calc(100vh - 366px);
+        // height: calc(100vh - 366px);
         z-index: -1;
       }
       &__wrap {

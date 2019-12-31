@@ -106,7 +106,11 @@ export default {
     }
   },
   props: {
-    value: [Boolean, String]
+    value: [Boolean, String],
+    isIndex: {
+      type: Boolean,
+      default: false
+    }
   },
   watch: {
     value (val) {
@@ -161,6 +165,11 @@ export default {
               loginStatus: true,
               loginVisible: false
             })
+            if (!this.isIndex) {
+              setTimeout(() => {
+                location.reload()
+              }, 200)
+            }
           }).catch(err => {
             console.log(err)
           })

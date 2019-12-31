@@ -16,7 +16,7 @@
       </div>
     </div>
     <el-main>
-      <div class="order-container">
+      <div class="order-container" :class="{'order-container__width': stepActive === 1}">
         <el-steps class="step-wrap" align-center :active="stepActive">
           <el-step title="选择脚型数据" icon="el-icon-edit"></el-step>
           <el-step title="购物车结算" icon="el-icon-document"></el-step>
@@ -105,6 +105,10 @@ export default {
     box-shadow:0px 5px 38px 0px rgba(10,2,5,0.17);
     margin: 0 30px;
     padding: 30px 60px;
+    &__width {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
     .step-wrap {
       padding: 0 10%;
     }

@@ -104,7 +104,7 @@ const handleErrorStatus = function (res) {
   let message = msg
   switch (status) {
     case 401:
-      message = process.env.NODE_ENV === 'development' ? `请重新登录` : '请重新登录'
+      message = `请重新登录`
       break
     case 404:
       message = process.env.NODE_ENV === 'development' ? `接口${url}未找到` : '请联系管理员确认是否存在相关页面'

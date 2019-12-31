@@ -16,14 +16,14 @@
               <p class="feet-desc">
                 每个人的双脚都是不一样的，走路时的运动习惯也不尽相同。足部受力的不均匀，不但会导致足部问题，还会引起身体其他部位的不适。
               </p>
-              <div class="experience-btn"><el-link href="order.html">{{ loginInfo.experienceBtnTxt }}<i class="el-icon-right"></i></el-link></div>
+              <div class="experience-btn"><el-link href="order.html">{{ isLogin ? '定制我的专属鞋垫' : '立即体验' }}<i class="el-icon-right"></i></el-link></div>
             </el-col>
             <el-col :span="6" :offset="6">
               <div>
-                <el-link class="entrance-btn" href="/franchisees.html">我要做加盟商</el-link>
+                <el-link class="entrance-btn" :href="role === 3 ? '/backend.html' : '/franchisees.html'">{{ role === 3 ? '进入加盟商后台' : '我要做加盟商' }}</el-link>
               </div>
-              <div>
-                <el-link class="entrance-btn">查看我的脚型数据</el-link>
+              <div v-if="!isLogin">
+                <el-link class="entrance-btn" @click="handleToLogin">查看我的脚型数据</el-link>
               </div>
             </el-col>
           </div>
@@ -48,7 +48,10 @@
             
             <el-pagination
               small
+              @current-change="handleCurrentChange"
               layout="prev, pager, next, jumper"
+              :current-page="start"
+              :page-size="limits"
               :total="totalPage">
             </el-pagination>
           </template>
@@ -64,7 +67,7 @@
           </template>
 
         </el-col>
-        <el-col :span="18" class="shape-data">
+        <el-col :span="18" class="shape-data" v-loading="tableLoading">
           <el-table
             :data="tableData"
             stripe
@@ -223,6 +226,8 @@
           <img src="../../assets/shape/insole-img.png" alt="">
         </div>
       </el-row>
+
+      <Login @login-status="handleLoginStatus" v-model="loginVisible"></Login>
     </el-main>
 
     <default-footer></default-footer>
@@ -234,45 +239,39 @@
 import DefaultHeader from '@/components/defaultHeader'
 import DefaultFooter from '@/components/defaultFooter'
 import loginMixins from '@/mixins/login'
-// import Auth from '@/utils/auth'
 import { getScan, getScanData } from '@/service/http'
 import handleScanData from './utils/handleScanData'
 import deepCopy from '@/utils/deepCopy'
+import Login from '@/components/login'
+
 export default {
   components: {
+    Login,
     DefaultHeader,
     DefaultFooter
   },
   mixins: [loginMixins],
-  computed: {
-    loginInfo () {
-      if (this.isLogin) {
-        return {
-          experienceBtnTxt: '定制我的专属鞋垫'
-        }
-      }
-      return {
-        experienceBtnTxt: '立即体验'
-      }
-    }
-  },
   methods: {
+    handleToLogin () {
+      this.handleLoginStatus({ loginVisible: true })
+    },
     handleCheckCompare (val) {
       this.currentScan = val
       this.getScanDetail(val)
     },
     getScanDetail (id) {
+      this.tableLoading = true
       getScanData({ id }).then(res => {
-        console.log(res)
         const [ leftData, rightData ] = res.data
-
         this.tableData = handleScanData(leftData, rightData, this.currentScan).map((o, i) => {
           return {
             ...o,
             ...this.tableData[i]
           }
         })
+        this.tableLoading = false
       }).catch(err => {
+        this.tableLoading = false
         console.log(err)
       })
     },
@@ -282,6 +281,7 @@ export default {
         start,
         limits
       }
+      console.log(params)
       getScan(params).then(res => {
         const { data, total } = res.data
         this.scanList = data
@@ -305,11 +305,9 @@ export default {
     renderTdHeader () {
       return this.renderHeader(['左脚', '右脚'])
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.start = val
+      this.getScanList()
     }
   },
   data () {
@@ -320,11 +318,14 @@ export default {
       tableData: [],
       scanList: [],
       currentScan: '',
+      tableLoading: false,
       url: require('../../assets/shape/advertise.png')
     }
   },
   created () {
-    this.getScanList()
+    if (this.isLogin) {
+      this.getScanList()
+    }
   }
 }
 </script>
