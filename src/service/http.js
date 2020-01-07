@@ -225,6 +225,46 @@ const getScanData = (data, version = 'v1') => {
   return ajax.get(url, data)
 }
 
+/*
+* 视频列表
+*/
+const getListVideo = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_LIST_VIDEO || apiConfig['v1'].GET_LIST_VIDEO
+  return ajax.get(url, data)
+}
+
+/*
+* 地址列表
+*/
+const getAddress = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_ADDRESS || apiConfig['v1'].GET_ADDRESS
+  return ajax.get(url, data)
+}
+
+/*
+* 新增地址
+*/
+const postAddressAdd = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_ADDRESS_ADD || apiConfig['v1'].POST_ADDRESS_ADD
+  return ajax.post(url, data)
+}
+
+/*
+* 修改地址
+*/
+const putAddressUpdate = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].PUT_ADDRESS_UPDATE || apiConfig['v1'].PUT_ADDRESS_UPDATE
+  return ajax.put(url, data)
+}
+
+/*
+* 删除地址
+*/
+const deleteAddressDelete = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].DELETE_ADDRESS_DELETE || apiConfig['v1'].DELETE_ADDRESS_DELETE
+  return ajax.delete(url, data)
+}
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -253,5 +293,10 @@ export {
   getForgetCode,
   postUpdatePassword,
   getScan,
-  getScanData
+  getScanData,
+  getListVideo,
+  getAddress,
+  postAddressAdd,
+  putAddressUpdate,
+  deleteAddressDelete
 }

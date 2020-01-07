@@ -110,14 +110,14 @@
           <el-button type="primary">加入购物车</el-button>
         </el-col> -->
         <el-col :span="6" class="op-btn">
-          <el-button type="danger" @click="handleSubmit">立即结算</el-button>
+          <el-button type="primary" @click="handleSubmit">加入购物车</el-button>
         </el-col>
       </el-form-item>
     </el-form>
 
     <div class="cart-box">
       <img src="../../../assets/order/cart-settle.png" @click="handleToCart" class="cart-settle" alt="">
-      <span class="cart-box__badge">{{ cartNum < 100 ? cartNum : '99+' }}</span>
+      <span class="cart-box__badge">{{ getCartNum() }}</span>
     </div>
   </div>
 </template>
@@ -206,6 +206,9 @@ export default {
     }
   },
   methods: {
+    getCartNum () {
+      return this.cartNum < 100 ? this.cartNum : '99+'
+    },
     handleToCart () {
       this.$router.push({path: '/cart'})
     },

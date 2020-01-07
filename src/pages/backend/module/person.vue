@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <div>加盟商资料</div>
     <el-divider></el-divider>
     <div class="info-detail">
@@ -29,21 +29,27 @@
       <div class="info-detail__item">
         <div class="label-name">地址</div>
         <div class="value-content">
-          <div class="address-item">
-            <div class="address-item__name">xx（收）</div>
-            <div class="address-item__detail">广东  佛山市  时代创业小镇   18144506663</div>
-            <div class="address-item__action">
-              <el-button type="text">修改</el-button><el-divider direction="vertical"></el-divider><el-button type="text">删除</el-button>
+          <template v-if="addressList.length">
+            <div class="address-item" v-for="item in addressList" :key="item.id">
+              <div class="address-item__name">{{ item.recipient }}（收）</div>
+              <div class="address-item__detail">{{ item.province }}&nbsp;{{ item.city }}&nbsp;{{ item.detailAddress }}&nbsp;&nbsp;&nbsp;&nbsp;{{ item.phone }}</div>
+              <div class="address-item__action">
+                <el-button type="text" @click="handleOpAdress(item)">修改</el-button><el-divider direction="vertical"></el-divider>
+                <el-popover
+                  placement="top"
+                  width="160"
+                  v-model="visible">
+                  <p>是否确认删除该地址？</p>
+                  <div style="text-align: right; margin: 0">
+                    <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+                    <el-button type="primary" size="mini" @click="handleDelAdress(item.id)">确定</el-button>
+                  </div>
+                  <el-button slot="reference" type="text">删除</el-button>
+                </el-popover>
+              </div>
             </div>
-          </div>
-          <div class="address-item">
-            <div class="address-item__name">xx（收）</div>
-            <div class="address-item__detail">广东  佛山市  时代创业小镇   18144506663</div>
-            <div class="address-item__action">
-              <el-button type="text">修改</el-button><el-divider direction="vertical"></el-divider><el-button type="text">删除</el-button>
-            </div>
-          </div>
-          <!-- <el-link class="el-icon-plus" type="primary" @click="handleAddAdress">添加新地址</el-link> -->
+          </template>
+          <el-link v-else class="el-icon-plus" type="primary" @click="handleOpAdress">添加新地址</el-link>
         </div>
       </div>
       <div class="info-detail__item">
@@ -54,7 +60,7 @@
 
     <el-dialog title="密码设置" class="address-dialog" :visible.sync="passwordVisible">
       <el-form :model="passwordForm" label-width="100px" ref="passwordForm" :hide-required-asterisk="true" :rules="rulesPassword">
-        <el-form-item label="当前密码" prop="oldPassword" required>
+        <el-form-item label="当前密码" prop="oldPassword">
           <el-input v-model="passwordForm.oldPassword" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="新密码" prop="password">
@@ -71,36 +77,37 @@
     </el-dialog>
 
     <el-dialog title="收货地址" class="address-dialog" :visible.sync="dialogFormVisible">
-      <el-form :model="addressForm" label-width="100px" >
-        <el-form-item label="收货人">
-          <el-input v-model="addressForm.consignee" autocomplete="off"></el-input>
+      <el-form :model="addressForm" label-width="100px" ref="addressForm" :hide-required-asterisk="true" :rules="ruleAddress">
+        <el-form-item label="收货人" prop="recipient">
+          <el-input v-model="addressForm.recipient" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="联系电话">
-          <el-input v-model="addressForm.tel" autocomplete="off"></el-input>
+        <el-form-item label="联系电话" prop="phone">
+          <el-input v-model="addressForm.phone" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="所在区域" prop="city">
           <el-cascader
             v-model="addressForm.city"
             :options="areaData"></el-cascader>
         </el-form-item>
-        <el-form-item label="详细地址">
+        <el-form-item label="详细地址" prop="detailAddress">
           <el-input class="control-address" v-model="addressForm.detailAddress"></el-input>
         </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item>
           <el-switch
             v-model="addressForm.default"
             active-text="设置为默认收货地址">
           </el-switch>
+        </el-form-item> -->
+        <el-form-item>
+          <el-button type="primary" :loading="addressBtnLoading" @click="handleSubmitAddress">保 存</el-button>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogFormVisible = false">保 存</el-button>
-      </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getMemberMessage, postUpdatePassword } from '@/service/http'
+import { getMemberMessage, postUpdatePassword, getAddress, getListDstricts, postAddressAdd, deleteAddressDelete, putAddressUpdate } from '@/service/http'
+import axios from 'axios'
 export default {
   data () {
     var validatePass = (rule, value, callback) => {
@@ -122,15 +129,27 @@ export default {
         callback()
       }
     }
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('手机号不能为空'));
+      } else {
+        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+        if (reg.test(value)) {
+          callback()
+        } else {
+          return callback(new Error('请输入正确的手机号'));
+        }
+      }
+    }
     return {
+      loading: false,
       message: '',
       dialogFormVisible: false,
       addressForm: {
-        consignee: '',
-        tel: '',
-        area: '',
-        detailAddress: '',
-        default: true
+        recipient: '',
+        phone: '',
+        city: [],
+        detailAddress: ''
       },
       areaData: [],
       passwordVisible: false,
@@ -150,10 +169,86 @@ export default {
         confirmPassword: [
           { validator: validatePass2, trigger: 'blur' }
         ]
+      },
+      ruleAddress: {
+        recipient: [
+          { required: true, message: '请输入收货人', trigger: 'blur' },
+          { min: 2, max: 8, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ],
+        phone: [
+          {validator: checkPhone, trigger: 'blur'}
+        ],
+        city: [
+          { required: true, message: '请选择所在区域', trigger: 'change' }
+        ],
+        detailAddress: [
+          { required: true, message: '请填写详细地址', trigger: 'blur' },
+          { min: 2, max: 200, message: '长度在 2 到 200 个字符', trigger: 'blur' }
+        ]
+      },
+      addressList: [],
+      addressBtnLoading: false,
+      visible: false
+    }
+  },
+  watch: {
+    dialogFormVisible (val) {
+      if (val) {
+        this.handleChangeDstricts()
       }
     }
   },
   methods: {
+    handleDelAdress (id) {
+      deleteAddressDelete(id).then(res => {
+        console.log(res)
+        this.visible = false
+        this.getAddressList()
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleSubmitAddress () {
+      this.$refs.addressForm.validate((valid) => {
+        if (valid) {
+          const [ provinceId, cityId ] = this.addressForm.city
+          const area = {
+            provinceId,
+            cityId
+          }
+          const params = Object.assign({}, this.addressForm, area)
+          delete params.city
+          this.addressBtnLoading = true
+          let API_URL = this.addressForm.id ? putAddressUpdate : postAddressAdd
+          API_URL(params).then(res => {
+            this.getAddressList()
+            this.dialogFormVisible = false
+            this.addressBtnLoading = false
+          }).catch(err => {
+            this.addressBtnLoading = false
+            console.log(err)
+          })
+        }
+      })
+    },
+    handleChangeDstricts () {
+      getListDstricts().then(res => {
+        res.data.forEach(item => {
+          item.value = item.id
+          item.label = item.name
+          item.children = []
+          item.list.forEach(_item => {
+            item.children.push({
+              value: _item.id,
+              label: _item.name
+            })
+          })
+        })
+        this.areaData = res.data
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     handleSavePassword () {
       this.$refs.passwordForm.validate((valid) => {
         if (valid) {
@@ -180,20 +275,37 @@ export default {
     handleSetPassword () {
       this.passwordVisible = true
     },
-    handleAddAdress () {
+    handleOpAdress (item) {
+      if (item) {
+        const { recipient, phone, detailAddress, provinceId, cityId, id } = item
+        this.addressForm = {
+          recipient,
+          phone,
+          detailAddress,
+          city: [provinceId, cityId],
+          id
+        }
+      }
       this.dialogFormVisible = true
     },
-    getMemberMessage () {
-      getMemberMessage().then(res => {
-        const data = res.data
-        this.message = data
+    getAddressList () {
+      getAddress().then(res => {
+        this.addressList = res.data ? res.data.slice(0, 1) : []
       }).catch(err => {
         console.log(err)
       })
     }
   },
   created () {
-    this.getMemberMessage()
+    this.loading = true
+    axios.all([getMemberMessage(), this.getAddressList()]).then(res => {
+      const data = res[0].data
+      this.message = data
+      this.loading = false
+    }).catch(err => {
+      console.log(err)
+      this.loading = false
+    })
   }
 }
 </script>

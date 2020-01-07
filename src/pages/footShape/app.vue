@@ -8,95 +8,102 @@
         <el-image
           :src="url"
           fit="cover"></el-image>
-          <div class="shape-wrap">
-            <el-col :span="9" :offset="3" class="shape-wrap__info">
-              <div class="protect-en">PROTECT</div>
-              <div class="feet-en">FOOT BEGINS WITH FEET</div>
-              <div class="feet-zh"><span class="feet-zh__bottom">护足</span>从脚开始</div>
-              <p class="feet-desc">
-                每个人的双脚都是不一样的，走路时的运动习惯也不尽相同。足部受力的不均匀，不但会导致足部问题，还会引起身体其他部位的不适。
-              </p>
-              <div class="experience-btn"><el-link href="order.html">{{ isLogin ? '定制我的专属鞋垫' : '立即体验' }}<i class="el-icon-right"></i></el-link></div>
-            </el-col>
-            <el-col :span="6" :offset="6">
-              <div>
-                <el-link class="entrance-btn" :href="role === 3 ? '/backend.html' : '/franchisees.html'">{{ role === 3 ? '进入加盟商后台' : '我要做加盟商' }}</el-link>
-              </div>
-              <div v-if="!isLogin">
-                <el-link class="entrance-btn" @click="handleToLogin">查看我的脚型数据</el-link>
-              </div>
-            </el-col>
-          </div>
+        <div class="shape-wrap">
+          <el-col :span="9" :offset="3" class="shape-wrap__info">
+            <div class="protect-en">PROTECT</div>
+            <div class="feet-en">FOOT BEGINS WITH FEET</div>
+            <div class="feet-zh"><span class="feet-zh__bottom">护足</span>从脚开始</div>
+            <p class="feet-desc">
+              每个人的双脚都是不一样的，走路时的运动习惯也不尽相同。足部受力的不均匀，不但会导致足部问题，还会引起身体其他部位的不适。
+            </p>
+            <div class="experience-btn"><el-link href="order.html">{{ isLogin ? '定制我的专属鞋垫' : '立即体验' }}<i class="el-icon-right"></i></el-link></div>
+          </el-col>
+          <el-col :span="6" :offset="6">
+            <div>
+              <el-link class="entrance-btn" :href="role === 3 ? '/backend.html' : '/franchisees.html'">{{ role === 3 ? '进入加盟商后台' : '我要做加盟商' }}</el-link>
+            </div>
+            <div v-if="!isLogin">
+              <el-link class="entrance-btn" @click="handleToLogin">查看我的脚型数据</el-link>
+            </div>
+          </el-col>
+        </div>
       </el-row>
 
+      
+      
       <el-row v-if="isLogin">
-        <el-col :span="6" class="shape-action">
+
+        <template v-if="scanList.length" >
+          <el-col :span="6" class="shape-action">
+            <div class="record-title">
+              <i class="el-icon-s-data"></i>
+              <span>我的脚型数据</span>
+            </div>
+
+              <div class="record-list">
+                <div class="record-list__time" v-for="(item, index) in scanList" :key="item.id">
+                  <span class="first-item" v-if="index === 0">{{ item.scanTime }}</span>
+                  <el-radio v-else v-model="currentScan" @change="handleCheckCompare" :label="item.id">{{ item.scanTime }}</el-radio>
+                </div>
+              </div>
+              <div class="page-count">共{{ totalPage }}页</div>
+              
+              <el-pagination
+                small
+                @current-change="handleCurrentChange"
+                layout="prev, pager, next, jumper"
+                :current-page="start"
+                :page-size="limits"
+                :total="totalPage">
+              </el-pagination>
+
+          </el-col>
+          <el-col :span="18" class="shape-data" v-loading="tableLoading">
+            <el-table
+              :data="tableData"
+              stripe
+              class="shape-data__table"
+              style="width: 100%">
+              <el-table-column
+                prop="label"
+                width="180">
+              </el-table-column>
+              <el-table-column
+                :render-header="renderTdHeader"
+                class="td-cell">
+                <template scope="scope">
+                  <span class="column-left">{{ scope.row.l_value }}</span>
+                  <span class="column-right">{{ scope.row.r_value }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                :render-header="renderTdHeader">
+                <template scope="scope">
+                  <div v-if="currentScan">
+                    <span class="column-left">{{ scope.row[`l_value_${currentScan}`] }}</span>
+                    <span class="column-right">{{ scope.row[`r_value_${currentScan}`] }}</span>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+        </template>
+        <el-col :span="24" class="shape-action" v-else>
           <div class="record-title">
             <i class="el-icon-s-data"></i>
             <span>我的脚型数据</span>
-             <!-- <el-button type="primary" class="record-title__btn" round>对比</el-button> -->
           </div>
-
-          <template v-if="scanList.length">
-            <div class="record-list">
-              <div class="record-list__time" v-for="(item, index) in scanList" :key="item.id">
-                <span class="first-item" v-if="index === 0">{{ item.scanTime }}</span>
-                <el-radio v-else v-model="currentScan" @change="handleCheckCompare" :label="item.id">{{ item.scanTime }}</el-radio>
-              </div>
-            </div>
-            <div class="page-count">共{{ totalPage }}页</div>
-            
-            <el-pagination
-              small
-              @current-change="handleCurrentChange"
-              layout="prev, pager, next, jumper"
-              :current-page="start"
-              :page-size="limits"
-              :total="totalPage">
-            </el-pagination>
-          </template>
-
-          <template v-else>
-            <div class="record-empty">
-              <img src="../../assets/shape/foot-shape.png" class="foot-shape" alt="">
-              <p>还没有测量的脚型数据</p>
-              <img src="../../assets/shape/service-qrcode.png" class="service-qrcode" alt="">
-              <p>扫描加客服</p>
-              <p>免费测量脚步数据</p>
-            </div>
-          </template>
-
-        </el-col>
-        <el-col :span="18" class="shape-data" v-loading="tableLoading">
-          <el-table
-            :data="tableData"
-            stripe
-            class="shape-data__table"
-            style="width: 100%">
-            <el-table-column
-              prop="label"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              :render-header="renderTdHeader"
-              class="td-cell">
-              <template scope="scope">
-                <span class="column-left">{{ scope.row.l_value }}</span>
-                <span class="column-right">{{ scope.row.r_value }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              :render-header="renderTdHeader">
-              <template scope="scope">
-                <div v-if="currentScan">
-                  <span class="column-left">{{ scope.row[`l_value_${currentScan}`] }}</span>
-                  <span class="column-right">{{ scope.row[`r_value_${currentScan}`] }}</span>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
+          <div class="record-empty">
+            <img src="../../assets/shape/foot-shape.png" class="foot-shape" alt="">
+            <p class="record-empty__text">还没有测量的脚型数据</p>
+            <p class="record-empty__text">请联系你当地的兰湾足行店铺扫描脚型数据</p>
+            <img src="../../assets/shape/service-qrcode.png" class="service-qrcode" alt="">
+            <p class="contact-info">兰湾足行所在城市：佛山&nbsp;&nbsp;0757-85500380&nbsp;丨&nbsp;85500382&nbsp;&nbsp;&nbsp;青岛&nbsp;&nbsp;&nbsp;0532-88690000&nbsp;&nbsp;&nbsp;苏州&nbsp;&nbsp;&nbsp;0512-68796096&nbsp;&nbsp;&nbsp;厦门</p>
+            <p class="contact-info">想做一站式服务创业项目，共享兰湾足行，请微信客服</p>
+          </div>
         </el-col>
       </el-row>
+
 
       <el-row class="about-box">
         <el-col :offset="2" :span="10">
@@ -117,9 +124,15 @@
         </el-col>
         <el-col :offset="1" :span="8">
           <a class="about-video" href="#">
-            <img src="../../assets/shape/about-video.png" alt="">
-            <i class="el-icon-caret-right"></i>
+            <video :src="currentVideo.video" :poster="currentVideo.image" controls="controls"></video>
+            <!-- <img src="../../assets/shape/about-video.png" alt="">
+            <i class="el-icon-caret-right"></i> -->
           </a>
+          <el-row type="flex" class="video-group" justify="space-between">
+            <el-link :underline="false" @click="handleVideo(item)" :span="6" class="video-group__item" v-for="item in videoList" :key="item.id">
+              <img :src="item.image" alt="">
+            </el-link>
+          </el-row>
         </el-col>
       </el-row>
 
@@ -239,7 +252,7 @@
 import DefaultHeader from '@/components/defaultHeader'
 import DefaultFooter from '@/components/defaultFooter'
 import loginMixins from '@/mixins/login'
-import { getScan, getScanData } from '@/service/http'
+import { getScan, getScanData, getListVideo } from '@/service/http'
 import handleScanData from './utils/handleScanData'
 import deepCopy from '@/utils/deepCopy'
 import Login from '@/components/login'
@@ -252,6 +265,18 @@ export default {
   },
   mixins: [loginMixins],
   methods: {
+    handleVideo (item) {
+      this.currentVideo = item
+    },
+    getListVideo () {
+      getListVideo({videoType: 0}).then(res => {
+        console.log(res)
+        this.videoList = res.data
+        this.currentVideo = this.videoList[0]
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     handleToLogin () {
       this.handleLoginStatus({ loginVisible: true })
     },
@@ -319,13 +344,16 @@ export default {
       scanList: [],
       currentScan: '',
       tableLoading: false,
-      url: require('../../assets/shape/advertise.png')
+      url: require('../../assets/shape/advertise.png'),
+      videoList: [],
+      currentVideo: ''
     }
   },
   created () {
     if (this.isLogin) {
       this.getScanList()
     }
+    this.getListVideo()
   }
 }
 </script>
@@ -450,14 +478,22 @@ export default {
       padding: 12px 0 30px;
     }
     .record-empty {
-      color: #999;
       font-size: 12px;
       text-align: center;
+      &__text {
+        color: #999;
+        margin-top: 8px;
+      }
       .foot-shape {
-        margin: 20px 0 10px;
+        margin: 20px 0 14px;
       }
       .service-qrcode {
         margin-top: 30px;
+        margin-bottom: 4px;
+      }
+      .contact-info {
+        margin-top: 8px;
+        color: #333;
       }
     }
   }
@@ -521,6 +557,9 @@ export default {
       display: block;
       border-radius: 4px;
       overflow: hidden;
+      video {
+        width: 100%;
+      }
     }
 
     .about-video > img {
@@ -650,6 +689,21 @@ export default {
     }
     &__insole {
       text-align: center;
+    }
+  }
+  .video-group {
+    &__item {
+      margin: 0 8px;
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    img {
+      width: 105px;
+      height: 100px;
     }
   }
 }

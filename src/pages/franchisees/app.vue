@@ -3,13 +3,12 @@
     <default-header></default-header>
     <el-main class="main-franchisees">
       <el-row>
-        <div class="word-tip">轻松五步，成为加盟商</div>
+        <div class="word-tip">轻松四步，成为加盟商</div>
         <el-steps class="step-wrap" :active="stepActive" align-center>
+          <el-step description="填写加盟商信息"></el-step>
           <el-step description="阅读加盟协议"></el-step>
           <el-step description="缴纳加盟费用"></el-step>
-          <el-step description="填写注册信息"></el-step>
-          <el-step description="注册成功"></el-step>
-          <el-step description="验证银行账号"></el-step>
+          <el-step description="完善加盟商资料"></el-step>
         </el-steps>
       </el-row>
       <div class="franchisees-content">
