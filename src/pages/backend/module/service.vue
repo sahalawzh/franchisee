@@ -239,14 +239,18 @@ export default {
       window.location.href = 'franchisees.html#/payment'
     },
     handleDownFile (fileName) {
-      window.open(`${v1.GET_DOWN__LOAD_FILE}?fileName=${fileName}`)
+      window.open(`${process.env.VUE_APP_BASE_API}/${v1.GET_DOWN__LOAD_FILE}?fileName=${fileName}`)
     },
     getFranchiseeServe () {
       this.loading = true
       getSearchFranchisee().then(res => {
         this.detail = res.data
         if (res.data) {
-          const { programName, createTime, price, agreement, isPayment } = res.data
+          const { programName, createTime, price, agreement, isPayment, processType } = res.data
+          if (processType === 0 || processType === 2) {
+            window.location.href = 'franchisees.html#/editeInfo'
+            return
+          }
           this.tableData = [
             {
               programName,

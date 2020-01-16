@@ -337,6 +337,14 @@ const postUnBindBankCard = (data, version = 'v1') => {
   return ajax.post(url, data)
 }
 
+/*
+* 编辑加盟信息
+*/
+const putUpdateFranchisee = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].PUT_UPDATE_FRANCHISEE || apiConfig['v1'].PUT_UPDATE_FRANCHISEE
+  return ajax.put(url, data)
+}
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -379,5 +387,6 @@ export {
   postFranchiseePay,
   getFranchiseeCheckPay,
   postCheckPriceBankCard,
-  postUnBindBankCard
+  postUnBindBankCard,
+  putUpdateFranchisee
 }

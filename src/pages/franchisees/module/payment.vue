@@ -127,7 +127,7 @@ export default {
       })
     },
     handleDownFile (fileName) {
-      window.open(`${v1.GET_DOWN__LOAD_FILE}?fileName=${fileName}`)
+      window.open(`${process.env.VUE_APP_BASE_API}/${v1.GET_DOWN__LOAD_FILE}?fileName=${fileName}`)
     }
   },
   created () {

@@ -162,14 +162,14 @@
     </el-form>
     
     <el-row class="submit-btn">
-      <el-button type="primary" :loading="submitBtnLoading" @click="handleSubmit">下一步</el-button>
+      <el-button type="primary" :loading="submitBtnLoading" :disabled="processType === 0" @click="handleSubmit">{{processType === 0 ? '已' : ''}}确认信息</el-button>
     </el-row>
   </div>
 </template>
 <script>
 import { v1 } from '@/service/api'
 import csrf from '@/utils/csrf'
-import { getListDstricts, postAddFranchisee } from '@/service/http'
+import { getListDstricts, postAddFranchisee, getSearchFranchisee, putUpdateFranchisee } from '@/service/http'
 
 export default {
   mixins: [csrf],
@@ -253,14 +253,40 @@ export default {
         ]
       },
       uploadAction: '',
-      submitBtnLoading: false
+      submitBtnLoading: false,
+      processType: null
     }
   },
   created () {
-    this.uploadAction = v1.POST_UPLOAD_IMAGE
+    this.uploadAction = process.env.VUE_APP_BASE_API + v1.POST_UPLOAD_IMAGE
     this.handleChangeDstricts()
+    this.getSearchFranchisee()
   },
   methods: {
+    getSearchFranchisee () {
+      getSearchFranchisee().then(res => {
+        if (res.data) {
+          const { processType, franchiseeType, name = '', phone, creditCard, provinceId = '', cityId = '', detailAddress = '', companyName = '', businessLicense = '', cardBackImage = '', cardFrontImage = ''  } = res.data
+          this.processType = processType
+          if (processType === 2) {
+            this.form = {
+              franchiseeType: Number(franchiseeType),
+              name,
+              phone,
+              creditCard,
+              city: [provinceId, cityId],
+              detailAddress,
+              companyName,
+              businessLicense,
+              cardBackImage,
+              cardFrontImage
+            }
+          }
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     handleChangeFranchiseeType (val) {
       this.$refs['form'].clearValidate()
     },
@@ -341,7 +367,8 @@ export default {
             }
           }
           this.submitBtnLoading = true
-          postAddFranchisee(param).then(res => {
+          const API = this.processType === 2 ? putUpdateFranchisee : postAddFranchisee
+          API(param).then(res => {
             console.log(res)
             // 1是创建成功 0是失败 2是已经注册过
             if (res.data === 0) {
