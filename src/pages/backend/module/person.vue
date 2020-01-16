@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading">
-    <div>加盟商资料</div>
+    <div>个人资料</div>
     <el-divider></el-divider>
     <div class="info-detail">
       <div class="info-detail__item">
@@ -15,13 +15,13 @@
         <div class="label-name">电话</div>
         <div class="value-content">{{ message.phone }}</div>
       </div>
-      <div class="info-detail__item">
+      <!-- <div class="info-detail__item">
         <div class="label-name">银行卡</div>
         <div class="value-content">
           <div class="back-name">交通银行<el-button type="text" class="bind-link">点击下载</el-button></div>
           <div>1666665555</div>
         </div>
-      </div>
+      </div> -->
       <div class="info-detail__item">
         <div class="label-name">修改密码</div>
         <div class="value-content"><el-button type="text" @click="handleSetPassword" class="password-btn">设置</el-button></div>
@@ -52,10 +52,10 @@
           <el-link v-else class="el-icon-plus" type="primary" @click="handleOpAdress">添加新地址</el-link>
         </div>
       </div>
-      <div class="info-detail__item">
+      <!-- <div class="info-detail__item">
         <div class="label-name">加盟协议</div>
         <div class="value-content"><el-button type="text" class="down-btn">点击下载</el-button></div>
-      </div>
+      </div> -->
     </div>
 
     <el-dialog title="密码设置" class="address-dialog" :visible.sync="passwordVisible">

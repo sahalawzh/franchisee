@@ -16,11 +16,11 @@
             <p class="feet-desc">
               每个人的双脚都是不一样的，走路时的运动习惯也不尽相同。足部受力的不均匀，不但会导致足部问题，还会引起身体其他部位的不适。
             </p>
-            <div class="experience-btn"><el-link href="order.html">{{ isLogin ? '定制我的专属鞋垫' : '立即体验' }}<i class="el-icon-right"></i></el-link></div>
+            <div class="experience-btn"><el-link @click="handleExperience">{{ isLogin ? '定制我的专属鞋垫' : '立即体验' }}<i class="el-icon-right"></i></el-link></div>
           </el-col>
           <el-col :span="6" :offset="6">
             <div>
-              <el-link class="entrance-btn" :href="role === 3 ? '/backend.html' : '/franchisees.html'">{{ role === 3 ? '进入加盟商后台' : '我要做加盟商' }}</el-link>
+              <el-link class="entrance-btn" @click="handleFranchisees">{{ role === 3 ? '进入加盟商后台' : '我要做加盟商' }}</el-link>
             </div>
             <div v-if="!isLogin">
               <el-link class="entrance-btn" @click="handleToLogin">查看我的脚型数据</el-link>
@@ -252,7 +252,7 @@
 import DefaultHeader from '@/components/defaultHeader'
 import DefaultFooter from '@/components/defaultFooter'
 import loginMixins from '@/mixins/login'
-import { getScan, getScanData, getListVideo } from '@/service/http'
+import { getScan, getScanData, getListVideo, getSearchFranchisee } from '@/service/http'
 import handleScanData from './utils/handleScanData'
 import deepCopy from '@/utils/deepCopy'
 import Login from '@/components/login'
@@ -265,6 +265,24 @@ export default {
   },
   mixins: [loginMixins],
   methods: {
+    handleFranchisees () {
+      if (this.isLogin) {
+        getSearchFranchisee().then(res => {
+          window.location.href = res.data ? '/backend.html' : '/franchisees.html'
+        }).catch(err => {
+          console.log(err)
+        })
+      } else {
+        this.handleLoginStatus({ loginVisible: true })
+      }
+    },
+    handleExperience () {
+      if (this.isLogin) {
+        window.location.href = 'order.html'
+      } else {
+        this.handleLoginStatus({ loginVisible: true })
+      }
+    },
     handleVideo (item) {
       this.currentVideo = item
     },

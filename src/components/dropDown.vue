@@ -6,7 +6,7 @@
           <el-dropdown-item icon="el-icon-tickets" @click.native="handleBack('')">我的订单</el-dropdown-item>
           <el-dropdown-item icon="el-icon-money" @click.native="handleBack('withdraw')" v-if="user.type === 3">提现（月结）</el-dropdown-item>
           <el-dropdown-item icon="el-icon-download" @click.native="handleBack('download')" v-if="user.type === 3">资料下载</el-dropdown-item>
-          <el-dropdown-item icon="el-icon-s-cooperation" @click.native="handleBack('service')" v-if="user.type === 3">加盟服务</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-s-cooperation" @click.native="handleBack('service')">加盟服务</el-dropdown-item>
           <el-dropdown-item icon="el-icon-user" @click.native="handleBack('person')" divided>个人资料</el-dropdown-item>
           <el-dropdown-item icon="el-icon-switch-button" @click.native="handleLogout">退出</el-dropdown-item>
         </el-dropdown-menu>

@@ -20,13 +20,21 @@
         width="200">
       </el-table-column>
       <el-table-column
-        width="220"
+        width="200"
         label="客户资料">
         <template slot-scope="scope">
           <div>{{ scope.row.diseaseName }}</div>
           <div>{{ scope.row.sizeName }}</div>
           <div>{{ scope.row.functionName }}</div>
           <div>{{ scope.row.shoeName }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        width="180"
+        label="订单时间">
+        <template slot-scope="scope">
+          <div>创建时间：{{ scope.row.createTime }}</div>
+          <div v-if="scope.row.orderProcess !== 0">支付时间：{{ scope.row.paymentTime }}</div>
         </template>
       </el-table-column>
       <el-table-column

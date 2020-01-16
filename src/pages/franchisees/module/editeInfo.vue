@@ -34,6 +34,44 @@
           </div>
         </el-form-item> -->
 
+        <el-form-item label="上传个人身份证" prop="cardFrontImage">
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadAction"
+            :show-file-list="false"
+            :on-success="handleFrontImgSuccess"
+            name="file"
+            accept="image/*"
+            :data="frontImg"
+            :headers="csrfToken"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="form.cardFrontImage" :src="form.cardFrontImage" class="upload_img">
+            <template v-else>
+              <img src="../../../assets/franchisees/f_card.png" class="upload_img">
+              <p class="upload-text">上传身份证头像面</p>
+            </template>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item prop="cardBackImage">
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadAction"
+            :show-file-list="false"
+            :on-success="handleBackImgSuccess"
+            name="file"
+            accept="image/*"
+            :data="backImg"
+            :headers="csrfToken"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="form.cardBackImage" :src="form.cardBackImage" class="upload_img">
+            <template v-else>
+              <img src="../../../assets/franchisees/b_card.png" class="upload_img">
+              <p class="upload-text">上传身份证国徽面</p>
+            </template>
+          </el-upload>
+        </el-form-item>
+
         <el-form-item label="所在区域" prop="city">
           <el-cascader
             v-model="form.city"
@@ -43,6 +81,7 @@
         <el-form-item label="详细地址" prop="detailAddress">
           <el-input class="control-address" v-model="form.detailAddress" placeholder="请输入详细地址"></el-input>
         </el-form-item>
+
       </template>
 
       <template v-if="form.franchiseeType === 1">
@@ -284,7 +323,9 @@ export default {
               creditCard,
               provinceId,
               cityId,
-              detailAddress
+              detailAddress,
+              cardFrontImage,
+              cardBackImage
             }
           }
           if (franchiseeType === 1) {

@@ -28,7 +28,7 @@
             <i class="el-icon-user"></i>
             <span slot="title">个人资料</span>
           </el-menu-item>
-          <el-menu-item index="/service" v-if="role === 3">
+          <el-menu-item index="/service">
             <i class="el-icon-s-cooperation"></i>
             <span slot="title">加盟服务</span>
           </el-menu-item>

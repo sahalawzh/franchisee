@@ -133,7 +133,7 @@ export default {
           message: '删除成功!'
         })
       }).catch(() => {        
-        })
+      })
     },
     deleteCart (index, item) {
       let cartId = item.cartId

@@ -89,7 +89,7 @@ export default {
     },
     updateOrderStatus () {
       getFranchiseeCheckPay().then(res => {
-        if (res.data === 0) { // 已支付
+        if (res.data === 1) { // 已支付
           clearInterval(this.timer)
           this.successVisible = true
           this.$router.push({name: 'payment', query: { status: 'success'}})

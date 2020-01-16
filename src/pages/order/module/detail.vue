@@ -44,7 +44,7 @@
       </el-table-column>
     </el-table>
 
-    <el-form ref="form" :model="form" :rules="rules" class="form-container" label-width="100px" label-position="left">
+    <el-form ref="form" :model="form" :rules="rules" class="form-container" :hide-required-asterisk="true" label-width="100px" label-position="left">
       <div class="form-title">填写客户资料</div>
       <el-form-item label="疾病类型" prop="diseaseId">
         <el-select v-model="form.diseaseId" placeholder="请选择疾病类型">
@@ -94,8 +94,7 @@
       <el-form-item label="所在区域" prop="city">
         <el-cascader
           v-model="form.city"
-          :options="areaData"
-          @change="handleChange"></el-cascader>
+          :options="areaData"></el-cascader>
       </el-form-item>
       <el-form-item label="详细地址" prop="detailAddress">
         <el-input class="control-address" v-model="form.detailAddress"></el-input>
@@ -123,7 +122,7 @@
 </template>
 <script>
 import axios from 'axios'
-import { getListclassiFication, getListDstricts, getScanResultByPhone, postAddCart, getCartNum } from '@/service/http'
+import { getListclassiFication, getListDstricts, getScanResultByPhone, postAddCart, getCartNum, getAddress } from '@/service/http'
 import storage from '@/utils/storage'
 import isEmpty from '@/utils/isEmpty'
 
@@ -256,9 +255,6 @@ export default {
           })
         }
       })
-    },
-    handleChange (val) {
-      console.log(val)
     }
   },
   created () {
@@ -273,7 +269,7 @@ export default {
     const phoneScanParams = {
       phone
     }
-    axios.all([getListclassiFication(ficationParams), getListDstricts(), getScanResultByPhone(phoneScanParams), getCartNum()]).then(res => {
+    axios.all([getListclassiFication(ficationParams), getListDstricts(), getScanResultByPhone(phoneScanParams), getCartNum(), getAddress()]).then(res => {
       const [ diseaseType, size, func, shoesType] = res[0].data
       this.diseaseType = diseaseType
       this.size = size
@@ -292,6 +288,14 @@ export default {
       this.areaData = res[1].data
       this.scanData = res[2].data
       this.cartNum = res[3].data
+      if (res[4].data.length) {
+        const { recipient, phone, detailAddress, province, city } = res[4].data[0]
+        this.form.consignee = recipient
+        this.form.phone = phone
+        this.form.city = [province, city]
+        this.form.detailAddress = detailAddress
+      }
+      console.log(this.form)
     }).catch(err => {
       console.log(err)
     })
