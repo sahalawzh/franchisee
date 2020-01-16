@@ -3,10 +3,10 @@
     <default-header></default-header>
     <el-main class="main-franchisees">
       <el-row>
-        <div class="word-tip">轻松四步，成为加盟商</div>
+        <div class="word-tip">轻松三步，成为加盟商</div>
         <el-steps class="step-wrap" :active="stepActive" align-center>
           <el-step description="填写加盟商信息"></el-step>
-          <el-step description="阅读加盟协议"></el-step>
+          <!-- <el-step description="阅读加盟协议"></el-step> -->
           <el-step description="缴纳加盟费用"></el-step>
           <el-step description="完善加盟商资料"></el-step>
         </el-steps>
@@ -42,17 +42,17 @@ export default {
   computed: {
     stepActive () {
       let path = this.$route.path
+      let query = this.$route.query
+      if (query.status) {
+        path = path + '_' + query.status
+      }
       switch (path) {
         case '/':
           return 1
         case '/payment':
           return 2
-        case '/editeInfo':
+        case '/payment_success':
           return 3
-        case '/succeed':
-          return 4
-        case '/checkout':
-          return 5
       }
     }
   }

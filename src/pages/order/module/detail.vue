@@ -182,7 +182,7 @@ export default {
         ],
         consignee: [
           { required: true, message: '请填写收货人', trigger: 'blur' },
-          { min: 2, max: 8, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
         ],
         phone: [
           { validator: checkPhone, trigger: 'blur' }

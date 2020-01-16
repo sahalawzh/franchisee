@@ -173,7 +173,7 @@ export default {
       ruleAddress: {
         recipient: [
           { required: true, message: '请输入收货人', trigger: 'blur' },
-          { min: 2, max: 8, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { min: 2, max: 9, message: '长度在 2 到 9 个字符', trigger: 'blur' }
         ],
         phone: [
           {validator: checkPhone, trigger: 'blur'}

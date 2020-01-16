@@ -129,7 +129,7 @@
   </div>
 </template>
 <script>
-import { getSearchOrder, postWxPay } from '@/service/http'
+import { getSearchOrder } from '@/service/http'
 export default {
   data() {
     return {

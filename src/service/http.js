@@ -265,6 +265,78 @@ const deleteAddressDelete = (data, version = 'v1') => {
   return ajax.delete(url, data)
 }
 
+/*
+* 图片上传
+*/
+const postUploadImage = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_UPLOAD_IMAGE || apiConfig['v1'].POST_UPLOAD_IMAGE
+  return ajax.post(url, data)
+}
+
+/*
+* 查看加盟商
+*/
+const getSearchFranchisee = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_SEARCH_FRANCHISEE || apiConfig['v1'].GET_SEARCH_FRANCHISEE
+  return ajax.get(url, data)
+}
+
+/*
+* 创建加盟商
+*/
+const postAddFranchisee = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_ADD_FRANCHISEE || apiConfig['v1'].POST_ADD_FRANCHISEE
+  return ajax.post(url, data)
+}
+
+/*
+* 绑定银行卡申请
+*/
+const postBindBankCard = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_BIND_BANKCARD || apiConfig['v1'].POST_BIND_BANKCARD
+  return ajax.post(url, data)
+}
+
+/*
+* 下载文件
+*/
+const getDownLoadFile = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_DOWN__LOAD_FILE || apiConfig['v1'].GET_DOWN__LOAD_FILE
+  return ajax.get(url, data)
+}
+
+/*
+* 加盟费用
+*/
+const postFranchiseePay = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_FRANCHISEE_PAY || apiConfig['v1'].POST_FRANCHISEE_PAY
+  return ajax.post(url, data)
+}
+
+/*
+* 检查是否支付
+*/
+const getFranchiseeCheckPay = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].GET_FRANCHISEE_CHECK_PAY || apiConfig['v1'].GET_FRANCHISEE_CHECK_PAY
+  return ajax.get(url, data)
+}
+
+/*
+* 校验账号
+*/
+const postCheckPriceBankCard = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_CHECK_PRICE_BANKCARD || apiConfig['v1'].POST_CHECK_PRICE_BANKCARD
+  return ajax.post(url, data)
+}
+
+/*
+* 解绑银行卡
+*/
+const postUnBindBankCard = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].POST_UNBIND_BANK_CARD || apiConfig['v1'].POST_UNBIND_BANK_CARD
+  return ajax.post(url, data)
+}
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -298,5 +370,14 @@ export {
   getAddress,
   postAddressAdd,
   putAddressUpdate,
-  deleteAddressDelete
+  deleteAddressDelete,
+  postUploadImage,
+  getSearchFranchisee,
+  postAddFranchisee,
+  postBindBankCard,
+  getDownLoadFile,
+  postFranchiseePay,
+  getFranchiseeCheckPay,
+  postCheckPriceBankCard,
+  postUnBindBankCard
 }

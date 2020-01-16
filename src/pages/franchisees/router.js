@@ -9,18 +9,13 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'agreement',
-      component: () => import(/* webpackChunkName: "agreement" */ './module/agreement.vue')
+      name: 'editeInfo',
+      component: () => import(/* webpackChunkName: "editeInfo" */ './module/editeInfo.vue')
     },
     {
       path: '/payment',
       name: 'payment',
       component: () => import(/* webpackChunkName: "payment" */ './module/payment.vue')
-    },
-    {
-      path: '/editeInfo',
-      name: 'editeInfo',
-      component: () => import(/* webpackChunkName: "editeInfo" */ './module/editeInfo.vue')
     },
     {
       path: '/succeed',

@@ -26,6 +26,11 @@ const router = new Router({
       path: '/withdraw',
       name: 'withdraw',
       component: () => import(/* webpackChunkName: "withdraw" */ './module/withdraw.vue')
+    },
+    {
+      path: '/service',
+      name: 'service',
+      component: () => import(/* webpackChunkName: "service" */ './module/service.vue')
     }
   ]
 })

@@ -33,7 +33,16 @@ const v1 = {
   GET_ADDRESS: `${API_URL_SUFFIX}/address/list`, // 地址列表
   POST_ADDRESS_ADD: `${API_URL_SUFFIX}/address/add`, // 新增地址
   PUT_ADDRESS_UPDATE: `${API_URL_SUFFIX}/address/update`, // 修改地址
-  DELETE_ADDRESS_DELETE: `${API_URL_SUFFIX}/address/delete` // 删除地址
+  DELETE_ADDRESS_DELETE: `${API_URL_SUFFIX}/address/delete`, // 删除地址
+  POST_UPLOAD_IMAGE: `${API_URL_SUFFIX}/file/uploadImage`, // 图片上传
+  GET_SEARCH_FRANCHISEE: `${API_URL_SUFFIX}/franchisee/searchFranchisee`, // 查看加盟商
+  POST_ADD_FRANCHISEE: `${API_URL_SUFFIX}/franchisee/addFranchisee`, // 创建加盟商
+  POST_BIND_BANKCARD: `${API_URL_SUFFIX}/franchisee/bindBankCard`, // 绑定银行卡申请
+  GET_DOWN__LOAD_FILE: `${API_URL_SUFFIX}/file/downloadFile`, // 下载文件
+  POST_FRANCHISEE_PAY: `${API_URL_SUFFIX}/wxPay/franchiseePay`, // 加盟提交费用
+  GET_FRANCHISEE_CHECK_PAY: `${API_URL_SUFFIX}/wxPay/franchiseeCheckPay`, // 检查是否已经支付
+  POST_CHECK_PRICE_BANKCARD: `${API_URL_SUFFIX}/franchisee/checkPriceBankCard`, // 校验账号
+  POST_UNBIND_BANK_CARD: `${API_URL_SUFFIX}/franchisee/unBindBankCard` // 解绑银行卡
 }
 
 export {

@@ -28,6 +28,10 @@
             <i class="el-icon-user"></i>
             <span slot="title">个人资料</span>
           </el-menu-item>
+          <el-menu-item index="/service" v-if="role === 3">
+            <i class="el-icon-s-cooperation"></i>
+            <span slot="title">加盟服务</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>
@@ -106,6 +110,7 @@ export default {
     padding: 0 40px 0 20px;
     i {
       color: #fff;
+      line-height: 1.2em;
     }
     &.is-active,
     &:hover,
