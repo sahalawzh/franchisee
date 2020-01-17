@@ -2,7 +2,7 @@
   <div class="form-container">
     <div class="form-container__title">填写注册信息</div>
 
-    <el-radio-group v-model="form.franchiseeType" @change="handleChangeFranchiseeType">
+    <el-radio-group v-model="form.franchiseeType" :disabled="processType === 0"  @change="handleChangeFranchiseeType">
       <el-radio :label="0">个人</el-radio>
       <el-radio :label="1">公司</el-radio>
     </el-radio-group>
@@ -13,15 +13,15 @@
       <template v-if="form.franchiseeType === 0">
 
         <el-form-item label="姓名" prop="name">
-          <el-input class="control" v-model="form.name" placeholder="请填写真实姓名"></el-input>
+          <el-input class="control" :disabled="processType === 0" v-model="form.name" placeholder="请填写真实姓名"></el-input>
         </el-form-item>
         
         <el-form-item label="身份证号码" prop="creditCard">
-          <el-input class="control" v-model="form.creditCard" placeholder="请输入身份证号码"></el-input>
+          <el-input class="control" :disabled="processType === 0" v-model="form.creditCard" placeholder="请输入身份证号码"></el-input>
         </el-form-item>
 
         <el-form-item label="手机号" prop="phone">
-          <el-input class="control" v-model="form.phone" placeholder="请输入手机号"></el-input>
+          <el-input class="control" :disabled="processType === 0" v-model="form.phone" placeholder="请输入手机号"></el-input>
         </el-form-item>
 
         <!-- <el-form-item label="银行卡">
@@ -43,6 +43,7 @@
             name="file"
             accept="image/*"
             :data="frontImg"
+            :disabled="processType === 0"
             :headers="csrfToken"
             :before-upload="beforeAvatarUpload">
             <img v-if="form.cardFrontImage" :src="form.cardFrontImage" class="upload_img">
@@ -62,6 +63,7 @@
             name="file"
             accept="image/*"
             :data="backImg"
+            :disabled="processType === 0"
             :headers="csrfToken"
             :before-upload="beforeAvatarUpload">
             <img v-if="form.cardBackImage" :src="form.cardBackImage" class="upload_img">
@@ -74,12 +76,13 @@
 
         <el-form-item label="所在区域" prop="city">
           <el-cascader
+            :disabled="processType === 0"
             v-model="form.city"
             :options="areaData"></el-cascader>
         </el-form-item>
 
         <el-form-item label="详细地址" prop="detailAddress">
-          <el-input class="control-address" v-model="form.detailAddress" placeholder="请输入详细地址"></el-input>
+          <el-input class="control-address" :disabled="processType === 0" v-model="form.detailAddress" placeholder="请输入详细地址"></el-input>
         </el-form-item>
 
       </template>
@@ -87,19 +90,19 @@
       <template v-if="form.franchiseeType === 1">
 
         <el-form-item label="代办人姓名" prop="name">
-          <el-input class="control" v-model="form.name" placeholder="请填写真实姓名"></el-input>
+          <el-input class="control" :disabled="processType === 0" v-model="form.name" placeholder="请填写真实姓名"></el-input>
         </el-form-item>
         
         <el-form-item label="代办人身份证" prop="creditCard">
-          <el-input class="control" v-model="form.creditCard" placeholder="请输入身份证号码"></el-input>
+          <el-input class="control" :disabled="processType === 0" v-model="form.creditCard" placeholder="请输入身份证号码"></el-input>
         </el-form-item>
 
         <el-form-item label="代办人手机号" prop="phone">
-          <el-input class="control" v-model="form.phone" placeholder="请输入手机号"></el-input>
+          <el-input class="control" :disabled="processType === 0" v-model="form.phone" placeholder="请输入手机号"></el-input>
         </el-form-item>
         
         <el-form-item label="公司名称" prop="companyName">
-          <el-input class="control" v-model="form.companyName" placeholder="请输入公司名称"></el-input>
+          <el-input class="control" :disabled="processType === 0" v-model="form.companyName" placeholder="请输入公司名称"></el-input>
         </el-form-item>
         
         <el-form-item label="上传法人身份证" prop="cardFrontImage">
@@ -108,6 +111,7 @@
             :action="uploadAction"
             :show-file-list="false"
             :on-success="handleFrontImgSuccess"
+            :disabled="processType === 0"
             name="file"
             accept="image/*"
             :data="frontImg"
@@ -126,6 +130,7 @@
             :action="uploadAction"
             :show-file-list="false"
             :on-success="handleBackImgSuccess"
+            :disabled="processType === 0"
             name="file"
             accept="image/*"
             :data="backImg"
@@ -147,6 +152,7 @@
             :on-success="handleBusinessSuccess"
             name="file"
             :data="businessImg"
+            :disabled="processType === 0"
             accept="image/*"
             :headers="csrfToken"
             :before-upload="beforeAvatarUpload">
@@ -258,17 +264,17 @@ export default {
     }
   },
   created () {
-    this.uploadAction = process.env.VUE_APP_BASE_API + v1.POST_UPLOAD_IMAGE
+    this.uploadAction = process.env.NODE_ENV === 'development' ? v1.POST_UPLOAD_IMAGE : process.env.VUE_APP_BASE_API + v1.POST_UPLOAD_IMAGE
     this.handleChangeDstricts()
     this.getSearchFranchisee()
   },
   methods: {
-    getSearchFranchisee () {
+    getSearchFranchisee (status) {
       getSearchFranchisee().then(res => {
         if (res.data) {
           const { processType, franchiseeType, name = '', phone, creditCard, provinceId = '', cityId = '', detailAddress = '', companyName = '', businessLicense = '', cardBackImage = '', cardFrontImage = ''  } = res.data
           this.processType = processType
-          if (processType === 2) {
+          if (processType === 2 || processType === 0) {
             this.form = {
               franchiseeType: Number(franchiseeType),
               name,
@@ -281,6 +287,32 @@ export default {
               cardBackImage,
               cardFrontImage
             }
+            return
+          }
+          // 1是创建成功 0是失败 2是已经注册过
+          if (status === 0) {
+            this.$notify.error({
+              title: '温馨提示',
+              message: '创建加盟商失败'
+            })
+          }
+          if (status === 1) {
+            const that = this
+            this.$notify({
+              title: '温馨提示',
+              message: '创建加盟商成功',
+              type: 'success',
+              onClose () {
+                that.$router.push({path: '/payment'})
+              }
+            })
+          }
+          if (status === 2) {
+            this.$notify({
+              title: '温馨提示',
+              message: '该加盟商已经注册过',
+              type: 'warning'
+            })
           }
         }
       }).catch(err => {
@@ -370,31 +402,7 @@ export default {
           const API = this.processType === 2 ? putUpdateFranchisee : postAddFranchisee
           API(param).then(res => {
             console.log(res)
-            // 1是创建成功 0是失败 2是已经注册过
-            if (res.data === 0) {
-              this.$notify.error({
-                title: '温馨提示',
-                message: '创建加盟商失败'
-              })
-            }
-            if (res.data === 1) {
-              const that = this
-              this.$notify({
-                title: '温馨提示',
-                message: '创建加盟商成功',
-                type: 'success',
-                onClose () {
-                  that.$router.push({path: '/payment'})
-                }
-              })
-            }
-            if (res.data === 2) {
-              this.$notify({
-                title: '温馨提示',
-                message: '该加盟商已经注册过',
-                type: 'warning'
-              })
-            }
+            this.getSearchFranchisee(res.data)
             this.submitBtnLoading = false
           }).catch(err => {
             this.submitBtnLoading = false

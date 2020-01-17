@@ -364,7 +364,7 @@ export default {
         if (res.data) {
           const { programName, createTime, price, agreement, isPayment, processType } = res.data
           if (processType === 0 || processType === 2) {
-            window.location.href = 'franchisees.html#/editeInfo'
+            window.location.href = 'franchisees.html'
             return
           }
           this.tableData = [
