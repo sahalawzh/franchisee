@@ -43,7 +43,8 @@ const v1 = {
   GET_FRANCHISEE_CHECK_PAY: `${API_URL_SUFFIX}/wxPay/franchiseeCheckPay`, // 检查是否已经支付
   POST_CHECK_PRICE_BANKCARD: `${API_URL_SUFFIX}/franchisee/checkPriceBankCard`, // 校验账号
   POST_UNBIND_BANK_CARD: `${API_URL_SUFFIX}/franchisee/unBindBankCard`, // 解绑银行卡
-  PUT_UPDATE_FRANCHISEE: `${API_URL_SUFFIX}/franchisee/updateFranchisee` // 修改加盟信息
+  PUT_UPDATE_FRANCHISEE: `${API_URL_SUFFIX}/franchisee/updateFranchisee`, // 修改加盟信息
+  PUT_UPDATE: `${API_URL_SUFFIX}/franchisee/update` // 加盟服务修改地址
 }
 
 export {

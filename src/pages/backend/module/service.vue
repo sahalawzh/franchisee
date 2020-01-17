@@ -54,7 +54,7 @@
         <div class="info-detail__item">
           <div class="label-name">地址</div>
           <div class="value-content">
-            <div class="back-name">{{ detail.province }}{{ detail.city }}</div>
+            <div class="back-name">{{ detail.province }}{{ detail.city }}<el-button type="text" @click="handleOpenAddress" class="bind-link">修改</el-button></div>
             <div>{{ detail.detailAddress }}</div>
           </div>
         </div>
@@ -82,7 +82,7 @@
       
 
       <el-dialog title="银行账户验证" class="bank-dialog" :visible.sync="accountVisible">
-        <el-form :model="amountForm" :rules="amountRules">
+        <el-form :model="amountForm" ref="amountForm" :rules="amountRules">
           <el-form-item prop="amount">
             <el-input v-model="amountForm.amount" placeholder="请输入打款金额"></el-input>
           </el-form-item>
@@ -92,7 +92,7 @@
       </el-dialog>
 
       <el-dialog title="绑定银行卡" class="bank-dialog" :visible.sync="bankVisible">
-        <el-form :model="form" label-width="100px" :hide-required-asterisk="true" :rules="rules">
+        <el-form :model="form" ref="form" label-width="100px" :hide-required-asterisk="true" :rules="rules">
           <el-form-item label="银行" prop="bankName">
             <el-input v-model="form.bankName" autocomplete="off"></el-input>
           </el-form-item>
@@ -107,6 +107,31 @@
           </el-form-item>
         </el-form>
       </el-dialog>
+
+      <el-dialog title="修改地址" class="address-dialog" :visible.sync="dialogFormVisible">
+        <el-form :model="addressForm" label-width="100px" ref="addressForm" :hide-required-asterisk="true" :rules="ruleAddress">
+          <el-form-item label="联系电话" prop="phone">
+            <el-input v-model="addressForm.phone" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="所在区域" prop="city">
+            <el-cascader
+              v-model="addressForm.city"
+              :options="areaData"></el-cascader>
+          </el-form-item>
+          <el-form-item label="详细地址" prop="detailAddress">
+            <el-input class="control-address" v-model="addressForm.detailAddress"></el-input>
+          </el-form-item>
+          <!-- <el-form-item>
+            <el-switch
+              v-model="addressForm.default"
+              active-text="设置为默认收货地址">
+            </el-switch>
+          </el-form-item> -->
+          <el-form-item>
+            <el-button type="primary" :loading="addressBtnLoading" @click="handleSubmitAddress">保 存</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </template>
 
     <el-button type="primary" v-else @click="handleCreateFranchisee">创建加盟流程</el-button>
@@ -115,7 +140,7 @@
 </template>
 
 <script>
-import { getSearchFranchisee, getDownLoadFile, postBindBankCard, postCheckPriceBankCard, postUnBindBankCard  } from '@/service/http'
+import { getSearchFranchisee, getDownLoadFile, postBindBankCard, postCheckPriceBankCard, postUnBindBankCard, putUpdate, getListDstricts } from '@/service/http'
 import { v1 } from '@/service/api'
 export default {
   data () {
@@ -140,6 +165,18 @@ export default {
           callback()
         } else {
           return callback(new Error('请输入正确的金额格式'));
+        }
+      }
+    }
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('手机号不能为空'));
+      } else {
+        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+        if (reg.test(value)) {
+          callback()
+        } else {
+          return callback(new Error('请输入正确的手机号'));
         }
       }
     }
@@ -170,10 +207,83 @@ export default {
         amount: [
           { validator: validateAmount, trigger: 'blur' }
         ]
-      }
+      },
+      dialogFormVisible: false,
+      addressForm: {
+        recipient: '',
+        phone: '',
+        city: [],
+        detailAddress: ''
+      },
+      ruleAddress: {
+        phone: [
+          {validator: checkPhone, trigger: 'blur'}
+        ],
+        city: [
+          { required: true, message: '请选择所在区域', trigger: 'change' }
+        ],
+        detailAddress: [
+          { required: true, message: '请填写详细地址', trigger: 'blur' },
+          { min: 2, max: 200, message: '长度在 2 到 200 个字符', trigger: 'blur' }
+        ]
+      },
+      addressBtnLoading: false,
+      areaData: []
     }
   },
   methods: {
+    handleChangeDstricts () {
+      getListDstricts().then(res => {
+        res.data.forEach(item => {
+          item.value = item.id
+          item.label = item.name
+          item.children = []
+          item.list.forEach(_item => {
+            item.children.push({
+              value: _item.id,
+              label: _item.name
+            })
+          })
+        })
+        this.areaData = res.data
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    handleOpenAddress () {
+      const { phone, detailAddress, provinceId, cityId, id } = this.detail
+      this.addressForm = {
+        phone,
+        detailAddress,
+        city: [provinceId, cityId],
+        id
+      }
+      this.handleChangeDstricts()
+      this.$nextTick(() => {
+        this.dialogFormVisible = true
+      })
+    },
+    handleSubmitAddress () {
+      this.$refs.addressForm.validate((valid) => {
+        if (!valid) return
+        const [ provinceId, cityId ] = this.addressForm.city
+        const area = {
+          provinceId,
+          cityId
+        }
+        const params = Object.assign({}, this.addressForm, area)
+        delete params.city
+        this.addressBtnLoading = true
+        putUpdate(params).then(res => {
+          this.addressBtnLoading = false
+          this.dialogFormVisible = false
+          this.getFranchiseeServe()
+        }).catch(err => {
+          this.addressBtnLoading = false
+          console.log(err)
+        })
+      })
+    },
     handleUnBind () {
       this.$confirm('是否接触绑定该账号?', '提示', {
         confirmButtonText: '确定',
@@ -181,7 +291,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.handleUnBindAcount()
-      }).catch(() => {        
+      }).catch(() => {
       })
     },
     handleUnBindAcount () {
@@ -194,16 +304,19 @@ export default {
       window.location.href = 'franchisees.html'
     },
     handleCheckoutSubmit () {
-      const params = {
-        price: this.amountForm.amount
-      }
-      this.btnCheckoutLoading = true
-      postCheckPriceBankCard(params).then(res => {
-        this.btnCheckoutLoading = false
-        this.getFranchiseeServe()
-      }).catch(err => {
-        console.log(err)
-        this.btnCheckoutLoading = false
+      this.$refs.amountForm.validate((valid) => {
+        if (!valid) return
+        const params = {
+          price: this.amountForm.amount
+        }
+        this.btnCheckoutLoading = true
+        postCheckPriceBankCard(params).then(res => {
+          this.btnCheckoutLoading = false
+          this.getFranchiseeServe()
+        }).catch(err => {
+          console.log(err)
+          this.btnCheckoutLoading = false
+        })
       })
     },
     handleCheckoutAccount () {
@@ -211,25 +324,28 @@ export default {
     },
     handleSubmit () {
       if (!this.detail) return
-      const { id, phone } = this.detail
-      const params = Object.assign({}, this.form, {franchiseeId: id, phone})
-      this.btnLoading = true
-      postBindBankCard(params).then(res => {
-        this.btnLoading = false
-        this.bankVisible = false
-        if (res.data === 0) {
-          this.$notify.error({
-            title: '温馨提示',
-            message: '绑定失败'
-          })
-        }
-        if (res.data === 1) {
-          this.getFranchiseeServe()
-        }
-      }).catch(err => {
-        this.bankVisible = false
-        this.btnLoading = false
-        console.log(err)
+      this.$refs.form.validate((valid) => {
+        if (!valid) return
+        const { id, phone } = this.detail
+        const params = Object.assign({}, this.form, {franchiseeId: id, phone})
+        this.btnLoading = true
+        postBindBankCard(params).then(res => {
+          this.btnLoading = false
+          this.bankVisible = false
+          if (res.data === 0) {
+            this.$notify.error({
+              title: '温馨提示',
+              message: '绑定失败'
+            })
+          }
+          if (res.data === 1) {
+            this.getFranchiseeServe()
+          }
+        }).catch(err => {
+          this.bankVisible = false
+          this.btnLoading = false
+          console.log(err)
+        })
       })
     },
     handleBindBank () {
@@ -342,6 +458,21 @@ export default {
   }
   .el-input {
     width: 260px;
+  }
+}
+.address-dialog {
+  .el-dialog {
+    width: 40%;
+  }
+  .el-cascader,
+  .el-input {
+    width: 240px;
+  }
+  .control-address {
+    width: 90%;
+  }
+  .dialog-footer {
+    text-align: center;
   }
 }
 </style>

@@ -345,6 +345,14 @@ const putUpdateFranchisee = (data, version = 'v1') => {
   return ajax.put(url, data)
 }
 
+/*
+* 加盟服务修改地址
+*/
+const putUpdate = (data, version = 'v1') => {
+  let url = apiConfig[version] && apiConfig[version].PUT_UPDATE || apiConfig['v1'].PUT_UPDATE
+  return ajax.put(url, data)
+}
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -388,5 +396,6 @@ export {
   getFranchiseeCheckPay,
   postCheckPriceBankCard,
   postUnBindBankCard,
-  putUpdateFranchisee
+  putUpdateFranchisee,
+  putUpdate
 }
