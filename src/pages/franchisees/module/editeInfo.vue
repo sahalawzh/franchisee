@@ -169,6 +169,7 @@
     
     <el-row class="submit-btn">
       <el-button type="primary" :loading="submitBtnLoading" :disabled="processType === 0" @click="handleSubmit">{{processType === 0 ? '已' : ''}}确认信息</el-button>
+      <div class="submit-btn__tip" v-if="processType === 0">我们将在3个工作日内完成对您资料的审核</div>
     </el-row>
   </div>
 </template>
@@ -272,10 +273,11 @@ export default {
     getSearchFranchisee (status) {
       getSearchFranchisee().then(res => {
         if (res.data) {
-          const { processType, franchiseeType, name = '', phone, creditCard, provinceId = '', cityId = '', detailAddress = '', companyName = '', businessLicense = '', cardBackImage = '', cardFrontImage = ''  } = res.data
+          const { processType, id, franchiseeType, name = '', phone, creditCard, provinceId = '', cityId = '', detailAddress = '', companyName = '', businessLicense = '', cardBackImage = '', cardFrontImage = ''  } = res.data
           this.processType = processType
           if (processType === 2 || processType === 0) {
             this.form = {
+              id,
               franchiseeType: Number(franchiseeType),
               name,
               phone,
@@ -345,6 +347,7 @@ export default {
     },
     handleBackImgSuccess(res, file) {
       this.form.cardBackImage = res.data
+      console.log(this.form.cardBackImage)
     },
     handleBusinessSuccess(res, file) {
       this.form.businessLicense = res.data
@@ -370,7 +373,8 @@ export default {
             companyName,
             businessLicense,
             cardBackImage,
-            cardFrontImage
+            cardFrontImage,
+            id
           } = this.form
           if (franchiseeType === 0) {
             const [ provinceId, cityId ] = city
@@ -397,6 +401,9 @@ export default {
               cardBackImage,
               cardFrontImage
             }
+          }
+          if (this.processType === 2) {
+            param.id = id
           }
           this.submitBtnLoading = true
           const API = this.processType === 2 ? putUpdateFranchisee : postAddFranchisee
@@ -430,6 +437,11 @@ export default {
   }
   .submit-btn {
     margin-left: 120px;
+    &__tip {
+      font-size: 14px;
+      color: #ccc;
+      margin-top: 10px;
+    }
   }
   .avatar-uploader .el-upload {
     border: 1px solid #E5E5E5;
@@ -446,6 +458,10 @@ export default {
       color: #0197D6;
       font-size: 12px;
     }
+  }
+  .el-button--primary.is-disabled {
+    background:rgba(204,204,204,1);
+    border-color: rgba(204,204,204,1);
   }
 }
 </style>

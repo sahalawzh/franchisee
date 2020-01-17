@@ -135,7 +135,6 @@
     </template>
 
     <el-button type="primary" v-else @click="handleCreateFranchisee">创建加盟流程</el-button>
-
   </div>
 </template>
 
