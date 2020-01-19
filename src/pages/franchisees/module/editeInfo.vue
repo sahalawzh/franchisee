@@ -272,7 +272,7 @@ export default {
   watch: {
     processType (val) {
       if (val === 1) {
-        window.location.href = 'backend.html#/service'
+        this.$router.push({path: '/payment'})
       }
     }
   },
