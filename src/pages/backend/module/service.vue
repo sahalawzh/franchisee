@@ -65,7 +65,7 @@
               <el-button type="primary" :disabled="detail.isPayment === 0" v-if="detail.bindProcess === 0" size="mini" icon="el-icon-plus" @click="handleBindBank">绑定银行卡</el-button>
               <span class="status-text" v-else-if="detail.bindProcess === 1">审核中...</span>
               <el-button class="checkout-btn" v-else-if="detail.bindProcess === 2" type="primary" size="mini" @click="handleCheckoutAccount">银行账户验证</el-button>
-              <span class="status-text" v-else-if="detail.bindProcess === 3">审核失败</span>
+              <span class="status-text" v-else-if="detail.bindProcess === 3">{{ detail.reason }}</span>
               <el-button type="text" v-else-if="detail.bindProcess === 4" @click="handleUnBind" class="bind-link">解除绑定</el-button>
               <span class="status-text" v-else-if="detail.bindProcess === 5">绑定失败次数过多 请联系客服</span>
             </div>

@@ -49,8 +49,8 @@
             <img v-if="form.cardFrontImage" :src="form.cardFrontImage" class="upload_img">
             <template v-else>
               <img src="../../../assets/franchisees/f_card.png" class="upload_img">
-              <p class="upload-text">上传身份证头像面</p>
             </template>
+            <p class="upload-text">上传身份证头像面<span>（只能上传图片格式，且不超过5M）</span></p>
           </el-upload>
         </el-form-item>
 
@@ -69,20 +69,9 @@
             <img v-if="form.cardBackImage" :src="form.cardBackImage" class="upload_img">
             <template v-else>
               <img src="../../../assets/franchisees/b_card.png" class="upload_img">
-              <p class="upload-text">上传身份证国徽面</p>
+              <p class="upload-text">上传身份证国徽面<span>（只能上传图片格式，且不超过5M）</span></p>
             </template>
           </el-upload>
-        </el-form-item>
-
-        <el-form-item label="所在区域" prop="city">
-          <el-cascader
-            :disabled="processType === 0"
-            v-model="form.city"
-            :options="areaData"></el-cascader>
-        </el-form-item>
-
-        <el-form-item label="详细地址" prop="detailAddress">
-          <el-input class="control-address" :disabled="processType === 0" v-model="form.detailAddress" placeholder="请输入详细地址"></el-input>
         </el-form-item>
 
       </template>
@@ -120,9 +109,10 @@
             <img v-if="form.cardFrontImage" :src="form.cardFrontImage" class="upload_img">
             <template v-else>
               <img src="../../../assets/franchisees/f_card.png" class="upload_img">
-              <p class="upload-text">上传身份证头像面</p>
             </template>
+            <p class="upload-text">上传身份证头像面<span>（只能上传图片格式，且不超过5M）</span></p>
           </el-upload>
+          <span>图片大小不能超过5M</span>
         </el-form-item>
         <el-form-item prop="cardBackImage">
           <el-upload
@@ -139,8 +129,8 @@
             <img v-if="form.cardBackImage" :src="form.cardBackImage" class="upload_img">
             <template v-else>
               <img src="../../../assets/franchisees/b_card.png" class="upload_img">
-              <p class="upload-text">上传身份证国徽面</p>
             </template>
+            <p class="upload-text">上传身份证国徽面<span>（只能上传图片格式，且不超过5M）</span></p>
           </el-upload>
         </el-form-item>
 
@@ -159,12 +149,22 @@
             <img v-if="form.businessLicense" :src="form.businessLicense" class="upload_img">
             <template v-else>
               <img src="../../../assets/franchisees/business_card.png" class="upload_img">
-              <p class="upload-text">上传营业执照</p>
             </template>
+            <p class="upload-text">上传营业执照<span>（只能上传图片格式，且不超过5M）</span></p>
           </el-upload>
         </el-form-item>
 
       </template>
+      <el-form-item label="所在区域" prop="city">
+        <el-cascader
+          :disabled="processType === 0"
+          v-model="form.city"
+          :options="areaData"></el-cascader>
+      </el-form-item>
+
+      <el-form-item label="详细地址" prop="detailAddress">
+        <el-input class="control-address" :disabled="processType === 0" v-model="form.detailAddress" placeholder="请输入详细地址"></el-input>
+      </el-form-item>
     </el-form>
     
     <el-row class="submit-btn">
@@ -272,7 +272,7 @@ export default {
   watch: {
     processType (val) {
       if (val === 1) {
-        this.$router.push({path: '/payment'})
+        // this.$router.push({path: '/payment'})
       }
     }
   },
@@ -360,16 +360,15 @@ export default {
       this.form.businessLicense = res.data
     },
     beforeAvatarUpload(file) {
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt2M = file.size / 1024 / 1024 < 5
       if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!')
+        this.$message.error('上传图片大小不能超过 5MB!')
       }
       return isLt2M
     },
     handleSubmit () {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          let param = ''
           const {
             franchiseeType,
             name,
@@ -383,30 +382,27 @@ export default {
             cardFrontImage,
             id
           } = this.form
+          let param = {
+            name,
+            phone,
+            provinceId,
+            cityId,
+            creditCard,
+            detailAddress,
+            cardFrontImage,
+            cardBackImage
+          }
           if (franchiseeType === 0) {
             const [ provinceId, cityId ] = city
-            param = {
-              franchiseeType,
-              name,
-              phone,
-              creditCard,
-              provinceId,
-              cityId,
-              detailAddress,
-              cardFrontImage,
-              cardBackImage
-            }
+            param = Object.assign({}, param, {
+              franchiseeType
+            })
           }
           if (franchiseeType === 1) {
             param = {
               franchiseeType,
-              name,
-              phone,
-              creditCard,
               companyName,
-              businessLicense,
-              cardBackImage,
-              cardFrontImage
+              businessLicense
             }
           }
           if (this.processType === 2) {
@@ -464,6 +460,9 @@ export default {
     .upload-text {
       color: #0197D6;
       font-size: 12px;
+      span {
+        color: #ccc;
+      }
     }
   }
 }
