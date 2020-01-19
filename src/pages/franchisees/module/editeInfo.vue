@@ -269,6 +269,13 @@ export default {
     this.handleChangeDstricts()
     this.getSearchFranchisee()
   },
+  watch: {
+    processType (val) {
+      if (val === 1) {
+        window.location.href = 'backend.html#/service'
+      }
+    }
+  },
   methods: {
     getSearchFranchisee (status) {
       getSearchFranchisee().then(res => {
@@ -458,10 +465,6 @@ export default {
       color: #0197D6;
       font-size: 12px;
     }
-  }
-  .el-button--primary.is-disabled {
-    background:rgba(204,204,204,1);
-    border-color: rgba(204,204,204,1);
   }
 }
 </style>
