@@ -43,11 +43,11 @@ module.exports = {
 	devServer: {
 		index: '/index.html', //默认启动serve 打开index页面
 		// open: process.platform === 'darwin',
-		port: 8080,
+		port: 8083,
 		hotOnly: false,
 		proxy: {
       '/api': {
-        target: 'http://zxdzapi.gdlwzn.com:3000/',
+        target: 'https://zxdzapi.gdlwzn.com:3000/',
         changeOrigin: true,
         secure: false
       }

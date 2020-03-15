@@ -5,7 +5,10 @@
     <div class="info-detail">
       <div class="info-detail__item">
         <div class="label-name">当前头像</div>
-        <div class="value-content"><el-avatar :size="50" :src="message.avatar"/></div>
+        <div class="value-content">
+          <el-avatar :size="50"
+                     :src="message.avatar" />
+        </div>
       </div>
       <div class="info-detail__item">
         <div class="label-name">姓名</div>
@@ -24,32 +27,47 @@
       </div> -->
       <div class="info-detail__item">
         <div class="label-name">修改密码</div>
-        <div class="value-content"><el-button type="text" @click="handleSetPassword" class="password-btn">设置</el-button></div>
+        <div class="value-content">
+          <el-button type="text"
+                     @click="handleSetPassword"
+                     class="password-btn">设置</el-button>
+        </div>
       </div>
       <div class="info-detail__item">
         <div class="label-name">地址</div>
         <div class="value-content">
           <template v-if="addressList.length">
-            <div class="address-item" v-for="item in addressList" :key="item.id">
+            <div class="address-item"
+                 v-for="item in addressList"
+                 :key="item.id">
               <div class="address-item__name">{{ item.recipient }}（收）</div>
               <div class="address-item__detail">{{ item.province }}&nbsp;{{ item.city }}&nbsp;{{ item.detailAddress }}&nbsp;&nbsp;&nbsp;&nbsp;{{ item.phone }}</div>
               <div class="address-item__action">
-                <el-button type="text" @click="handleOpAdress(item)">修改</el-button><el-divider direction="vertical"></el-divider>
-                <el-popover
-                  placement="top"
-                  width="160"
-                  v-model="visible">
+                <el-button type="text"
+                           @click="handleOpAdress(item)">修改</el-button>
+                <el-divider direction="vertical"></el-divider>
+                <el-popover placement="top"
+                            width="160"
+                            v-model="visible">
                   <p>是否确认删除该地址？</p>
                   <div style="text-align: right; margin: 0">
-                    <el-button size="mini" type="text" @click="visible = false">取消</el-button>
-                    <el-button type="primary" size="mini" @click="handleDelAdress(item.id)">确定</el-button>
+                    <el-button size="mini"
+                               type="text"
+                               @click="visible = false">取消</el-button>
+                    <el-button type="primary"
+                               size="mini"
+                               @click="handleDelAdress(item.id)">确定</el-button>
                   </div>
-                  <el-button slot="reference" type="text">删除</el-button>
+                  <el-button slot="reference"
+                             type="text">删除</el-button>
                 </el-popover>
               </div>
             </div>
           </template>
-          <el-link v-else class="el-icon-plus" type="primary" @click="handleOpAdress">添加新地址</el-link>
+          <el-link v-else
+                   class="el-icon-plus"
+                   type="primary"
+                   @click="handleOpAdress">添加新地址</el-link>
         </div>
       </div>
       <!-- <div class="info-detail__item">
@@ -58,39 +76,65 @@
       </div> -->
     </div>
 
-    <el-dialog title="密码设置" class="address-dialog" :visible.sync="passwordVisible">
-      <el-form :model="passwordForm" label-width="100px" ref="passwordForm" :hide-required-asterisk="true" :rules="rulesPassword">
-        <el-form-item label="当前密码" prop="oldPassword">
-          <el-input v-model="passwordForm.oldPassword" autocomplete="off"></el-input>
+    <el-dialog title="密码设置"
+               class="address-dialog"
+               :visible.sync="passwordVisible">
+      <el-form :model="passwordForm"
+               label-width="100px"
+               ref="passwordForm"
+               :hide-required-asterisk="true"
+               :rules="rulesPassword">
+        <el-form-item label="当前密码"
+                      prop="oldPassword">
+          <el-input v-model="passwordForm.oldPassword"
+                    autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="新密码" prop="password">
-          <el-input v-model="passwordForm.password" autocomplete="off"></el-input>
+        <el-form-item label="新密码"
+                      prop="password">
+          <el-input v-model="passwordForm.password"
+                    autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="确认新密码" prop="confirmPassword">
-          <el-input v-model="passwordForm.confirmPassword" autocomplete="off"></el-input>
+        <el-form-item label="确认新密码"
+                      prop="confirmPassword">
+          <el-input v-model="passwordForm.confirmPassword"
+                    autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" :loading="passwordBtnLoading"  @click="handleSavePassword">保 存</el-button>
+          <el-button type="danger"
+                     :loading="passwordBtnLoading"
+                     @click="handleSavePassword">保 存</el-button>
         </el-form-item>
 
       </el-form>
     </el-dialog>
 
-    <el-dialog title="收货地址" class="address-dialog" :visible.sync="dialogFormVisible">
-      <el-form :model="addressForm" label-width="100px" ref="addressForm" :hide-required-asterisk="true" :rules="ruleAddress">
-        <el-form-item label="收货人" prop="recipient">
-          <el-input v-model="addressForm.recipient" autocomplete="off"></el-input>
+    <el-dialog title="收货地址"
+               class="address-dialog"
+               :visible.sync="dialogFormVisible">
+      <el-form :model="addressForm"
+               label-width="100px"
+               ref="addressForm"
+               :hide-required-asterisk="true"
+               :rules="ruleAddress">
+        <el-form-item label="收货人"
+                      prop="recipient">
+          <el-input v-model="addressForm.recipient"
+                    autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="联系电话" prop="phone">
-          <el-input v-model="addressForm.phone" autocomplete="off"></el-input>
+        <el-form-item label="联系电话"
+                      prop="phone">
+          <el-input v-model="addressForm.phone"
+                    autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="所在区域" prop="city">
-          <el-cascader
-            v-model="addressForm.city"
-            :options="areaData"></el-cascader>
+        <el-form-item label="所在区域"
+                      prop="city">
+          <el-cascader v-model="addressForm.city"
+                       :options="areaData"></el-cascader>
         </el-form-item>
-        <el-form-item label="详细地址" prop="detailAddress">
-          <el-input class="control-address" v-model="addressForm.detailAddress"></el-input>
+        <el-form-item label="详细地址"
+                      prop="detailAddress">
+          <el-input class="control-address"
+                    v-model="addressForm.detailAddress"></el-input>
         </el-form-item>
         <!-- <el-form-item>
           <el-switch
@@ -99,7 +143,9 @@
           </el-switch>
         </el-form-item> -->
         <el-form-item>
-          <el-button type="primary" :loading="addressBtnLoading" @click="handleSubmitAddress">保 存</el-button>
+          <el-button type="primary"
+                     :loading="addressBtnLoading"
+                     @click="handleSubmitAddress">保 存</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -176,7 +222,7 @@ export default {
           { min: 2, max: 9, message: '长度在 2 到 9 个字符', trigger: 'blur' }
         ],
         phone: [
-          {validator: checkPhone, trigger: 'blur'}
+          { validator: checkPhone, trigger: 'blur' }
         ],
         city: [
           { required: true, message: '请选择所在区域', trigger: 'change' }
@@ -211,7 +257,7 @@ export default {
     handleSubmitAddress () {
       this.$refs.addressForm.validate((valid) => {
         if (valid) {
-          const [ provinceId, cityId ] = this.addressForm.city
+          const [provinceId, cityId] = this.addressForm.city
           const area = {
             provinceId,
             cityId

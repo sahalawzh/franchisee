@@ -2,7 +2,7 @@
   <el-footer height="352px">
     <div class="container">
       <div class="footer-main">
-        <h4>蓝湾在线定制</h4>
+        <h4>兰湾在线定制</h4>
         <div class="footer-main-en">LANWAN Online</div>
         <el-link class="footer-main-link">关于我们</el-link>
         <el-link class="footer-main-link">联系我们</el-link>
