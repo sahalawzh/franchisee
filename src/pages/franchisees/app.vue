@@ -12,14 +12,15 @@
         </el-steps>
       </el-row>
       <div class="franchisees-content">
-        
-        <router-view/>
-      
+        <router-view />
       </div>
     </el-main>
 
     <div class="advertise-box">
-      <div class="advertise-title"><span>兰湾足行<span class="en">TM</span></span><span>带你创业</span><span>带你赢</span></div>
+      <div class="advertise-title">
+        <span>兰湾足行<span class="en">TM</span></span
+        ><span>带你创业</span><span>带你赢</span>
+      </div>
       <div class="advertise-content">
         <ul>
           <li>定制</li>
@@ -32,36 +33,36 @@
   </el-container>
 </template>
 <script>
-import DefaultHeader from '../../components/defaultHeader'
-import DefaultFooter from '../../components/defaultFooter'
+import DefaultHeader from "../../components/defaultHeader";
+import DefaultFooter from "../../components/defaultFooter";
 export default {
   components: {
     DefaultHeader,
     DefaultFooter
   },
   computed: {
-    stepActive () {
-      let path = this.$route.path
-      let query = this.$route.query
+    stepActive() {
+      let path = this.$route.path;
+      let query = this.$route.query;
       if (query.status) {
-        path = path + '_' + query.status
+        path = path + "_" + query.status;
       }
       switch (path) {
-        case '/':
-          return 1
-        case '/payment':
-          return 2
-        case '/payment_success':
-          return 3
+        case "/":
+          return 1;
+        case "/payment":
+          return 2;
+        case "/payment_success":
+          return 3;
       }
     }
   }
-}
+};
 </script>
 <style lang="less">
 .page-franchisees {
   flex-direction: column !important;
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   .main-franchisees {
     padding: 0 60px 90px;
     .word-tip {
@@ -78,8 +79,8 @@ export default {
     }
     .franchisees-content {
       min-height: 380px;
-      background:rgba(255,255,255,1);
-      box-shadow:0px 5px 38px 0px rgba(10,2,5,0.17);
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0px 5px 38px 0px rgba(10, 2, 5, 0.17);
       padding: 60px 100px 100px;
     }
   }
@@ -94,7 +95,7 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    background-image: url('../../assets/shape/advertise.png');
+    background-image: url("../../assets/shape/advertise.png");
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -103,7 +104,7 @@ export default {
       & > span:not(:last-child) {
         margin-right: 32px;
       }
-      .en{
+      .en {
         font-size: 32px;
         vertical-align: text-top;
         font-weight: 600;
@@ -117,7 +118,7 @@ export default {
         display: inline-block;
         padding: 0 20px;
         &:not(:last-child)::after {
-          content: '';
+          content: "";
           position: absolute;
           right: -4px;
           top: 0;
@@ -132,4 +133,3 @@ export default {
   }
 }
 </style>
-

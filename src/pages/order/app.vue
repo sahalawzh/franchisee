@@ -1,9 +1,10 @@
 <template>
   <el-container class="page-order">
     <default-header></default-header>
-    
-    <div class="order-banner">
-      <img src="../../assets/order/order-header.png" alt="">
+
+    <!-- <div class="order-banner">
+      <img src="../../assets/order/order-header.png"
+           alt="" />
       <div class="order-banner__info">
         <h4>3D打印功能性定制鞋垫</h4>
         <div>
@@ -14,58 +15,62 @@
           </ul>
         </div>
       </div>
-    </div>
+    </div> -->
     <el-main>
-      <div class="order-container" :class="{'order-container__width': stepActive === 1}">
-        <el-steps class="step-wrap" align-center :active="stepActive">
-          <el-step title="选择脚型数据" icon="el-icon-edit"></el-step>
-          <el-step title="购物车结算" icon="el-icon-document"></el-step>
-          <el-step title="支付订单" icon="el-icon-money"></el-step>
-          <el-step title="完成" icon="el-icon-check"></el-step>
+      <div class="order-container"
+           :class="{ 'order-container__width': stepActive === 1 }">
+        <el-steps class="step-wrap"
+                  align-center
+                  :active="stepActive">
+          <el-step title="选择脚型数据"
+                   icon="el-icon-edit"></el-step>
+          <el-step title="购物车结算"
+                   icon="el-icon-document"></el-step>
+          <el-step title="支付订单"
+                   icon="el-icon-money"></el-step>
+          <el-step title="完成"
+                   icon="el-icon-check"></el-step>
         </el-steps>
 
         <div class="main-content">
-
-          <router-view/>
-
+          <router-view />
         </div>
       </div>
     </el-main>
 
     <default-footer></default-footer>
-
   </el-container>
 </template>
 <script>
-import DefaultHeader from '@/components/defaultHeader'
-import DefaultFooter from '@/components/defaultFooter'
+import DefaultHeader from "@/components/defaultHeader";
+import DefaultFooter from "@/components/defaultFooter";
 export default {
   components: {
     DefaultHeader,
     DefaultFooter
   },
-  created () {
-  },
+  created () { },
   computed: {
     stepActive () {
-      let path = this.$route.path
+      let path = this.$route.path;
       switch (path) {
-        case '/':
-          return 1
-        case '/cart':
-          return 2
-        case '/pay':
-          return 3
-        case '/success':
-          return 4
+        case "/":
+          return 1;
+        // case "/cart":
+        //   return 2;
+        case "/reserve":
+          return 2;
+        case "/pay":
+          return 3;
+        case "/success":
+          return 4;
       }
     }
   },
   data () {
-    return {
-    }
+    return {};
   }
-}
+};
 </script>
 <style lang="less" scoped>
 .page-order {
@@ -93,16 +98,16 @@ export default {
       li {
         float: right;
         margin-left: 26px;
-        color:rgba(204,204,204,1);
+        color: rgba(204, 204, 204, 1);
       }
     }
   }
 }
-.el-main{
-  background-color: #F2F2F2;
+.el-main {
+  background-color: #f2f2f2;
   .order-container {
-    background:rgba(255,255,255,1);
-    box-shadow:0px 5px 38px 0px rgba(10,2,5,0.17);
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px 5px 38px 0px rgba(10, 2, 5, 0.17);
     margin: 0 30px;
     padding: 30px 60px;
     &__width {
@@ -118,4 +123,3 @@ export default {
   }
 }
 </style>
-

@@ -1,302 +1,286 @@
 <template>
   <el-container class="page-shape">
-    <default-header></default-header>
+    <banner-container></banner-container>
 
-    <el-main class="main-container">
+    <el-row v-if="isLogin">
 
-      <el-row class="shape-advertise">
-        <el-image
-          :src="url"
-          fit="cover"></el-image>
-        <div class="shape-wrap">
-          <el-col :span="9" :offset="3" class="shape-wrap__info">
-            <div class="protect-en">PROTECT</div>
-            <div class="feet-en">FOOT BEGINS WITH FEET</div>
-            <div class="feet-zh"><span class="feet-zh__bottom">护足</span>从脚开始</div>
-            <p class="feet-desc">
-              每个人的双脚都是不一样的，走路时的运动习惯也不尽相同。足部受力的不均匀，不但会导致足部问题，还会引起身体其他部位的不适。
-            </p>
-            <div class="experience-btn"><el-link @click="handleExperience">{{ isLogin ? '定制我的专属鞋垫' : '立即体验' }}<i class="el-icon-right"></i></el-link></div>
-          </el-col>
-          <el-col :span="6" :offset="6">
-            <div>
-              <el-link class="entrance-btn" @click="handleFranchisees">{{ role === 3 ? '进入加盟商后台' : '我要做加盟商' }}</el-link>
-            </div>
-            <div v-if="!isLogin">
-              <el-link class="entrance-btn" @click="handleToLogin">查看我的脚型数据</el-link>
-            </div>
-          </el-col>
-        </div>
-      </el-row>
-
-      
-      
-      <el-row v-if="isLogin">
-
-        <template v-if="scanList.length" >
-          <el-col :span="6" class="shape-action">
-            <div class="record-title">
-              <i class="el-icon-s-data"></i>
-              <span>我的脚型数据</span>
-            </div>
-
-              <div class="record-list">
-                <div class="record-list__time" v-for="(item, index) in scanList" :key="item.id">
-                  <span class="first-item" v-if="index === 0">{{ item.scanTime }}</span>
-                  <el-radio v-else v-model="currentScan" @change="handleCheckCompare" :label="item.id">{{ item.scanTime }}</el-radio>
-                </div>
-              </div>
-              <div class="page-count">共{{ totalPage }}页</div>
-              
-              <el-pagination
-                small
-                @current-change="handleCurrentChange"
-                layout="prev, pager, next, jumper"
-                :current-page="start"
-                :page-size="limits"
-                :total="totalPage">
-              </el-pagination>
-
-          </el-col>
-          <el-col :span="18" class="shape-data" v-loading="tableLoading">
-            <el-table
-              :data="tableData"
-              stripe
-              class="shape-data__table"
-              style="width: 100%">
-              <el-table-column
-                prop="label"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                :render-header="renderTdHeader"
-                class="td-cell">
-                <template scope="scope">
-                  <span class="column-left">{{ scope.row.l_value }}</span>
-                  <span class="column-right">{{ scope.row.r_value }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column
-                :render-header="renderTdHeader">
-                <template scope="scope">
-                  <div v-if="currentScan">
-                    <span class="column-left">{{ scope.row[`l_value_${currentScan}`] }}</span>
-                    <span class="column-right">{{ scope.row[`r_value_${currentScan}`] }}</span>
-                  </div>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
-        </template>
-        <el-col :span="24" class="shape-action" v-else>
+      <template v-if="scanList.length">
+        <el-col :span="6"
+                class="shape-action">
           <div class="record-title">
             <i class="el-icon-s-data"></i>
             <span>我的脚型数据</span>
           </div>
-          <div class="record-empty">
-            <img src="../../assets/shape/foot-shape.png" class="foot-shape" alt="">
-            <p class="record-empty__text">还没有测量的脚型数据</p>
-            <p class="record-empty__text">请联系你当地的兰湾足行店铺扫描脚型数据</p>
-            <img src="../../assets/shape/service-qrcode.png" class="service-qrcode" alt="">
-            <p class="contact-info">兰湾足行所在城市：佛山&nbsp;&nbsp;0757-85500380&nbsp;丨&nbsp;85500382&nbsp;&nbsp;&nbsp;青岛&nbsp;&nbsp;&nbsp;0532-88690000&nbsp;&nbsp;&nbsp;苏州&nbsp;&nbsp;&nbsp;0512-68796096&nbsp;&nbsp;&nbsp;厦门</p>
-            <p class="contact-info">想做一站式服务创业项目，共享兰湾足行，请微信客服</p>
+
+          <div class="record-list">
+            <div class="record-list__time"
+                 v-for="(item, index) in scanList"
+                 :key="item.id">
+              <span class="first-item"
+                    v-if="index === 0">{{ item.scanTime }}</span>
+              <el-radio v-else
+                        v-model="currentScan"
+                        @change="handleCheckCompare"
+                        :label="item.id">{{ item.scanTime }}</el-radio>
+            </div>
           </div>
-        </el-col>
-      </el-row>
+          <div class="page-count">共{{ totalPage }}页</div>
 
+          <el-pagination small
+                         @current-change="handleCurrentChange"
+                         layout="prev, pager, next, jumper"
+                         :current-page="start"
+                         :page-size="limits"
+                         :total="totalPage">
+          </el-pagination>
 
-      <el-row class="about-box">
-        <el-col :offset="2" :span="10">
-          <div class="about-box__desc">兰湾足行<span class="en">TM</span>矫形鞋垫是无限三维|兰湾智能旗下子品牌，为国内外有足部治疗及保健需求的人群，结合惠普高精度3D打印而研发出定制鞋垫。</div>
-          <div class="about-box__title">适应症</div>
-          <div class="about-box__ul">
-            <ul>
-              <li>内翻/外翻足</li>
-              <li>扁平/高弓足</li>
-              <li>旋前/旋后</li>
-              <li>左右肢长度不等（长短腿）</li>
-              <li>足底溃疡（鸡眼）</li>
-              <li>糖尿病足底溃疡</li>
-              <li>足底筋膜炎等足部疾病</li>
-              <li>生物力线不正常引起的O/X腿、腰腿疼痛</li>
-            </ul>
-          </div>
         </el-col>
-        <el-col :offset="1" :span="8">
-          <a class="about-video" href="#">
-            <video :src="currentVideo.video" :poster="currentVideo.image" controls="controls"></video>
-            <!-- <img src="../../assets/shape/about-video.png" alt="">
-            <i class="el-icon-caret-right"></i> -->
-          </a>
-          <el-row type="flex" class="video-group" justify="space-between">
-            <el-link :underline="false" @click="handleVideo(item)" :span="6" class="video-group__item" v-for="item in videoList" :key="item.id">
-              <img :src="item.image" alt="">
-            </el-link>
-          </el-row>
+        <el-col :span="18"
+                class="shape-data"
+                v-loading="tableLoading">
+          <el-table :data="tableData"
+                    stripe
+                    class="shape-data__table"
+                    style="width: 100%">
+            <el-table-column prop="label"
+                             width="180">
+            </el-table-column>
+            <el-table-column :render-header="renderTdHeader"
+                             class="td-cell">
+              <template scope="scope">
+                <span class="column-left">{{ scope.row.l_value }}</span>
+                <span class="column-right">{{ scope.row.r_value }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :render-header="renderTdHeader">
+              <template scope="scope">
+                <div v-if="currentScan">
+                  <span class="column-left">{{ scope.row[`l_value_${currentScan}`] }}</span>
+                  <span class="column-right">{{ scope.row[`r_value_${currentScan}`] }}</span>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-col>
-      </el-row>
+      </template>
+      <el-col :span="24"
+              class="shape-action"
+              v-else>
+        <div class="record-title">
+          <i class="el-icon-s-data"></i>
+          <span>我的脚型数据</span>
+        </div>
+        <div class="record-empty">
+          <img src="../../assets/shape/foot-shape.png"
+               class="foot-shape"
+               alt="">
+          <p class="record-empty__text">还没有测量的脚型数据</p>
+          <el-link type="primary"
+                   class="record-empty__check"
+                   href="nearby.html">查看附近测量点</el-link>
+          <!-- <p class="record-empty__text">请联系你当地的兰湾足行店铺扫描脚型数据</p>
+          <img src="../../assets/shape/service-qrcode.png"
+               class="service-qrcode"
+               alt="">
+          <p class="contact-info">兰湾足行所在城市：佛山&nbsp;&nbsp;0757-85500380&nbsp;丨&nbsp;85500382&nbsp;&nbsp;&nbsp;青岛&nbsp;&nbsp;&nbsp;0532-88690000&nbsp;&nbsp;&nbsp;苏州&nbsp;&nbsp;&nbsp;0512-68796096&nbsp;&nbsp;&nbsp;厦门</p>
+          <p class="contact-info">想做一站式服务创业项目，共享兰湾足行，请微信客服</p> -->
+        </div>
+      </el-col>
+    </el-row>
 
-      <el-row class="custom-box">
-        <div class="custom-box__header">
-          <div class="custom-box__title">
-            <div class="zh">定制流程</div>
-            <div class="en">Custom Process</div>
+    <el-row class="about-box">
+      <el-col :offset="2"
+              :span="10">
+        <div class="about-box__desc">兰湾足行<span class="en">TM</span>矫形鞋垫是无限三维|兰湾智能旗下子品牌，为国内外有足部治疗及保健需求的人群，结合惠普高精度3D打印而研发出定制鞋垫。</div>
+        <div class="about-box__title">适应症</div>
+        <div class="about-box__ul">
+          <ul>
+            <li>内翻/外翻足</li>
+            <li>扁平/高弓足</li>
+            <li>旋前/旋后</li>
+            <li>左右肢长度不等（长短腿）</li>
+            <li>足底溃疡（鸡眼）</li>
+            <li>糖尿病足底溃疡</li>
+            <li>足底筋膜炎等足部疾病</li>
+            <li>生物力线不正常引起的O/X腿、腰腿疼痛</li>
+          </ul>
+        </div>
+      </el-col>
+      <el-col :offset="1"
+              :span="8">
+        <a class="about-video"
+           href="#">
+          <video :src="currentVideo.video"
+                 :poster="currentVideo.image"
+                 controls="controls"></video>
+          <!-- <img src="../../assets/shape/about-video.png" alt="">
+          <i class="el-icon-caret-right"></i> -->
+        </a>
+        <el-row type="flex"
+                class="video-group"
+                justify="space-between">
+          <el-link :underline="false"
+                   @click="handleVideo(item)"
+                   :span="6"
+                   class="video-group__item"
+                   v-for="item in videoList"
+                   :key="item.id">
+            <img :src="item.image"
+                 alt="">
+          </el-link>
+        </el-row>
+      </el-col>
+    </el-row>
+
+    <el-row class="custom-box">
+      <div class="custom-box__header">
+        <div class="custom-box__title">
+          <div class="zh">定制流程</div>
+          <div class="en">Custom Process</div>
+        </div>
+      </div>
+      <el-col :span="3"
+              :offset="2">
+        <div class="process-item process-into">
+          <img src="../../assets/shape/process-into.png"
+               alt="">
+          <div class="process-title">
+            <span class="process-num">1</span>
+            <span>顾客进店</span>
           </div>
         </div>
-        <el-col :span="3" :offset="2">
-          <div class="process-item process-into">
-            <img src="../../assets/shape/process-into.png" alt="">
-            <div class="process-title">
-              <span class="process-num">1</span>
-              <span>顾客进店</span>
-            </div>
+      </el-col>
+      <el-col :span="6"
+              :offset="1">
+        <div class="process-item process-client">
+          <img src="../../assets/shape/process-client.png"
+               alt="">
+          <div class="process-title">
+            <span class="process-num">1</span>
+            <span>商店端/个人端</span>
           </div>
-        </el-col>
-        <el-col :span="6" :offset="1">
-          <div class="process-item process-client">
-            <img src="../../assets/shape/process-client.png" alt="">
-            <div class="process-title">
-              <span class="process-num">1</span>
-              <span>商店端/个人端</span>
-            </div>
-            <div>
-              <i class="el-icon-bottom"></i>
-            </div>
-            <div class="process-item__step">
-              <div class="step-wrap">足底扫描</div>
-            </div>
-            <div>
-              <i class="el-icon-bottom"></i>
-            </div>
-            <div class="process-item__step">
-              <div class="step-wrap">建立客户档案并发送扫描数据解读分析报告</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="6" :offset="1">
-          <div class="process-item process-center">
-            <img src="../../assets/shape/process-center.png" alt="">
-            <div class="process-title">
-              <span class="process-num">1</span>
-              <span>兰湾3D打印创新中心</span>
-            </div>
-            <div>
-              <i class="el-icon-bottom"></i>
-            </div>
-            <div class="process-item__step">
-              <div class="step-wrap">足底数据分析</div>
-            </div>
-            <div>
-              <i class="el-icon-bottom"></i>
-            </div>
-            <div class="process-item__step">
-              <div class="step-wrap">鞋垫设计</div>
-            </div>
-            <div>
-              <i class="el-icon-bottom"></i>
-            </div>
-            <div class="process-item__step">
-              <div class="step-wrap">鞋垫生产</div>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="process-item process-exchange">
-            <img src="../../assets/shape/process-exchange.png" alt="">
-            <div class="process-title">
-              <span class="process-num">1</span>
-              <span>客户交货</span>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-
-      <el-row class="advertise-box">
-        <div class="advertise-box__site">
-          <img src="../../assets/common/lwzx-logo.png" alt="">
-        </div>
-        <div class="advertise-box__sell">
-          <img src="../../assets/shape/sell-icon.png" alt="">
           <div>
-            <div class="sell-state">官方直销</div>
+            <i class="el-icon-bottom"></i>
+          </div>
+          <div class="process-item__step">
+            <div class="step-wrap">足底扫描</div>
+          </div>
+          <div>
+            <i class="el-icon-bottom"></i>
+          </div>
+          <div class="process-item__step">
+            <div class="step-wrap">建立客户档案并发送扫描数据解读分析报告</div>
           </div>
         </div>
-        <el-col :offset="6" :span="12">
-          <el-col :span="8" class="security-item">
-            <img src="../../assets/shape/security_1.png" alt="">
-            <p>正品保障</p>
-          </el-col>
-          <el-col :span="8" class="security-item">
-            <img src="../../assets/shape/security_2.png" alt="">
-            <p>统一发货</p>
-          </el-col>
-          <el-col :span="8" class="security-item">
-            <img src="../../assets/shape/security_3.png" alt="">
-            <p>统一售后</p>
-          </el-col>
-        </el-col>
-        <div class="advertise-box__insole">
-          <img src="../../assets/shape/insole-img.png" alt="">
+      </el-col>
+      <el-col :span="6"
+              :offset="1">
+        <div class="process-item process-center">
+          <img src="../../assets/shape/process-center.png"
+               alt="">
+          <div class="process-title">
+            <span class="process-num">1</span>
+            <span>兰湾3D打印创新中心</span>
+          </div>
+          <div>
+            <i class="el-icon-bottom"></i>
+          </div>
+          <div class="process-item__step">
+            <div class="step-wrap">足底数据分析</div>
+          </div>
+          <div>
+            <i class="el-icon-bottom"></i>
+          </div>
+          <div class="process-item__step">
+            <div class="step-wrap">鞋垫设计</div>
+          </div>
+          <div>
+            <i class="el-icon-bottom"></i>
+          </div>
+          <div class="process-item__step">
+            <div class="step-wrap">鞋垫生产</div>
+          </div>
         </div>
-      </el-row>
+      </el-col>
+      <el-col :span="4">
+        <div class="process-item process-exchange">
+          <img src="../../assets/shape/process-exchange.png"
+               alt="">
+          <div class="process-title">
+            <span class="process-num">1</span>
+            <span>客户交货</span>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
 
-      <Login @login-status="handleLoginStatus" v-model="loginVisible"></Login>
-    </el-main>
+    <el-row class="advertise-box">
+      <div class="advertise-box__site">
+        <img src="../../assets/common/lwzx-logo.png"
+             alt="">
+      </div>
+      <div class="advertise-box__sell">
+        <img src="../../assets/shape/sell-icon.png"
+             alt="">
+        <div>
+          <div class="sell-state">官方直销</div>
+        </div>
+      </div>
+      <el-col :offset="6"
+              :span="12">
+        <el-col :span="8"
+                class="security-item">
+          <img src="../../assets/shape/security_1.png"
+               alt="">
+          <p>正品保障</p>
+        </el-col>
+        <el-col :span="8"
+                class="security-item">
+          <img src="../../assets/shape/security_2.png"
+               alt="">
+          <p>统一发货</p>
+        </el-col>
+        <el-col :span="8"
+                class="security-item">
+          <img src="../../assets/shape/security_3.png"
+               alt="">
+          <p>统一售后</p>
+        </el-col>
+      </el-col>
+      <div class="advertise-box__insole">
+        <img src="../../assets/shape/insole-img.png"
+             alt="">
+      </div>
+    </el-row>
 
     <default-footer></default-footer>
 
-    
   </el-container>
 </template>
 <script>
-import DefaultHeader from '@/components/defaultHeader'
+import BannerContainer from '@/components/banner'
 import DefaultFooter from '@/components/defaultFooter'
 import loginMixins from '@/mixins/login'
-import { getScan, getScanData, getListVideo, getSearchFranchisee } from '@/service/http'
+import { getScan, getScanData, getListVideo } from '@/service/http'
 import handleScanData from './utils/handleScanData'
-import deepCopy from '@/utils/deepCopy'
-import Login from '@/components/login'
-
 export default {
   components: {
-    Login,
-    DefaultHeader,
+    BannerContainer,
     DefaultFooter
   },
   mixins: [loginMixins],
   methods: {
-    handleFranchisees () {
-      if (this.isLogin) {
-        getSearchFranchisee().then(res => {
-          window.location.href = res.data ? '/backend.html' : '/franchisees.html'
-        }).catch(err => {
-          console.log(err)
-        })
-      } else {
-        this.handleLoginStatus({ loginVisible: true })
-      }
-    },
-    handleExperience () {
-      if (this.isLogin) {
-        window.location.href = 'order.html'
-      } else {
-        this.handleLoginStatus({ loginVisible: true })
-      }
-    },
     handleVideo (item) {
       this.currentVideo = item
     },
     getListVideo () {
-      getListVideo({videoType: 0}).then(res => {
+      getListVideo({ videoType: 0 }).then(res => {
         console.log(res)
         this.videoList = res.data
         this.currentVideo = this.videoList[0]
       }).catch(err => {
         console.log(err)
       })
-    },
-    handleToLogin () {
-      this.handleLoginStatus({ loginVisible: true })
     },
     handleCheckCompare (val) {
       this.currentScan = val
@@ -305,7 +289,7 @@ export default {
     getScanDetail (id) {
       this.tableLoading = true
       getScanData({ id }).then(res => {
-        const [ leftData, rightData ] = res.data
+        const [leftData, rightData] = res.data
         this.tableData = handleScanData(leftData, rightData, this.currentScan).map((o, i) => {
           return {
             ...o,
@@ -348,7 +332,7 @@ export default {
     renderTdHeader () {
       return this.renderHeader(['左脚', '右脚'])
     },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.start = val
       this.getScanList()
     }
@@ -362,7 +346,6 @@ export default {
       scanList: [],
       currentScan: '',
       tableLoading: false,
-      url: require('../../assets/shape/advertise.png'),
       videoList: [],
       currentVideo: ''
     }
@@ -424,7 +407,7 @@ export default {
           height: 40px;
           border-radius: 6px;
           text-align: center;
-          background-image: linear-gradient(to right, #D5DE31, #03D6C7);
+          background-image: linear-gradient(to right, #d5de31, #03d6c7);
           a {
             width: 100%;
             height: 100%;
@@ -436,12 +419,12 @@ export default {
         }
       }
       .entrance-btn {
-        color: rgba(255,255,255,.8);
+        color: rgba(255, 255, 255, 0.8);
         width: 194px;
         height: 40px;
         line-height: 40px;
         border-radius: 6px;
-        border: 1px solid rgba(255,255,255,.7);
+        border: 1px solid rgba(255, 255, 255, 0.7);
         text-align: center;
         font-size: 16px;
         letter-spacing: 1px;
@@ -450,7 +433,7 @@ export default {
     }
   }
   .shape-action {
-    background-color: #EFF2F9;
+    background-color: #eff2f9;
     padding: 0 39px 26px 80px;
     box-sizing: border-box;
     .record-title {
@@ -485,7 +468,7 @@ export default {
         border-bottom: 1px solid #fff;
         .first-item {
           font-size: 14px;
-          color: #0096D6;
+          color: #0096d6;
           padding-left: 24px;
         }
       }
@@ -501,6 +484,10 @@ export default {
       &__text {
         color: #999;
         margin-top: 8px;
+      }
+      &__check {
+        margin-top: 8px;
+        font-size: 14px;
       }
       .foot-shape {
         margin: 20px 0 14px;
@@ -557,12 +544,12 @@ export default {
       }
     }
     &__title {
-      color: #0096D6;
+      color: #0096d6;
       font-size: 24px;
       padding-left: 8px;
       margin-top: 30px;
       margin-bottom: 12px;
-      border-left: 4px solid #0096D6;
+      border-left: 4px solid #0096d6;
     }
     &__ul {
       color: #798696;
@@ -581,16 +568,16 @@ export default {
     }
 
     .about-video > img {
-      width:100%;
+      width: 100%;
     }
 
     .about-video i {
       position: absolute;
       top: 50%;
       left: 50%;
-      -webkit-transform: translate(-50% , -50%);
-          -ms-transform: translate(-50% , -50%);
-              transform: translate(-50% , -50%);
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
       width: 80px;
       height: 80px;
       line-height: 80px;
@@ -598,36 +585,36 @@ export default {
       background: #fff;
       border-radius: 50%;
       font-size: 24.027px;
-      z-index:10;
-      -webkit-animation : 2s play-animation infinite;
-              animation : 2s play-animation infinite;
-      -webkit-transition:0.2s color;
-      transition:0.2s color;
+      z-index: 10;
+      -webkit-animation: 2s play-animation infinite;
+      animation: 2s play-animation infinite;
+      -webkit-transition: 0.2s color;
+      transition: 0.2s color;
     }
 
     .about-video:hover i {
-      color:#0096D6;
+      color: #0096d6;
     }
 
     @-webkit-keyframes play-animation {
       from {
-        -webkit-box-shadow : 0px 0px 0px 0px #FFF;
-                box-shadow : 0px 0px 0px 0px #FFF;
+        -webkit-box-shadow: 0px 0px 0px 0px #fff;
+        box-shadow: 0px 0px 0px 0px #fff;
       }
       to {
-        -webkit-box-shadow : 0px 0px 0px 10px transparent;
-                box-shadow : 0px 0px 0px 10px transparent;
+        -webkit-box-shadow: 0px 0px 0px 10px transparent;
+        box-shadow: 0px 0px 0px 10px transparent;
       }
     }
 
     @keyframes play-animation {
       from {
-        -webkit-box-shadow : 0px 0px 0px 0px #FFF;
-                box-shadow : 0px 0px 0px 0px #FFF;
+        -webkit-box-shadow: 0px 0px 0px 0px #fff;
+        box-shadow: 0px 0px 0px 0px #fff;
       }
       to {
-        -webkit-box-shadow : 0px 0px 0px 10px transparent;
-                box-shadow : 0px 0px 0px 10px transparent;
+        -webkit-box-shadow: 0px 0px 0px 10px transparent;
+        box-shadow: 0px 0px 0px 10px transparent;
       }
     }
   }
@@ -647,12 +634,12 @@ export default {
       }
       .en {
         font-size: 28px;
-        font-weight:300;
+        font-weight: 300;
       }
     }
     .process-item {
       text-align: center;
-      color: #1E8EC9;
+      color: #1e8ec9;
       font-weight: 600;
       .process-title {
         text-align: center;
@@ -661,7 +648,7 @@ export default {
           height: 32px;
           line-height: 32px;
           border-radius: 50%;
-          background-color: #F18D28;
+          background-color: #f18d28;
           color: #fff;
           display: inline-block;
           margin-right: 10px;
@@ -670,7 +657,7 @@ export default {
       &__step {
         .step-wrap {
           border-radius: 16px;
-          border: 2px solid #1E8EC9;
+          border: 2px solid #1e8ec9;
           padding: 2px 20px;
           line-height: 30px;
           display: inline-block;
@@ -689,11 +676,11 @@ export default {
       margin-bottom: 50px;
       .sell-state {
         font-size: 32px;
-        font-weight:300;
+        font-weight: 300;
         height: 48px;
         line-height: 48px;
         color: #fff;
-        background-color: #0096D6;
+        background-color: #0096d6;
         padding: 2px 60px;
         border-radius: 26px;
         display: inline-block;

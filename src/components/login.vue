@@ -1,53 +1,87 @@
 <template>
-  <el-dialog
-    :show-close="false"
-    :visible.sync="dialogVisible"
-    width="390px">
-    <div slot="title" class="header-title">
-      <div class="login-way" :class="{'tabActive': loginType === 'mobile'}" @click="handleTab('mobile')">手机快速登录</div>
-      <div class="login-way" :class="{'tabActive': loginType === 'account'}" @click="handleTab('account')">账号密码登录</div>
+  <el-dialog :show-close="false"
+             :visible.sync="dialogVisible"
+             width="390px">
+    <div slot="title"
+         class="header-title">
+      <div class="login-way"
+           :class="{'tabActive': loginType === 'mobile'}"
+           @click="handleTab('mobile')">手机快速登录</div>
+      <div class="login-way"
+           :class="{'tabActive': loginType === 'account'}"
+           @click="handleTab('account')">账号密码登录</div>
     </div>
-    <el-form class="form-container" :model="form" ref="form" :rules="rules">
+    <el-form class="form-container"
+             :model="form"
+             ref="form"
+             :rules="rules">
       <template v-if="loginType === 'mobile'">
         <el-form-item prop="phone">
           <div class="area-tel">
             <span class="area-box">中国 0086∨</span>
-            <el-input class="tel-control" v-model="form.phone" autocomplete="off" placeholder="请输入常用手机号">
-              <i slot="prefix" class="el-input__icon el-icon-mobile-phone"></i>
+            <el-input class="tel-control"
+                      v-model="form.phone"
+                      autocomplete="off"
+                      placeholder="请输入常用手机号">
+              <i slot="prefix"
+                 class="el-input__icon el-icon-mobile-phone"></i>
             </el-input>
           </div>
         </el-form-item>
         <el-form-item prop="imageCode">
-          <el-input v-model="form.imageCode" autocomplete="off" placeholder="验证码">
-            <span slot="suffix" class="random-code" @click="handleRandomCode">
-              <img :src="randomCodeSrc" alt="">
+          <el-input v-model="form.imageCode"
+                    autocomplete="off"
+                    placeholder="验证码">
+            <span slot="suffix"
+                  class="random-code"
+                  @click="handleRandomCode">
+              <img :src="randomCodeSrc"
+                   alt="">
             </span>
           </el-input>
         </el-form-item>
         <el-form-item prop="code">
-          <el-input v-model="form.code" autocomplete="off" placeholder="手机验证码">
-            <el-button slot="append" :disabled="disabledBtn" @click="handleGetCode(form.phone, 'login')" class="code-btn">{{ codeBtnText }}</el-button>
+          <el-input v-model="form.code"
+                    autocomplete="off"
+                    placeholder="手机验证码">
+            <el-button slot="append"
+                       :disabled="disabledBtn"
+                       @click="handleGetCode(form.phone, 'login')"
+                       class="code-btn">{{ codeBtnText }}</el-button>
           </el-input>
         </el-form-item>
       </template>
       <template v-if="loginType === 'account'">
         <el-form-item prop="username">
-          <el-input v-model="form.username" type="text" placeholder="请输入用户名">
-            <i slot="prefix" class="el-input__icon el-icon-user"></i>
+          <el-input v-model="form.username"
+                    type="text"
+                    placeholder="请输入用户名">
+            <i slot="prefix"
+               class="el-input__icon el-icon-user"></i>
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model.trim="form.password" type="password" placeholder="请输入密码">
-            <i slot="prefix" class="el-input__icon el-icon-lock"></i>
+          <el-input v-model.trim="form.password"
+                    type="password"
+                    placeholder="请输入密码">
+            <i slot="prefix"
+               class="el-input__icon el-icon-lock"></i>
           </el-input>
         </el-form-item>
       </template>
       <div class="login-footer">
-        <el-button class="login-btn" type="danger" @click="handleToLogin">登 录</el-button>
-        <p class="tips" v-if="loginType === 'mobile'">验证即登录，未注册将自动创建无限三维账号</p>
-        <div v-if="loginType === 'account'" class="pass-link">
-          <el-link :underline="false" class="pass-register" href="/register.html">立即注册</el-link>
-          <el-link :underline="false" href="/forgetPassword.html">忘记密码？</el-link>
+        <el-button class="login-btn"
+                   type="danger"
+                   @click="handleToLogin">登 录</el-button>
+        <p class="tips"
+           v-if="loginType === 'mobile'">验证即登录，未注册将自动创建无限三维账号</p>
+        <div v-if="loginType === 'account'"
+             class="pass-link">
+          <el-link :underline="false"
+                   class="pass-register"
+                   href="/register.html">立即注册</el-link>
+          <el-link :underline="false"
+                   href="/forgetPassword.html">忘记密码？</el-link>
         </div>
       </div>
     </el-form>
@@ -56,10 +90,9 @@
 <script>
 import { postMemberLogin, postPhoneLogin, postCheckPhone } from '@/service/http'
 import storage from '@/utils/storage'
-import auth from '@/utils/auth'
 import commonMixins from '@/mixins/common'
 export default {
-  mixins: [ commonMixins ],
+  mixins: [commonMixins],
   data () {
     var checkPhone = (rule, value, callback) => {
       value = this.form.phone
@@ -81,8 +114,7 @@ export default {
         phone: '',
         checkCode: '',
         code: '',
-        imageCode: '',
-        checkCode: ''
+        imageCode: ''
       },
       rules: {
         username: [
@@ -158,7 +190,7 @@ export default {
               checkCode
             }
           }
-          let API = this.loginType === 'account' ? postMemberLogin : postPhoneLogin 
+          let API = this.loginType === 'account' ? postMemberLogin : postPhoneLogin
           API(params).then(res => {
             storage.set('gdlwzn_login', res.data)
             this.$emit('login-status', {
@@ -188,10 +220,10 @@ export default {
     text-align: center;
     cursor: pointer;
     &:first-child {
-      border-right: 1px solid #D2D2D2;
+      border-right: 1px solid #d2d2d2;
     }
     &.tabActive {
-      color: #124FAE;
+      color: #124fae;
     }
   }
 }
@@ -202,7 +234,7 @@ export default {
     height: 40px;
     line-height: 40px;
     width: 120px;
-    border: 1px solid #DCDFE6;
+    border: 1px solid #dcdfe6;
     text-align: center;
     padding: 0 14px;
     box-sizing: border-box;
@@ -217,8 +249,8 @@ export default {
   padding: 0 15px;
   margin-top: -10px;
   .code-btn {
-    background-color: #4571EA;
-    border: 1px solid #4571EA;
+    background-color: #4571ea;
+    border: 1px solid #4571ea;
     color: #fff;
     border-radius: 0;
   }

@@ -40,13 +40,21 @@
             <div class="address-item"
                  v-for="item in addressList"
                  :key="item.id">
-              <div class="address-item__name">{{ item.recipient }}（收）</div>
+              <div class="address-item__name">{{ item.recipient }}（收）<el-tag size="small"
+                        v-if="item.isDefault === 0">默认</el-tag>
+              </div>
               <div class="address-item__detail">{{ item.province }}&nbsp;{{ item.city }}&nbsp;{{ item.detailAddress }}&nbsp;&nbsp;&nbsp;&nbsp;{{ item.phone }}</div>
               <div class="address-item__action">
                 <el-button type="text"
+                           v-if="item.isDefault === 1"
+                           :loading="addressDefaultLoading"
+                           @click="handleSetDefault(item)">选为默认地址</el-button>
+                <el-divider v-if="item.isDefault === 1"
+                            direction="vertical"></el-divider>
+                <el-button type="text"
                            @click="handleOpAdress(item)">修改</el-button>
                 <el-divider direction="vertical"></el-divider>
-                <el-popover placement="top"
+                <!-- <el-popover placement="top"
                             width="160"
                             v-model="visible">
                   <p>是否确认删除该地址？</p>
@@ -60,13 +68,15 @@
                   </div>
                   <el-button slot="reference"
                              type="text">删除</el-button>
-                </el-popover>
+                </el-popover> -->
+                <el-button type="text"
+                           @click="handleDelAdress(item.id)">删除</el-button>
               </div>
             </div>
           </template>
-          <el-link v-else
-                   class="el-icon-plus"
+          <el-link class="el-icon-plus address-item-add"
                    type="primary"
+                   v-if="addressList.length <= maxAddressLen"
                    @click="handleOpAdress">添加新地址</el-link>
         </div>
       </div>
@@ -136,12 +146,13 @@
           <el-input class="control-address"
                     v-model="addressForm.detailAddress"></el-input>
         </el-form-item>
-        <!-- <el-form-item>
-          <el-switch
-            v-model="addressForm.default"
-            active-text="设置为默认收货地址">
+        <el-form-item>
+          <el-switch v-model="addressForm.isDefault"
+                     :active-value="0"
+                     :inactive-value="1"
+                     active-text="设置为默认收货地址">
           </el-switch>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item>
           <el-button type="primary"
                      :loading="addressBtnLoading"
@@ -187,6 +198,13 @@ export default {
         }
       }
     }
+    var checkCity = (rule, value, callback) => {
+      value = value.filter(Boolean)
+      if (!value.length) {
+        return callback(new Error('请选择所在区域'));
+      }
+      callback()
+    }
     return {
       loading: false,
       message: '',
@@ -195,7 +213,8 @@ export default {
         recipient: '',
         phone: '',
         city: [],
-        detailAddress: ''
+        detailAddress: '',
+        isDefault: 1
       },
       areaData: [],
       passwordVisible: false,
@@ -225,33 +244,57 @@ export default {
           { validator: checkPhone, trigger: 'blur' }
         ],
         city: [
-          { required: true, message: '请选择所在区域', trigger: 'change' }
+          { validator: checkCity, trigger: 'change' }
         ],
         detailAddress: [
           { required: true, message: '请填写详细地址', trigger: 'blur' },
-          { min: 2, max: 200, message: '长度在 2 到 200 个字符', trigger: 'blur' }
+          { min: 2, max: 80, message: '长度在 2 到 80 个字符', trigger: 'blur' }
         ]
       },
       addressList: [],
       addressBtnLoading: false,
-      visible: false
+      visible: false,
+      maxAddressLen: 5,
+      addressDefaultLoading: false
     }
   },
   watch: {
-    dialogFormVisible (val) {
-      if (val) {
-        this.handleChangeDstricts()
-      }
-    }
   },
   methods: {
-    handleDelAdress (id) {
-      deleteAddressDelete(id).then(res => {
+    handleSetDefault (item) {
+      const args = Object.assign({}, item)
+      args.isDefault = 0
+      this.addressDefaultLoading = true
+      putAddressUpdate(args).then(res => {
         console.log(res)
-        this.visible = false
+        this.$message({
+          message: '默认地址设置成功',
+          type: 'success'
+        })
+        this.addressDefaultLoading = false
         this.getAddressList()
       }).catch(err => {
         console.log(err)
+        this.addressDefaultLoading = false
+      })
+    },
+    handleDelAdress (id) {
+      this.$confirm('是否确认删除该地址？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteAddressDelete(id).then(res => {
+          console.log(res)
+          // this.visible = false
+          this.getAddressList()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }).catch(err => {
+          console.log(err)
+        })
       })
     },
     handleSubmitAddress () {
@@ -321,22 +364,25 @@ export default {
     handleSetPassword () {
       this.passwordVisible = true
     },
-    handleOpAdress (item) {
+    async handleOpAdress (item) {
       if (item) {
-        const { recipient, phone, detailAddress, provinceId, cityId, id } = item
+        const { recipient, phone, detailAddress, isDefault, provinceId, cityId, id } = item
         this.addressForm = {
           recipient,
           phone,
           detailAddress,
           city: [provinceId, cityId],
-          id
+          id,
+          isDefault
         }
       }
+      await this.handleChangeDstricts()
       this.dialogFormVisible = true
     },
     getAddressList () {
       getAddress().then(res => {
-        this.addressList = res.data ? res.data.slice(0, 1) : []
+        let result = res.data || []
+        this.addressList = result
       }).catch(err => {
         console.log(err)
       })
@@ -405,6 +451,9 @@ export default {
         position: absolute;
         bottom: 16px;
         right: 40px;
+      }
+      &-add {
+        margin: 20px 0;
       }
     }
   }

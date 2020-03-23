@@ -1,121 +1,156 @@
 <template>
-  <div class="page-order" v-loading="loading">
+  <div class="page-order"
+       v-loading="loading">
     <div class="main-title">选择本次打印的脚型数据</div>
     <div class="search-box">
-      <el-form ref="phoneForm" :model="phoneForm" :rules="phoneRules">
+      <el-form ref="phoneForm"
+               :model="phoneForm"
+               :rules="phoneRules">
         <el-form-item prop="phoneSingle">
-          <el-input placeholder="输入用户手机号查找" v-model="phoneForm.phoneSingle">
+          <el-input placeholder="输入用户手机号查找"
+                    v-model="phoneForm.phoneSingle">
           </el-input>
-          <el-button type="primary" @click="handleSearchPhone">查询</el-button>
+          <el-button type="primary"
+                     @click="handleSearchPhone">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <el-divider></el-divider>
-    
-    <el-table
-      :data="scanData"
-      style="width: 100%">
-      <el-table-column
-        label="手机号"
-        width="240">
+
+    <el-table :data="scanData"
+              style="width: 100%">
+      <el-table-column label="手机号"
+                       width="240">
         <template slot-scope="scope">
-          <el-radio v-model="scan.scanId" @change="handleScan" :label="scope.row.id">&nbsp;</el-radio>{{ scope.row.phone }}</template>
+          <el-radio v-model="scan.scanId"
+                    @change="handleScan"
+                    :label="scope.row.id">&nbsp;</el-radio>{{ scope.row.phone }}
+        </template>
       </el-table-column>
-      <el-table-column
-        prop="userName"
-        label="姓名"
-        width="220">
+      <el-table-column prop="userName"
+                       label="姓名"
+                       width="220">
       </el-table-column>
-      <el-table-column
-        prop="deviceNum"
-        label="扫描设备"
-        width="220">
+      <el-table-column prop="deviceNum"
+                       label="扫描设备"
+                       width="220">
       </el-table-column>
-      <el-table-column
-        label="扫描时间">
+      <el-table-column label="扫描时间">
         <template slot-scope="scope">
-          <el-date-picker
-          v-model="scope.row.scanTime"
-          type="datetime"
-          disabled
-          placeholder="选择日期时间">
-        </el-date-picker></template>
+          <el-date-picker v-model="scope.row.scanTime"
+                          type="datetime"
+                          disabled
+                          placeholder="选择日期时间">
+          </el-date-picker>
+        </template>
       </el-table-column>
     </el-table>
 
-    <el-form ref="form" :model="form" :rules="rules" class="form-container" :hide-required-asterisk="true" label-width="100px" label-position="left">
+    <el-form ref="form"
+             :model="form"
+             :rules="rules"
+             class="form-container"
+             :hide-required-asterisk="true"
+             label-width="100px"
+             label-position="left">
       <div class="form-title">填写客户资料</div>
-      <el-form-item label="疾病类型" prop="diseaseId">
-        <el-select v-model="form.diseaseId" placeholder="请选择疾病类型">
-          <el-option 
-            v-for="item in diseaseType.list"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"></el-option>
+      <el-form-item label="疾病类型"
+                    prop="diseaseId">
+        <el-select v-model="form.diseaseId"
+                   placeholder="请选择疾病类型">
+          <el-option v-for="item in diseaseType.list"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="选择尺码" prop="sizeId">
-        <el-select v-model="form.sizeId" placeholder="请选择尺码">
-          <el-option 
-            v-for="item in size.list"
-            :max="max"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"></el-option>
+      <el-form-item label="选择尺码"
+                    prop="sizeId">
+        <el-select v-model="form.sizeId"
+                   placeholder="请选择尺码">
+          <el-option v-for="item in size.list"
+                     :max="max"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="功能" prop="functionId">
+      <el-form-item label="功能"
+                    prop="functionId">
         <el-row>
-          <el-col :span="3" class="func-item" v-for="item in func.list" :key="item.id">
-            <el-image :src="item.image" class="func-img"></el-image>
+          <el-col :span="3"
+                  class="func-item"
+                  v-for="item in func.list"
+                  :key="item.id">
+            <el-image :src="item.image"
+                      class="func-img"></el-image>
             <div class="func-info">
               <div>{{ item.name }}</div>
               <div>{{ item.secondName }}</div>
-              <el-radio v-model="form.functionId" :label="item.id">&nbsp;</el-radio>
+              <el-radio v-model="form.functionId"
+                        :label="item.id">&nbsp;</el-radio>
             </div>
           </el-col>
         </el-row>
       </el-form-item>
-      <el-form-item label="鞋型" prop="shoeId">
+      <el-form-item label="鞋型"
+                    prop="shoeId">
         <el-radio-group v-model="form.shoeId">
-          <el-radio v-for="item in shoesType.list" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
+          <el-radio v-for="item in shoesType.list"
+                    :key="item.id"
+                    :label="item.id">{{ item.name }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="数量">
-        <el-input-number v-model="form.num" :min="1" :max="10"></el-input-number>
+        <el-input-number v-model="form.num"
+                         :min="1"
+                         :max="10"></el-input-number>
       </el-form-item>
-      <el-form-item label="收货人" prop="consignee">
-        <el-input v-model="form.consignee" class="control" placeholder="请填写收货人"></el-input>
+      <el-form-item label="收货人"
+                    prop="consignee">
+        <el-input v-model="form.consignee"
+                  class="control"
+                  placeholder="请填写收货人"></el-input>
       </el-form-item>
-      <el-form-item label="联系电话" prop="phone">
-        <el-input v-model="form.phone" class="control" placeholder="联系电话"></el-input>
+      <el-form-item label="联系电话"
+                    prop="phone">
+        <el-input v-model="form.phone"
+                  class="control"
+                  placeholder="联系电话"></el-input>
       </el-form-item>
-      <el-form-item label="所在区域" prop="city">
-        <el-cascader
-          v-model="form.city"
-          :options="areaData"></el-cascader>
+      <el-form-item label="所在区域"
+                    prop="city">
+        <el-cascader v-model="form.city"
+                     :options="areaData"></el-cascader>
       </el-form-item>
-      <el-form-item label="详细地址" prop="detailAddress">
-        <el-input class="control-address" v-model="form.detailAddress"></el-input>
+      <el-form-item label="详细地址"
+                    prop="detailAddress">
+        <el-input class="control-address"
+                  v-model="form.detailAddress"></el-input>
       </el-form-item>
       <el-form-item label="备注">
-        <el-input type="textarea" v-model="form.remark"></el-input>
+        <el-input type="textarea"
+                  v-model="form.remark"></el-input>
       </el-form-item>
-      
-      
+
       <el-form-item>
         <!-- <el-col :span="6" class="op-btn">
           <el-button type="primary">加入购物车</el-button>
         </el-col> -->
-        <el-col :span="6" class="op-btn">
-          <el-button type="primary" @click="handleSubmit">加入购物车</el-button>
+        <el-col :span="6"
+                class="op-btn">
+          <el-button type="primary"
+                     @click="handleSubmit">加入购物车</el-button>
         </el-col>
       </el-form-item>
     </el-form>
 
     <div class="cart-box">
-      <img src="../../../assets/order/cart-settle.png" @click="handleToCart" class="cart-settle" alt="">
+      <img src="../../../assets/order/cart-settle.png"
+           @click="handleToCart"
+           class="cart-settle"
+           alt="">
       <span class="cart-box__badge">{{ getCartNum() }}</span>
     </div>
   </div>
@@ -147,7 +182,7 @@ export default {
       },
       phoneRules: {
         phoneSingle: [
-          {validator: checkPhone, trigger: 'blur'}
+          { validator: checkPhone, trigger: 'blur' }
         ]
       },
       scan: {
@@ -201,7 +236,7 @@ export default {
       func: '',
       shoesType: '',
       scanData: [],
-      cartNum: '',
+      cartNum: ''
     }
   },
   methods: {
@@ -209,7 +244,7 @@ export default {
       return this.cartNum < 100 ? this.cartNum : '99+'
     },
     handleToCart () {
-      this.$router.push({path: '/cart'})
+      this.$router.push({ path: '/cart' })
     },
     handleScan (val) {
       this.scan.scanTime = this.scanData.filter(item => item.id === val)[0].scanTime
@@ -225,7 +260,7 @@ export default {
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.loading = true
-          const [ province, city ] = this.form.city
+          const [province, city] = this.form.city
           const area = {
             province,
             city
@@ -234,7 +269,7 @@ export default {
           console.log(param)
           postAddCart(param).then(res => {
             this.loading = false
-            this.$router.push({path: '/cart'})
+            this.$router.push({ path: '/cart' })
           }).catch(err => {
             this.loading = false
             console.log(err)
@@ -270,7 +305,7 @@ export default {
       phone
     }
     axios.all([getListclassiFication(ficationParams), getListDstricts(), getScanResultByPhone(phoneScanParams), getCartNum(), getAddress()]).then(res => {
-      const [ diseaseType, size, func, shoesType] = res[0].data
+      const [diseaseType, size, func, shoesType] = res[0].data
       this.diseaseType = diseaseType
       this.size = size
       this.func = func
@@ -316,7 +351,7 @@ export default {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background-color: #F34234;
+      background-color: #f34234;
       color: #fff;
       line-height: 30px;
       text-align: center;

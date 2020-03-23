@@ -2,26 +2,45 @@
   <div class="form-container">
     <div class="form-container__title">填写注册信息</div>
 
-    <el-radio-group v-model="form.franchiseeType" :disabled="processType === 0"  @change="handleChangeFranchiseeType">
+    <el-radio-group v-model="form.franchiseeType"
+                    :disabled="processType === 0"
+                    @change="handleChangeFranchiseeType">
       <el-radio :label="0">个人</el-radio>
       <el-radio :label="1">公司</el-radio>
     </el-radio-group>
     <el-divider></el-divider>
-    
-    <el-form label-width="120px" ref="form" :hide-required-asterisk="true"  label-position="left" :model="form"  :rules="ruleForm">
+
+    <el-form label-width="120px"
+             ref="form"
+             :hide-required-asterisk="true"
+             label-position="left"
+             :model="form"
+             :rules="ruleForm">
 
       <template v-if="form.franchiseeType === 0">
 
-        <el-form-item label="姓名" prop="name">
-          <el-input class="control" :disabled="processType === 0" v-model="form.name" placeholder="请填写真实姓名"></el-input>
-        </el-form-item>
-        
-        <el-form-item label="身份证号码" prop="creditCard">
-          <el-input class="control" :disabled="processType === 0" v-model="form.creditCard" placeholder="请输入身份证号码"></el-input>
+        <el-form-item label="姓名"
+                      prop="name">
+          <el-input class="control"
+                    :disabled="processType === 0"
+                    v-model="form.name"
+                    placeholder="请填写真实姓名"></el-input>
         </el-form-item>
 
-        <el-form-item label="手机号" prop="phone">
-          <el-input class="control" :disabled="processType === 0" v-model="form.phone" placeholder="请输入手机号"></el-input>
+        <el-form-item label="身份证号码"
+                      prop="creditCard">
+          <el-input class="control"
+                    :disabled="processType === 0"
+                    v-model="form.creditCard"
+                    placeholder="请输入身份证号码"></el-input>
+        </el-form-item>
+
+        <el-form-item label="手机号"
+                      prop="phone">
+          <el-input class="control"
+                    :disabled="processType === 0"
+                    v-model="form.phone"
+                    placeholder="请输入手机号"></el-input>
         </el-form-item>
 
         <!-- <el-form-item label="银行卡">
@@ -34,41 +53,46 @@
           </div>
         </el-form-item> -->
 
-        <el-form-item label="上传个人身份证" prop="cardFrontImage">
-          <el-upload
-            class="avatar-uploader"
-            :action="uploadAction"
-            :show-file-list="false"
-            :on-success="handleFrontImgSuccess"
-            name="file"
-            accept="image/*"
-            :data="frontImg"
-            :disabled="processType === 0"
-            :headers="csrfToken"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="form.cardFrontImage" :src="form.cardFrontImage" class="upload_img">
+        <el-form-item label="上传个人身份证"
+                      prop="cardFrontImage">
+          <el-upload class="avatar-uploader"
+                     :action="uploadAction"
+                     :show-file-list="false"
+                     :on-success="handleFrontImgSuccess"
+                     name="file"
+                     accept="image/*"
+                     :data="frontImg"
+                     :disabled="processType === 0"
+                     :headers="csrfToken"
+                     :before-upload="beforeAvatarUpload">
+            <img v-if="form.cardFrontImage"
+                 :src="form.cardFrontImage"
+                 class="upload_img">
             <template v-else>
-              <img src="../../../assets/franchisees/f_card.png" class="upload_img">
+              <img src="../../../assets/franchisees/f_card.png"
+                   class="upload_img">
             </template>
             <p class="upload-text">上传身份证头像面<span>（只能上传图片格式，且不超过5M）</span></p>
           </el-upload>
         </el-form-item>
 
         <el-form-item prop="cardBackImage">
-          <el-upload
-            class="avatar-uploader"
-            :action="uploadAction"
-            :show-file-list="false"
-            :on-success="handleBackImgSuccess"
-            name="file"
-            accept="image/*"
-            :data="backImg"
-            :disabled="processType === 0"
-            :headers="csrfToken"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="form.cardBackImage" :src="form.cardBackImage" class="upload_img">
+          <el-upload class="avatar-uploader"
+                     :action="uploadAction"
+                     :show-file-list="false"
+                     :on-success="handleBackImgSuccess"
+                     name="file"
+                     accept="image/*"
+                     :data="backImg"
+                     :disabled="processType === 0"
+                     :headers="csrfToken"
+                     :before-upload="beforeAvatarUpload">
+            <img v-if="form.cardBackImage"
+                 :src="form.cardBackImage"
+                 class="upload_img">
             <template v-else>
-              <img src="../../../assets/franchisees/b_card.png" class="upload_img">
+              <img src="../../../assets/franchisees/b_card.png"
+                   class="upload_img">
               <p class="upload-text">上传身份证国徽面<span>（只能上传图片格式，且不超过5M）</span></p>
             </template>
           </el-upload>
@@ -78,98 +102,130 @@
 
       <template v-if="form.franchiseeType === 1">
 
-        <el-form-item label="代办人姓名" prop="name">
-          <el-input class="control" :disabled="processType === 0" v-model="form.name" placeholder="请填写真实姓名"></el-input>
-        </el-form-item>
-        
-        <el-form-item label="代办人身份证" prop="creditCard">
-          <el-input class="control" :disabled="processType === 0" v-model="form.creditCard" placeholder="请输入身份证号码"></el-input>
+        <el-form-item label="代办人姓名"
+                      prop="name">
+          <el-input class="control"
+                    :disabled="processType === 0"
+                    v-model="form.name"
+                    placeholder="请填写真实姓名"></el-input>
         </el-form-item>
 
-        <el-form-item label="代办人手机号" prop="phone">
-          <el-input class="control" :disabled="processType === 0" v-model="form.phone" placeholder="请输入手机号"></el-input>
+        <el-form-item label="代办人身份证"
+                      prop="creditCard">
+          <el-input class="control"
+                    :disabled="processType === 0"
+                    v-model="form.creditCard"
+                    placeholder="请输入身份证号码"></el-input>
         </el-form-item>
-        
-        <el-form-item label="公司名称" prop="companyName">
-          <el-input class="control" :disabled="processType === 0" v-model="form.companyName" placeholder="请输入公司名称"></el-input>
+
+        <el-form-item label="代办人手机号"
+                      prop="phone">
+          <el-input class="control"
+                    :disabled="processType === 0"
+                    v-model="form.phone"
+                    placeholder="请输入手机号"></el-input>
         </el-form-item>
-        
-        <el-form-item label="上传法人身份证" prop="cardFrontImage">
-          <el-upload
-            class="avatar-uploader"
-            :action="uploadAction"
-            :show-file-list="false"
-            :on-success="handleFrontImgSuccess"
-            :disabled="processType === 0"
-            name="file"
-            accept="image/*"
-            :data="frontImg"
-            :headers="csrfToken"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="form.cardFrontImage" :src="form.cardFrontImage" class="upload_img">
+
+        <el-form-item label="公司名称"
+                      prop="companyName">
+          <el-input class="control"
+                    :disabled="processType === 0"
+                    v-model="form.companyName"
+                    placeholder="请输入公司名称"></el-input>
+        </el-form-item>
+
+        <el-form-item label="上传法人身份证"
+                      prop="cardFrontImage">
+          <el-upload class="avatar-uploader"
+                     :action="uploadAction"
+                     :show-file-list="false"
+                     :on-success="handleFrontImgSuccess"
+                     :disabled="processType === 0"
+                     name="file"
+                     accept="image/*"
+                     :data="frontImg"
+                     :headers="csrfToken"
+                     :before-upload="beforeAvatarUpload">
+            <img v-if="form.cardFrontImage"
+                 :src="form.cardFrontImage"
+                 class="upload_img">
             <template v-else>
-              <img src="../../../assets/franchisees/f_card.png" class="upload_img">
+              <img src="../../../assets/franchisees/f_card.png"
+                   class="upload_img">
             </template>
             <p class="upload-text">上传身份证头像面<span>（只能上传图片格式，且不超过5M）</span></p>
           </el-upload>
           <span>图片大小不能超过5M</span>
         </el-form-item>
         <el-form-item prop="cardBackImage">
-          <el-upload
-            class="avatar-uploader"
-            :action="uploadAction"
-            :show-file-list="false"
-            :on-success="handleBackImgSuccess"
-            :disabled="processType === 0"
-            name="file"
-            accept="image/*"
-            :data="backImg"
-            :headers="csrfToken"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="form.cardBackImage" :src="form.cardBackImage" class="upload_img">
+          <el-upload class="avatar-uploader"
+                     :action="uploadAction"
+                     :show-file-list="false"
+                     :on-success="handleBackImgSuccess"
+                     :disabled="processType === 0"
+                     name="file"
+                     accept="image/*"
+                     :data="backImg"
+                     :headers="csrfToken"
+                     :before-upload="beforeAvatarUpload">
+            <img v-if="form.cardBackImage"
+                 :src="form.cardBackImage"
+                 class="upload_img">
             <template v-else>
-              <img src="../../../assets/franchisees/b_card.png" class="upload_img">
+              <img src="../../../assets/franchisees/b_card.png"
+                   class="upload_img">
             </template>
             <p class="upload-text">上传身份证国徽面<span>（只能上传图片格式，且不超过5M）</span></p>
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="上传营业执照" prop="businessLicense">
-          <el-upload
-            class="avatar-uploader"
-            :action="uploadAction"
-            :show-file-list="false"
-            :on-success="handleBusinessSuccess"
-            name="file"
-            :data="businessImg"
-            :disabled="processType === 0"
-            accept="image/*"
-            :headers="csrfToken"
-            :before-upload="beforeAvatarUpload">
-            <img v-if="form.businessLicense" :src="form.businessLicense" class="upload_img">
+        <el-form-item label="上传营业执照"
+                      prop="businessLicense">
+          <el-upload class="avatar-uploader"
+                     :action="uploadAction"
+                     :show-file-list="false"
+                     :on-success="handleBusinessSuccess"
+                     name="file"
+                     :data="businessImg"
+                     :disabled="processType === 0"
+                     accept="image/*"
+                     :headers="csrfToken"
+                     :before-upload="beforeAvatarUpload">
+            <img v-if="form.businessLicense"
+                 :src="form.businessLicense"
+                 class="upload_img">
             <template v-else>
-              <img src="../../../assets/franchisees/business_card.png" class="upload_img">
+              <img src="../../../assets/franchisees/business_card.png"
+                   class="upload_img">
             </template>
             <p class="upload-text">上传营业执照<span>（只能上传图片格式，且不超过5M）</span></p>
           </el-upload>
         </el-form-item>
 
       </template>
-      <el-form-item label="所在区域" prop="city">
-        <el-cascader
-          :disabled="processType === 0"
-          v-model="form.city"
-          :options="areaData"></el-cascader>
+      <el-form-item label="所在区域"
+                    prop="city">
+        <el-cascader :disabled="processType === 0"
+                     v-model="form.city"
+                     :options="areaData"></el-cascader>
       </el-form-item>
 
-      <el-form-item label="详细地址" prop="detailAddress">
-        <el-input class="control-address" :disabled="processType === 0" v-model="form.detailAddress" placeholder="请输入详细地址"></el-input>
+      <el-form-item label="详细地址"
+                    prop="detailAddress">
+        <el-input class="control-address"
+                  :disabled="processType === 0"
+                  v-model="form.detailAddress"
+                  placeholder="请输入详细地址"></el-input>
       </el-form-item>
     </el-form>
-    
+
     <el-row class="submit-btn">
-      <el-button type="primary" :loading="submitBtnLoading" :disabled="processType === 0" @click="handleSubmit">{{processType === 0 ? '已' : ''}}确认信息</el-button>
-      <div class="submit-btn__tip" v-if="processType === 0">我们将在3个工作日内完成对您资料的审核</div>
+      <el-button type="primary"
+                 :loading="submitBtnLoading"
+                 :disabled="processType === 0"
+                 @click="handleSubmit">{{processType === 0 ? '已' : ''}}确认信息</el-button>
+      <div class="submit-btn__tip"
+           v-if="processType === 0">我们将在3个工作日内完成对您资料的审核</div>
     </el-row>
   </div>
 </template>
@@ -234,10 +290,10 @@ export default {
           { min: 2, max: 9, message: '长度在 2 到 9 个字符', trigger: 'blur' }
         ],
         phone: [
-          {validator: checkPhone, trigger: 'blur'}
+          { validator: checkPhone, trigger: 'blur' }
         ],
         creditCard: [
-          {validator: checkCreditCard, trigger: 'blur'}
+          { validator: checkCreditCard, trigger: 'blur' }
         ],
         city: [
           { required: true, message: '请选择所在区域', trigger: 'change' }
@@ -280,7 +336,7 @@ export default {
     getSearchFranchisee (status) {
       getSearchFranchisee().then(res => {
         if (res.data) {
-          const { processType, id, franchiseeType, name = '', phone, creditCard, provinceId = '', cityId = '', detailAddress = '', companyName = '', businessLicense = '', cardBackImage = '', cardFrontImage = ''  } = res.data
+          const { processType, id, franchiseeType, name = '', phone, creditCard, provinceId = '', cityId = '', detailAddress = '', companyName = '', businessLicense = '', cardBackImage = '', cardFrontImage = '' } = res.data
           this.processType = processType
           if (processType === 2 || processType === 0) {
             this.form = {
@@ -312,7 +368,7 @@ export default {
               message: '创建加盟商成功',
               type: 'success',
               onClose () {
-                that.$router.push({path: '/payment'})
+                that.$router.push({ path: '/payment' })
               }
             })
           }
@@ -328,7 +384,7 @@ export default {
         console.log(err)
       })
     },
-    handleChangeFranchiseeType (val) {
+    handleChangeFranchiseeType () {
       this.$refs['form'].clearValidate()
     },
     handleChangeDstricts () {
@@ -349,17 +405,17 @@ export default {
         console.log(err)
       })
     },
-    handleFrontImgSuccess(res, file) {
+    handleFrontImgSuccess (res) {
       this.form.cardFrontImage = res.data
     },
-    handleBackImgSuccess(res, file) {
+    handleBackImgSuccess (res) {
       this.form.cardBackImage = res.data
       console.log(this.form.cardBackImage)
     },
-    handleBusinessSuccess(res, file) {
+    handleBusinessSuccess (res) {
       this.form.businessLicense = res.data
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUpload (file) {
       const isLt2M = file.size / 1024 / 1024 < 5
       if (!isLt2M) {
         this.$message.error('上传图片大小不能超过 5MB!')
@@ -393,7 +449,7 @@ export default {
             cardBackImage
           }
           if (franchiseeType === 0) {
-            const [ provinceId, cityId ] = city
+            const [provinceId, cityId] = city
             param = Object.assign({}, param, {
               franchiseeType
             })
@@ -447,7 +503,7 @@ export default {
     }
   }
   .avatar-uploader .el-upload {
-    border: 1px solid #E5E5E5;
+    border: 1px solid #e5e5e5;
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -458,7 +514,7 @@ export default {
       display: block;
     }
     .upload-text {
-      color: #0197D6;
+      color: #0197d6;
       font-size: 12px;
       span {
         color: #ccc;

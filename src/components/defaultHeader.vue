@@ -1,19 +1,29 @@
 <template>
   <div>
     <el-header height="90px">
-        
+
       <div class="lwzx-site">
-        <img src="../assets/common/lwzx-img.png" class="lwzx-img" @click="handleLogo('index')">
-        <img src="../assets/common/lwzx-logo.png" class="lwzx-logo" @click="handleLogo('footShape')">
+        <img src="../assets/common/lwzx-img.png"
+             class="lwzx-img"
+             @click="handleLogo('index')">
+        <img src="../assets/common/lwzx-logo.png"
+             class="lwzx-logo"
+             @click="handleLogo('footShape')">
       </div>
       <div class="lwzx-action">
-        <el-link :underline="false" icon="el-icon-s-home" class="icon-home" href="/index.html">首页</el-link>
+        <el-link :underline="false"
+                 icon="el-icon-s-home"
+                 class="icon-home"
+                 href="/index.html">首页</el-link>
 
-        <drop-down :isLogin="isLogin" @login-status="handleLoginStatus"></drop-down>
+        <drop-down :isLogin="isLogin"
+                   @login-status="handleLoginStatus"></drop-down>
       </div>
 
     </el-header>
-    <Login @login-status="handleLoginStatus" v-model="loginVisible"></Login>
+    <Login @login-status="handleLoginStatus"
+           v-if="loginVisible"
+           v-model="loginVisible"></Login>
   </div>
 </template>
 <script>
@@ -39,7 +49,7 @@ export default {
   position: relative;
   line-height: 90px;
   background-color: #fff;
-  padding-left:70px;
+  padding-left: 70px;
 }
 .lwzx-site {
   display: inline-flex;

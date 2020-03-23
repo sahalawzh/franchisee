@@ -1,4 +1,4 @@
-const API_URL_SUFFIX = '/api'
+const API_URL_SUFFIX = "/api";
 
 const v1 = {
   POST_MEMBER_LOGIN: `${API_URL_SUFFIX}/member/login`, // 登录
@@ -44,9 +44,13 @@ const v1 = {
   POST_CHECK_PRICE_BANKCARD: `${API_URL_SUFFIX}/franchisee/checkPriceBankCard`, // 校验账号
   POST_UNBIND_BANK_CARD: `${API_URL_SUFFIX}/franchisee/unBindBankCard`, // 解绑银行卡
   PUT_UPDATE_FRANCHISEE: `${API_URL_SUFFIX}/franchisee/updateFranchisee`, // 修改加盟信息
-  PUT_UPDATE: `${API_URL_SUFFIX}/franchisee/update` // 加盟服务修改地址
-}
+  PUT_UPDATE: `${API_URL_SUFFIX}/franchisee/update`, // 加盟服务修改地址
+  GET_SPU: `${API_URL_SUFFIX}/spu/getSpu`, // 商品信息
+  PUT_UPDATE_NUM: `${API_URL_SUFFIX}/cart/updateNum`, // 修改数量
+  GET_LIST_CITY: `${API_URL_SUFFIX}/scanCity/listCity`, // 城市列表
+  GET_LOCAL_LOCATION: `${API_URL_SUFFIX}/scanLocation/getLocalLocation`, // 当前位置
+  GET_LIST_LOCATION: `${API_URL_SUFFIX}/scanLocation/listLocation`, // 获取地址
+  GET_LOCATIONS: `${API_URL_SUFFIX}/scanLocation/locations` // 获取扫描地址
+};
 
-export {
-  v1
-}
+export { v1 };
