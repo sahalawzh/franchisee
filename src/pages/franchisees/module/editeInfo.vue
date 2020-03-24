@@ -438,6 +438,7 @@ export default {
             cardFrontImage,
             id
           } = this.form
+          const [provinceId, cityId] = city
           let param = {
             name,
             phone,
@@ -449,7 +450,6 @@ export default {
             cardBackImage
           }
           if (franchiseeType === 0) {
-            const [provinceId, cityId] = city
             param = Object.assign({}, param, {
               franchiseeType
             })

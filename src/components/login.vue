@@ -109,7 +109,7 @@ export default {
     }
     return {
       form: {
-        username: process.env.NODE_ENV === 'development' ? 'fe无限三维' : '',
+        username: process.env.NODE_ENV === 'development' ? '15521054017' : '',
         password: process.env.NODE_ENV === 'development' ? '123456' : '',
         phone: '',
         checkCode: '',
