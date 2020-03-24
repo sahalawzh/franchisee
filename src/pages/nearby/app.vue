@@ -55,9 +55,9 @@
                 </div>
               </div>
             </div>
-            <div class="nearby-item__ft">
+            <!-- <div class="nearby-item__ft">
               <el-button type="text">查看详情</el-button>
-            </div>
+            </div> -->
           </div>
         </el-col>
       </el-row>

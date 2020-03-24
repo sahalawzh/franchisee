@@ -1,37 +1,49 @@
 <template>
-  <div class="page-reserve"
-       v-loading="loading">
+  <div class="page-reserve" v-loading="loading">
     <div class="main-title">选择本次打印的脚型数据</div>
     <el-row>
       <div class="panel-item">
         <div class="panel-item__hd">
           收货人信息
-          <span class="op-text"
-                v-if="addressList.length < 5"
-                @click="handleOpAdress">新增收货地址</span>
+          <span
+            class="op-text"
+            v-if="addressList.length < 5"
+            @click="handleOpAdress"
+            >新增收货地址</span
+          >
         </div>
         <el-row>
           <template v-if="addressList.length">
-            <el-col :md="6"
-                    :sm="8"
-                    :xs="12"
-                    v-for="(item, index) in addressList"
-                    :key="index">
+            <el-col
+              :md="6"
+              :sm="8"
+              :xs="12"
+              v-for="(item, index) in addressList"
+              :key="index"
+            >
               <div class="address-item">
-                <el-radio v-model="selectAddressId"
-                          @change="handleChangeAddress"
-                          :label="item.id"
-                          border>
+                <el-radio
+                  v-model="selectAddressId"
+                  @change="handleChangeAddress"
+                  :label="item.id"
+                  border
+                >
                   <div class="address-item__hd">
-                    <el-tag size="small"
-                            class="tag-name"
-                            v-if="item.isDefault === 0">默认</el-tag>
-                    <span class="concat-info">{{item.recipient}}（收）</span>
+                    <el-tag
+                      size="small"
+                      class="tag-name"
+                      v-if="item.isDefault === 0"
+                      >默认</el-tag
+                    >
+                    <span class="concat-info">{{ item.recipient }}（收）</span>
                   </div>
                   <div class="address-item__bd">
                     <div class="value-detail">
                       <i class="el-icon-map-location icon-address"></i>
-                      <span>{{ item.province }}{{ item.city }}{{ item.detailAddress }}</span>
+                      <span
+                        >{{ item.province }}{{ item.city
+                        }}{{ item.detailAddress }}</span
+                      >
                     </div>
                     <div class="value-detail">
                       <i class="el-icon-mobile-phone"></i>
@@ -39,18 +51,19 @@
                     </div>
                   </div>
                   <div class="address-item__ft">
-                    <el-button type="text"
-                               @click="handleOpAdress(item)">修改</el-button>
+                    <el-button type="text" @click="handleOpAdress(item)"
+                      >修改</el-button
+                    >
                     <el-divider direction="vertical"></el-divider>
-                    <el-button type="text"
-                               @click="handleDelAdress(item.id)">删除</el-button>
+                    <el-button type="text" @click="handleDelAdress(item.id)"
+                      >删除</el-button
+                    >
                   </div>
                 </el-radio>
               </div>
             </el-col>
           </template>
-          <div v-else
-               class="address-empty">暂无收获地址</div>
+          <div v-else class="address-empty">暂无收获地址</div>
         </el-row>
       </div>
     </el-row>
@@ -78,15 +91,11 @@
       </div>
     </el-row> -->
     <el-row class="product-title">商品信息</el-row>
-    <el-table :data="tableData"
-              class="table-data"
-              style="width: 100%">
+    <el-table :data="tableData" class="table-data" style="width: 100%">
       <el-table-column label="打印商品">
         <template slot-scope="scope">
           <div class="table-product">
-            <el-image :src="scope.row.image"
-                      fit="cover"
-                      alt="" />
+            <el-image :src="scope.row.image" fit="cover" alt="" />
             <span>{{ scope.row.titleName }}</span>
           </div>
         </template>
@@ -118,14 +127,15 @@
           <div class="product-cell">￥{{ scope.row.price }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="打印数量"
-                       prop="num">
+      <el-table-column label="打印数量" prop="num">
         <template slot-scope="scope">
           <div class="product-cell">
-            <el-input-number v-model="num"
-                             size="small"
-                             :min="min"
-                             @change="handleChangeNum"></el-input-number>
+            <el-input-number
+              v-model="num"
+              size="small"
+              :min="min"
+              @change="handleChangeNum"
+            ></el-input-number>
           </div>
         </template>
       </el-table-column>
@@ -139,67 +149,76 @@
       <el-col :span="12">
         <div class="textarea-box">
           <div class="textarea-box__label">备注</div>
-          <el-input type="textarea"
-                    resize="none"
-                    :rows="2"
-                    placeholder="选填，请先与客服协商一致"
-                    v-model="remark">
+          <el-input
+            type="textarea"
+            resize="none"
+            :rows="2"
+            placeholder="选填，请先与客服协商一致"
+            v-model="remark"
+          >
           </el-input>
         </div>
       </el-col>
     </el-row>
-    <el-row class="reserve-foot"
-            type="flex"
-            align="middle"
-            justify="end">
+    <el-row class="reserve-foot" type="flex" align="middle" justify="end">
       <div>
         <span>实付金额：</span>
-        <span class="real-price">￥999</span>
+        <span class="real-price">￥{{ totalPrice }}</span>
       </div>
-      <el-button type="danger"
-                 :loading="submitLoading"
-                 @click="handleToPay">确认支付</el-button>
+      <el-button type="danger" :loading="submitLoading" @click="handleToPay"
+        >确认支付</el-button
+      >
     </el-row>
 
-    <el-dialog title="收货地址"
-               class="address-dialog"
-               :visible.sync="dialogAddressVisible">
-      <el-form :model="addressForm"
-               label-width="100px"
-               ref="addressForm"
-               :hide-required-asterisk="true"
-               :rules="ruleAddress">
-        <el-form-item label="收货人"
-                      prop="recipient">
-          <el-input v-model="addressForm.recipient"
-                    autocomplete="off"></el-input>
+    <el-dialog
+      title="收货地址"
+      class="address-dialog"
+      :visible.sync="dialogAddressVisible"
+    >
+      <el-form
+        :model="addressForm"
+        label-width="100px"
+        ref="addressForm"
+        :hide-required-asterisk="true"
+        :rules="ruleAddress"
+      >
+        <el-form-item label="收货人" prop="recipient">
+          <el-input
+            v-model="addressForm.recipient"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="联系电话"
-                      prop="phone">
-          <el-input v-model="addressForm.phone"
-                    autocomplete="off"></el-input>
+        <el-form-item label="联系电话" prop="phone">
+          <el-input v-model="addressForm.phone" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="所在区域"
-                      prop="city">
-          <el-cascader v-model="addressForm.city"
-                       :options="areaData"></el-cascader>
+        <el-form-item label="所在区域" prop="city">
+          <el-cascader
+            v-model="addressForm.city"
+            :options="areaData"
+          ></el-cascader>
         </el-form-item>
-        <el-form-item label="详细地址"
-                      prop="detailAddress">
-          <el-input class="control-address"
-                    v-model="addressForm.detailAddress"></el-input>
+        <el-form-item label="详细地址" prop="detailAddress">
+          <el-input
+            class="control-address"
+            v-model="addressForm.detailAddress"
+          ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-switch v-model="addressForm.isDefault"
-                     :active-value="0"
-                     :inactive-value="1"
-                     active-text="设置为默认收货地址">
+          <el-switch
+            v-model="addressForm.isDefault"
+            :active-value="0"
+            :inactive-value="1"
+            active-text="设置为默认收货地址"
+          >
           </el-switch>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary"
-                     :loading="addressBtnLoading"
-                     @click="handleSubmitAddress">保 存</el-button>
+          <el-button
+            type="primary"
+            :loading="addressBtnLoading"
+            @click="handleSubmitAddress"
+            >保 存</el-button
+          >
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -207,7 +226,7 @@
 </template>
 <script>
 import {
-  postAddCart,
+  getCart,
   putUpdateNum,
   getCartPrice,
   getAddress,
@@ -217,9 +236,9 @@ import {
   deleteAddressDelete,
   putAddressUpdate
 } from "@/service/http";
-import axios from 'axios';
+import axios from "axios";
 export default {
-  data () {
+  data() {
     var checkPhone = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("手机号不能为空"));
@@ -233,12 +252,12 @@ export default {
       }
     };
     var checkCity = (rule, value, callback) => {
-      value = value.filter(Boolean)
+      value = value.filter(Boolean);
       if (!value.length) {
-        return callback(new Error('请选择所在区域'));
+        return callback(new Error("请选择所在区域"));
       }
-      callback()
-    }
+      callback();
+    };
     return {
       tableData: [],
       orderInfo: "",
@@ -263,9 +282,7 @@ export default {
           { min: 2, max: 9, message: "长度在 2 到 9 个字符", trigger: "blur" }
         ],
         phone: [{ validator: checkPhone, trigger: "blur" }],
-        city: [
-          { validator: checkCity, trigger: 'change' }
-        ],
+        city: [{ validator: checkCity, trigger: "change" }],
         detailAddress: [
           { required: true, message: "请填写详细地址", trigger: "blur" },
           {
@@ -278,32 +295,42 @@ export default {
       },
       remark: "",
       addressList: [],
-      selectAddressId: '',
+      selectAddressId: "",
       submitLoading: false
     };
   },
   methods: {
-    handleChangeDstricts () {
-      getListDstricts().then(res => {
-        res.data.forEach(item => {
-          item.value = item.id
-          item.label = item.name
-          item.children = []
-          item.list.forEach(_item => {
-            item.children.push({
-              value: _item.id,
-              label: _item.name
-            })
-          })
+    handleChangeDstricts() {
+      getListDstricts()
+        .then(res => {
+          res.data.forEach(item => {
+            item.value = item.id;
+            item.label = item.name;
+            item.children = [];
+            item.list.forEach(_item => {
+              item.children.push({
+                value: _item.id,
+                label: _item.name
+              });
+            });
+          });
+          this.areaData = res.data;
         })
-        this.areaData = res.data
-      }).catch(err => {
-        console.log(err)
-      })
+        .catch(err => {
+          console.log(err);
+        });
     },
-    async handleOpAdress (item) {
+    async handleOpAdress(item) {
       if (item) {
-        const { recipient, phone, detailAddress, isDefault, provinceId, cityId, id } = item
+        const {
+          recipient,
+          phone,
+          detailAddress,
+          isDefault,
+          provinceId,
+          cityId,
+          id
+        } = item;
         this.addressForm = {
           recipient,
           phone,
@@ -311,33 +338,35 @@ export default {
           city: [provinceId, cityId],
           id,
           isDefault
-        }
+        };
       }
-      await this.handleChangeDstricts()
-      this.dialogAddressVisible = true
+      await this.handleChangeDstricts();
+      this.dialogAddressVisible = true;
     },
-    handleDelAdress (id) {
-      this.$confirm('是否确认删除该地址？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+    handleDelAdress(id) {
+      this.$confirm("是否确认删除该地址？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       }).then(() => {
-        deleteAddressDelete(id).then(res => {
-          console.log(res)
-          this.getAddressList()
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+        deleteAddressDelete(id)
+          .then(res => {
+            console.log(res);
+            this.getAddressList();
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
           })
-        }).catch(err => {
-          console.log(err)
-        })
-      })
+          .catch(err => {
+            console.log(err);
+          });
+      });
     },
-    handleChangeAddress (id) {
-      this.selectAddressId = id
+    handleChangeAddress(id) {
+      this.selectAddressId = id;
     },
-    handleToPay () {
+    handleToPay() {
       if (!this.addressList.length) {
         return this.$message({
           message: "请新增收获地址",
@@ -350,23 +379,25 @@ export default {
           type: "warning"
         });
       }
-      const { selectAddressId, remark } = this
+      const { selectAddressId, remark } = this;
       const opts = {
         addressId: selectAddressId,
         remark
-      }
-      this.submitLoading = true
-      postAddOrder(opts).then(res => {
-        console.log(res)
-        this.submitLoading = false
-        let orderNo = res.data
-        this.$router.push({ name: 'pay', query: { orderNo, orderType: 0 } })
-      }).catch(err => {
-        this.submitLoading = false
-        console.log(err)
-      })
+      };
+      this.submitLoading = true;
+      postAddOrder(opts)
+        .then(res => {
+          console.log(res);
+          this.submitLoading = false;
+          let orderNo = res.data;
+          this.$router.push({ name: "pay", query: { orderNo, orderType: 0 } });
+        })
+        .catch(err => {
+          this.submitLoading = false;
+          console.log(err);
+        });
     },
-    handleSubmitAddress () {
+    handleSubmitAddress() {
       this.$refs.addressForm.validate(valid => {
         if (valid) {
           const [provinceId, cityId] = this.addressForm.city;
@@ -377,7 +408,7 @@ export default {
           const params = Object.assign({}, this.addressForm, area);
           delete params.city;
           this.addressBtnLoading = true;
-          let API_URL = this.addressForm.id ? putAddressUpdate : postAddressAdd
+          let API_URL = this.addressForm.id ? putAddressUpdate : postAddressAdd;
           API_URL(params)
             .then(res => {
               console.log(res);
@@ -392,21 +423,26 @@ export default {
         }
       });
     },
-    getAddressList () {
-      getAddress().then(res => {
-        let result = res.data || []
-        this.addressList = result
-        if (!this.addressList.length) {
-          return this.handleOpAdress()
-        }
-        let defaultAddress = result.length && result.filter(item => item.isDefault === 0)
-        defaultAddress = defaultAddress.length ? defaultAddress[0] : result[0]
-        this.selectAddressId = defaultAddress.id
-      }).catch(err => {
-        console.log(err)
-      })
+    getAddressList() {
+      getAddress()
+        .then(res => {
+          let result = res.data || [];
+          this.addressList = result;
+          if (!this.addressList.length) {
+            return this.handleOpAdress();
+          }
+          let defaultAddress =
+            result.length && result.filter(item => item.isDefault === 0);
+          defaultAddress = defaultAddress.length
+            ? defaultAddress[0]
+            : result[0];
+          this.selectAddressId = defaultAddress.id;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
-    handleChangeNum (val, oldVal) {
+    handleChangeNum(val, oldVal) {
       let opts = {
         num: val
       };
@@ -430,10 +466,10 @@ export default {
         });
     }
   },
-  created () {
-    let args = this.$route.query;
+  created() {
     this.loading = true;
-    axios.all([postAddCart(args), getCartPrice(), this.getAddressList()])
+    axios
+      .all([getCart(), getCartPrice(), this.getAddressList()])
       .then(res => {
         const [cart, cartPrice] = res;
         const { data: cartData } = cart;

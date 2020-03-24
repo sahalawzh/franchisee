@@ -50,7 +50,8 @@ const v1 = {
   GET_LIST_CITY: `${API_URL_SUFFIX}/scanCity/listCity`, // 城市列表
   GET_LOCAL_LOCATION: `${API_URL_SUFFIX}/scanLocation/getLocalLocation`, // 当前位置
   GET_LIST_LOCATION: `${API_URL_SUFFIX}/scanLocation/listLocation`, // 获取地址
-  GET_LOCATIONS: `${API_URL_SUFFIX}/scanLocation/locations` // 获取扫描地址
+  GET_LOCATIONS: `${API_URL_SUFFIX}/scanLocation/locations`, // 获取扫描地址
+  GET_CART: `${API_URL_SUFFIX}/cart/getCart` // 获取扫描地址
 };
 
 export { v1 };

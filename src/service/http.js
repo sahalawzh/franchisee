@@ -501,6 +501,16 @@ const getLocations = (data, version = "v1") => {
   return ajax.get(url, data);
 };
 
+/*
+ * 获取购物车
+ */
+const getCart = (data, version = "v1") => {
+  let url =
+    (apiConfig[version] && apiConfig[version].GET_CART) ||
+    apiConfig["v1"].GET_CART;
+  return ajax.get(url, data);
+};
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -551,5 +561,6 @@ export {
   getListCity,
   getLocalLocation,
   getListLocation,
-  getLocations
+  getLocations,
+  getCart
 };
