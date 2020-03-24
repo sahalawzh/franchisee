@@ -125,9 +125,9 @@ export default {
     handleToPay (item) {
       window.location.href = `/order.html#/pay?orderNo=${item.orderNo}&orderType=1`
     },
-    handleOpenFlow () {
+    handleOpenFlow (item) {
       let opts = {
-        orderNo: '10956202003241425153525'
+        orderNo: item.orderNo
       }
       getLogisticsMessage(opts).then(res => {
         const result = res.data
