@@ -1,32 +1,29 @@
 <template>
-  <div class="page-online" v-loading="loading">
-    <el-row type="flex" class="online-header" justify="space-between">
+  <div class="page-online"
+       v-loading="loading">
+    <el-row type="flex"
+            class="online-header"
+            justify="space-between">
       <div class="online-header__title">请先选择本次打印的脚型数据</div>
-      <el-link
-        class="online-header__more"
-        @click="drawer = true"
-        type="primary"
-        v-if="scanData.length"
-        >查看更多的脚型数据>></el-link
-      >
+      <el-link class="online-header__more"
+               @click="drawer = true"
+               type="primary"
+               v-if="scanData.length">查看更多的脚型数据>></el-link>
     </el-row>
     <el-row v-if="scanData.length">
-      <el-col
-        :md="8"
-        :sm="8"
-        :xs="12"
-        v-for="(item, index) in scanData.slice(0, scanShowNum)"
-        :key="index"
-      >
+      <el-col :md="8"
+              :sm="8"
+              :xs="12"
+              v-for="(item, index) in scanData.slice(0, scanShowNum)"
+              :key="index">
         <div class="panel-item">
-          <el-radio
-            v-model="currentScan"
-            @change="handleChangeScan"
-            :label="item.id"
-            border
-          >
+          <el-radio v-model="currentScan"
+                    @change="handleChangeScan"
+                    :label="item.id"
+                    border>
             <div class="panel-item__hd">
-              <el-tag class="tag-name" size="small">{{ item.tag }}</el-tag>
+              <el-tag class="tag-name"
+                      size="small">{{ item.tag }}</el-tag>
               <span class="company-name">{{ item.companyName }}</span>
             </div>
             <div class="panel-item__bd">
@@ -39,12 +36,12 @@
                 <div class="record-data__item">
                   左脚<span class="result-text">{{
                     item.leftFooterResult
-                  }}</span>
+                    }}</span>
                 </div>
                 <div class="record-data__item">
                   右脚<span class="result-text">{{
                     item.leftFooterResult
-                  }}</span>
+                    }}</span>
                 </div>
               </div>
             </div>
@@ -52,24 +49,24 @@
         </div>
       </el-col>
     </el-row>
-    <el-row
-      v-else
-      class="empty-scan"
-      type="flex"
-      justify="center"
-      align="middle"
-    >
+    <el-row v-else
+            class="empty-scan"
+            type="flex"
+            justify="center"
+            align="middle">
       <div class="empty-box">
         <div>还没有测量的脚型数据</div>
-        <el-link class="scan-point" href="nearby.html" type="primary"
-          >查看附近测量点</el-link
-        >
+        <el-link class="scan-point"
+                 href="nearby.html"
+                 type="primary">查看附近测量点</el-link>
       </div>
     </el-row>
     <el-row>
       <el-col :span="12">
         <div class="good-img">
-          <el-image :src="detailData.image" fit="cover" alt="" />
+          <el-image :src="detailData.image"
+                    fit="cover"
+                    alt="" />
         </div>
       </el-col>
       <el-col :span="12">
@@ -77,33 +74,27 @@
           <div class="good-info__title">{{ detailData.title }}</div>
           <div class="good-info__price">
             <span class="good-price">{{ skuPrice }}</span>
-            <span class="good-price-market"
-              >原价￥{{ detailData.originalPrice }}</span
-            >
+            <span class="good-price-market">原价￥{{ detailData.originalPrice }}</span>
           </div>
           <div class="good-info__sku">
-            <div class="sku-item" v-for="(item, index) in spuData" :key="index">
+            <div class="sku-item"
+                 v-for="(item, index) in spuData"
+                 :key="index">
               <div class="sku-label">{{ item.name }}</div>
               <div class="sku-value">
-                <el-radio-group
-                  size="medium"
-                  @change="
+                <el-radio-group size="medium"
+                                @change="
                     e => {
                       handleChangeSpec(e, index);
                     }
                   "
-                  v-model="specSelect[index]"
-                >
-                  <el-radio-button
-                    v-for="(_item, _index) in item.list"
-                    :key="_index"
-                    :label="_item.id"
-                  >
-                    <img
-                      v-if="_item.isRecommend === 1"
-                      src="../../../assets/order/ico_recommend.png"
-                      class="ico_recommend"
-                    />
+                                v-model="specSelect[index]">
+                  <el-radio-button v-for="(_item, _index) in item.list"
+                                   :key="_index"
+                                   :label="_item.id">
+                    <img v-if="_item.isRecommend === 1"
+                         src="../../../assets/order/ico_recommend.png"
+                         class="ico_recommend" />
                     {{ _item.name }}
                   </el-radio-button>
                 </el-radio-group>
@@ -112,85 +103,79 @@
           </div>
           <div class="good-info__step">
             <div class="step-label">数量</div>
-            <el-input-number
-              v-model="num"
-              size="small"
-              :min="min"
-              @change="handleChangeNum"
-            ></el-input-number>
+            <el-input-number v-model="num"
+                             size="small"
+                             :min="min"
+                             @change="handleChangeNum"></el-input-number>
           </div>
           <div class="submit-btn">
-            <el-button type="danger" @click="handleSubmit">提交订单</el-button>
+            <el-button type="danger"
+                       @click="handleSubmit">提交订单</el-button>
           </div>
         </div>
       </el-col>
     </el-row>
 
-    <el-drawer
-      :visible.sync="drawer"
-      class="drawer-container"
-      :direction="direction"
-    >
-      <div class="drawer-box">
-        <div class="scam-search">
-          <el-form :model="phoneForm" ref="phoneForm" :rules="rulePhoneForm">
-            <el-form-item prop="phone">
-              <el-input
-                placeholder="搜索手机查找"
-                v-model="phoneForm.phone"
-                class="input-with-select"
-              >
-                <el-button
-                  slot="append"
-                  @click="handleSearchScan"
-                  icon="el-icon-search"
-                ></el-button>
-              </el-input>
-            </el-form-item>
-          </el-form>
-        </div>
+    <el-drawer :visible.sync="drawer"
+               class="drawer-container"
+               :direction="direction">
+      <el-scrollbar style="height: 100%;">
+        <div class="drawer-box">
+          <div class="scam-search">
+            <el-form :model="phoneForm"
+                     ref="phoneForm"
+                     :rules="rulePhoneForm">
+              <el-form-item prop="phone">
+                <el-input placeholder="搜索手机查找"
+                          v-model="phoneForm.phone"
+                          class="input-with-select">
+                  <el-button slot="append"
+                             @click="handleSearchScan"
+                             icon="el-icon-search"></el-button>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </div>
 
-        <div class="scan-container">
-          <div class="scan-wrap">
-            <div
-              class="panel-item"
-              v-for="(item, index) in scanData"
-              :key="index"
-            >
-              <el-radio
-                v-model="currentScan"
-                :label="item.id"
-                @change="handleChangeScan"
-                border
-              >
-                <div class="panel-item__hd">
-                  <el-tag class="tag-name" size="small">{{ item.tag }}</el-tag>
-                  <span class="company-name">{{ item.companyName }}</span>
-                </div>
-                <div class="panel-item__bd">
-                  <div class="record-info">
-                    <span class="user-name">{{ item.userName }}</span>
-                    <span class="scan-time">{{ item.scanTime }}</span>
+          <div class="scan-container">
+            <div class="scan-wrap">
+              <div class="panel-item"
+                   v-for="(item, index) in scanData"
+                   :key="index">
+                <el-radio v-model="currentScan"
+                          :label="item.id"
+                          @change="handleChangeScan"
+                          border>
+                  <div class="panel-item__hd">
+                    <el-tag class="tag-name"
+                            size="small">{{ item.tag }}</el-tag>
+                    <span class="company-name">{{ item.companyName }}</span>
                   </div>
-                  <div class="record-data">
-                    <div class="record-data__item">诊断结果</div>
-                    <div class="record-data__item">
-                      左脚<span class="result-text">{{
-                        item.leftFooterResult
-                      }}</span>
+                  <div class="panel-item__bd">
+                    <div class="record-info">
+                      <span class="user-name">{{ item.userName }}</span>
+                      <span class="scan-time">{{ item.scanTime }}</span>
                     </div>
-                    <div class="record-data__item">
-                      右脚<span class="result-text">{{
-                        item.leftFooterResult
-                      }}</span>
+                    <div class="record-data">
+                      <div class="record-data__item">诊断结果</div>
+                      <div class="record-data__item">
+                        左脚<span class="result-text">{{
+                          item.leftFooterResult
+                          }}</span>
+                      </div>
+                      <div class="record-data__item">
+                        右脚<span class="result-text">{{
+                          item.leftFooterResult
+                          }}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </el-radio>
+                </el-radio>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </el-scrollbar>
     </el-drawer>
 
     <el-divider></el-divider>
@@ -200,7 +185,9 @@
         <div class="product-introduce__title">商品介绍</div>
       </div>
       <div class="tab-product">
-        <el-image :src="detailData.introductionImage" fit="cover" alt="" />
+        <el-image :src="detailData.introductionImage"
+                  fit="cover"
+                  alt="" />
       </div>
     </el-row>
   </div>
@@ -210,7 +197,6 @@ import {
   postAddCart,
   getSpu,
   getListclassiFication,
-  putUpdateNum,
   getScanResultByPhone
 } from "@/service/http";
 import storage from "@/utils/storage";
@@ -228,7 +214,7 @@ const FootStyle = {
   SquareFoot: "方形脚"
 };
 export default {
-  data() {
+  data () {
     var checkPhone = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("手机号不能为空"));
@@ -264,7 +250,7 @@ export default {
     };
   },
   methods: {
-    handleSubmit() {
+    handleSubmit () {
       const { currentScan, currentTime, specSelect, num } = this;
       if (!currentScan) {
         return this.$message({
@@ -287,16 +273,16 @@ export default {
           console.log(err);
         });
     },
-    handleChangeNum(val) {
+    handleChangeNum (val) {
       this.num = val;
     },
-    handleChangeScan(val) {
+    handleChangeScan (val) {
       this.currentScan = val;
       this.currentTime = this.scanData.filter(
         item => item.id === val
       )[0].scanTime;
     },
-    handleSearchScan() {
+    handleSearchScan () {
       this.$refs.phoneForm.validate(valid => {
         if (valid) {
           console.log(this.phoneForm);
@@ -314,7 +300,7 @@ export default {
         }
       });
     },
-    handleChangeSpec(id, index) {
+    handleChangeSpec (id, index) {
       this.$set(this.specSelect, index, id);
       if (this.spuData[index].type === 0) {
         // 人群
@@ -323,7 +309,7 @@ export default {
         )[0].secondName;
       }
     },
-    handleScanData(data) {
+    handleScanData (data) {
       let result = [];
       data &&
         data.length &&
@@ -343,7 +329,7 @@ export default {
       return result;
     }
   },
-  created() {
+  created () {
     if (!storage.get("gdlwzn_login")) {
       window.location.href = "index.html";
       return;
@@ -582,7 +568,6 @@ export default {
             height: 100%;
             padding-top: 80px;
             box-sizing: border-box;
-            overflow-y: scroll;
             .panel-item {
               margin-bottom: 15px;
             }

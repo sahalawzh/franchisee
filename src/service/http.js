@@ -511,6 +511,16 @@ const getCart = (data, version = "v1") => {
   return ajax.get(url, data);
 };
 
+/*
+ * 物流信息
+ */
+const getLogisticsMessage = (data, version = "v1") => {
+  let url =
+    (apiConfig[version] && apiConfig[version].GET_LOGISTICS_MESSAGE) ||
+    apiConfig["v1"].GET_LOGISTICS_MESSAGE;
+  return ajax.get(url, data);
+};
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -562,5 +572,6 @@ export {
   getLocalLocation,
   getListLocation,
   getLocations,
-  getCart
+  getCart,
+  getLogisticsMessage
 };

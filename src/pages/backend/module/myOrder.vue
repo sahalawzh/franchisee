@@ -1,5 +1,6 @@
 <template>
-  <div v-loading="loading">
+  <div class="my-order"
+       v-loading="loading">
     <el-tabs v-model="orderProcess"
              @tab-click="handleClick">
       <el-tab-pane label="全部"
@@ -11,62 +12,59 @@
       <el-tab-pane label="已发货"
                    name="2"></el-tab-pane>
     </el-tabs>
-    <el-table :data="tableData"
-              style="width: 100%">
-      <el-table-column prop="consignee"
-                       label="用户"
-                       width="140">
-      </el-table-column>
-      <el-table-column prop="scanTime"
-                       label="扫描数据"
-                       width="200">
-      </el-table-column>
-      <el-table-column width="200"
-                       label="客户资料">
-        <template slot-scope="scope">
-          <div>{{ scope.row.diseaseName }}</div>
-          <div>{{ scope.row.sizeName }}</div>
-          <div>{{ scope.row.functionName }}</div>
-          <div>{{ scope.row.shoeName }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column width="180"
-                       label="订单时间">
-        <template slot-scope="scope">
-          <div>创建时间：{{ scope.row.createTime }}</div>
-          <div v-if="scope.row.orderProcess !== 0">支付时间：{{ scope.row.paymentTime }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="num"
-                       width="100"
-                       label="数量">
-      </el-table-column>
-      <el-table-column prop="price"
-                       width="100"
-                       label="价格">
-        <template slot-scope="scope">
-          <div>￥{{ scope.row.price }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column width="220"
-                       label="地址">
-        <template slot-scope="scope">
-          <div>{{ scope.row.province }}{{ scope.row.city }}{{ scope.row.detailAddress }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
+    <el-row class="table-header">
+      <el-col :span="3">用户</el-col>
+      <el-col :span="6">扫描时间</el-col>
+      <el-col :span="6">客户资料</el-col>
+      <el-col :span="2">数量</el-col>
+      <el-col :span="3">价格</el-col>
+      <el-col :span="4">操作</el-col>
+    </el-row>
+    <div class="table-content"
+         v-for="(item, index) in tableData"
+         :key="index">
+      <el-row class="table-content__hd">
+        <span>{{ item.createTime }}</span>
+        <span>订单号：{{item.orderNo}}</span>
+      </el-row>
+      <el-row class="table-content__bd">
+        <el-col :span="3">{{ item.consignee }}</el-col>
+        <el-col :span="6">{{ item.scanTime }}</el-col>
+        <el-col :span="6">
+          <div class="sku-list">
+            <div>{{ item.diseaseName }}</div>
+            <div>{{ item.sizeName }}</div>
+            <div>{{ item.functionName }}</div>
+            <div>{{ item.shoeName }}</div>
+          </div>
+        </el-col>
+        <el-col :span="2">{{ item.num }}</el-col>
+        <el-col :span="3"
+                class="color-pirce">￥{{ item.price }}</el-col>
+        <el-col :span="4">
           <el-button size="mini"
                      type="danger"
-                     v-if="scope.row.orderProcess === 0"
-                     @click="handleToPay(scope.row)">立即付款</el-button>
-          <div v-else-if="scope.row.orderProcess === 1">鞋垫制作中，待发货</div>
-          <el-button v-else-if="scope.row.orderProcess === 2"
+                     v-if="item.orderProcess === 0"
+                     @click="handleToPay(item)">立即付款</el-button>
+          <div v-else-if="item.orderProcess === 1">鞋垫制作中，待发货</div>
+          <el-button v-else-if="item.orderProcess === 2"
                      type="text"
-                     @click="handleOpenFlow">查看物流</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+                     @click="handleOpenFlow(item)">查看物流</el-button>
+        </el-col>
+      </el-row>
+      <el-row class="table-content__ft">
+        <div class="address-colum-1">
+          <i class="el-icon-map-location icon-address"></i>
+          <span>{{ item.province }}{{ item.city }}</span>
+          <span>（{{ item.consignee }}收）</span>
+        </div>
+        <div class="address-colum-2">
+          <span>{{ item.province }}{{ item.city }}{{ item.detailAddress }}</span>
+          <span class="phone">{{ item.phone }}</span>
+        </div>
+      </el-row>
+    </div>
+
     <el-pagination @current-change="handleCurrentChange"
                    :current-page="start"
                    :page-sizes="[limits, 200, 300, 400]"
@@ -81,65 +79,30 @@
                width="40%"
                center>
       <div class="flow-box">
-        <el-scrollbar style="height: 100%;">
+        <div>物流信息：{{ logisticsInfo.company }}</div>
+        <div class="exp-phone">物流电话：{{ logisticsInfo.expPhone }}</div>
+        <el-scrollbar style="height: 100%;"
+                      v-if="logistics.length">
           <el-timeline>
-            <el-timeline-item timestamp="2018/4/12"
+            <el-timeline-item v-for="(item, index) in logistics"
+                              :key="index"
+                              :timestamp="item.date"
                               placement="top">
               <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/12 20:46</p>
+                <!-- <h4>更新 Github 模板</h4> -->
+                <p>{{ item.AcceptStation }}</p>
               </el-card>
             </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/3"
-                              placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/3 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2"
-                              placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2"
-                              placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2"
-                              placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2"
-                              placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2018/4/2"
-                              placement="top">
-              <el-card>
-                <h4>更新 Github 模板</h4>
-                <p>王小虎 提交于 2018/4/2 20:46</p>
-              </el-card>
-            </el-timeline-item>
+
           </el-timeline>
         </el-scrollbar>
+        <div v-else>暂无物流信息</div>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getSearchOrder } from '@/service/http'
+import { getSearchOrder, getLogisticsMessage } from '@/service/http'
 export default {
   data () {
     return {
@@ -150,7 +113,9 @@ export default {
       start: 1,
       limits: 5,
       totalCount: 1,
-      dialogVisible: false
+      dialogVisible: false,
+      logisticsInfo: '',
+      logistics: []
     }
   },
   created () {
@@ -161,6 +126,23 @@ export default {
       window.location.href = `/order.html#/pay?orderNo=${item.orderNo}&orderType=1`
     },
     handleOpenFlow () {
+      let opts = {
+        orderNo: '10956202003241425153525'
+      }
+      getLogisticsMessage(opts).then(res => {
+        const result = res.data
+        console.log(result)
+        result.traces && result.traces.forEach(element => {
+          let deteTime = element.AcceptTime.split(' ')
+          element.date = deteTime[0]
+          element.time = deteTime[1]
+        })
+        this.logisticsInfo = result
+        this.logistics = result.traces
+        console.log(this.logistics)
+      }).catch(err => {
+        console.log(err)
+      })
       this.dialogVisible = true
     },
     getOrderList () {
@@ -202,6 +184,59 @@ export default {
   .el-scrollbar__wrap {
     overflow-x: hidden;
     overflow-y: scroll;
+  }
+  .exp-phone {
+    margin-top: 4px;
+    margin-bottom: 20px;
+  }
+}
+.my-order {
+  .table-header {
+    font-size: 15px;
+    color: #999;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .table-content {
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    &__hd {
+      height: 38px;
+      line-height: 38px;
+      font-size: 14px;
+      color: #999;
+      padding-left: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    &__bd {
+      text-align: center;
+      font-size: 14px;
+      color: #333;
+      padding: 20px 0;
+      border-bottom: 1px dotted #ddd;
+      .sku-list {
+        padding-left: 70px;
+        text-align: left;
+      }
+    }
+    &__ft {
+      padding: 14px 0 14px 20px;
+      .address-colum-1 {
+        font-size: 17px;
+        color: #666;
+        margin-bottom: 10px;
+        i {
+          margin-right: 8px;
+        }
+      }
+      .address-colum-2 {
+        font-size: 14px;
+        color: #999;
+        .phone {
+          margin-left: 12px;
+        }
+      }
+    }
   }
 }
 </style>
