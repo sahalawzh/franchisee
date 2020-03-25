@@ -12,58 +12,63 @@
       <el-tab-pane label="已发货"
                    name="2"></el-tab-pane>
     </el-tabs>
-    <el-row class="table-header">
-      <el-col :span="3">用户</el-col>
-      <el-col :span="6">扫描时间</el-col>
-      <el-col :span="6">客户资料</el-col>
-      <el-col :span="2">数量</el-col>
-      <el-col :span="3">价格</el-col>
-      <el-col :span="4">操作</el-col>
-    </el-row>
-    <div class="table-content"
-         v-for="(item, index) in tableData"
-         :key="index">
-      <el-row class="table-content__hd">
-        <span>{{ item.createTime }}</span>
-        <span>订单号：{{item.orderNo}}</span>
+    <template v-if="tableData.length">
+      <el-row class="table-header">
+        <el-col :span="3">用户</el-col>
+        <el-col :span="6">扫描时间</el-col>
+        <el-col :span="6">客户资料</el-col>
+        <el-col :span="2">数量</el-col>
+        <el-col :span="3">价格</el-col>
+        <el-col :span="4">操作</el-col>
       </el-row>
-      <el-row class="table-content__bd">
-        <el-col :span="3">{{ item.consignee }}</el-col>
-        <el-col :span="6">{{ item.scanTime }}</el-col>
-        <el-col :span="6">
-          <div class="sku-list">
-            <div>{{ item.diseaseName }}</div>
-            <div>{{ item.sizeName }}</div>
-            <div>{{ item.functionName }}</div>
-            <div>{{ item.shoeName }}</div>
+      <div class="table-content"
+           v-for="(item, index) in tableData"
+           :key="index">
+        <el-row class="table-content__hd">
+          <span>{{ item.createTime }}</span>
+          <span class="order-no">订单号：{{item.orderNo}}</span>
+          <span class="payment-time"
+                v-if="item.paymentTime">成交时间：{{ item.paymentTime }}</span>
+        </el-row>
+        <el-row class="table-content__bd">
+          <el-col :span="3">{{ item.consignee }}</el-col>
+          <el-col :span="6">{{ item.scanTime }}</el-col>
+          <el-col :span="6">
+            <div class="sku-list">
+              <div>{{ item.crowdName }}</div>
+              <div>{{ item.sizeName }}</div>
+              <div>{{ item.functionName }}</div>
+              <div>{{ item.shoeName }}</div>
+            </div>
+          </el-col>
+          <el-col :span="2">{{ item.num }}</el-col>
+          <el-col :span="3"
+                  class="color-pirce">￥{{ item.totalPrice }}</el-col>
+          <el-col :span="4">
+            <el-button size="mini"
+                       type="danger"
+                       v-if="item.orderProcess === 0"
+                       @click="handleToPay(item)">立即付款</el-button>
+            <div v-else-if="item.orderProcess === 1">鞋垫制作中，待发货</div>
+            <el-button v-else-if="item.orderProcess === 2"
+                       type="text"
+                       @click="handleOpenFlow(item)">查看物流</el-button>
+          </el-col>
+        </el-row>
+        <el-row class="table-content__ft">
+          <div class="address-colum-1">
+            <i class="el-icon-map-location icon-address"></i>
+            <span>{{ item.province }}{{ item.city }}</span>
+            <span>（{{ item.consignee }}收）</span>
           </div>
-        </el-col>
-        <el-col :span="2">{{ item.num }}</el-col>
-        <el-col :span="3"
-                class="color-pirce">￥{{ item.price }}</el-col>
-        <el-col :span="4">
-          <el-button size="mini"
-                     type="danger"
-                     v-if="item.orderProcess === 0"
-                     @click="handleToPay(item)">立即付款</el-button>
-          <div v-else-if="item.orderProcess === 1">鞋垫制作中，待发货</div>
-          <el-button v-else-if="item.orderProcess === 2"
-                     type="text"
-                     @click="handleOpenFlow(item)">查看物流</el-button>
-        </el-col>
-      </el-row>
-      <el-row class="table-content__ft">
-        <div class="address-colum-1">
-          <i class="el-icon-map-location icon-address"></i>
-          <span>{{ item.province }}{{ item.city }}</span>
-          <span>（{{ item.consignee }}收）</span>
-        </div>
-        <div class="address-colum-2">
-          <span>{{ item.province }}{{ item.city }}{{ item.detailAddress }}</span>
-          <span class="phone">{{ item.phone }}</span>
-        </div>
-      </el-row>
-    </div>
+          <div class="address-colum-2">
+            <span>{{ item.province }}{{ item.city }}{{ item.detailAddress }}</span>
+            <span class="phone">{{ item.phone }}</span>
+          </div>
+        </el-row>
+      </div>
+    </template>
+    <el-row v-else>暂无数据~</el-row>
 
     <el-pagination @current-change="handleCurrentChange"
                    :current-page="start"
@@ -81,8 +86,8 @@
       <div class="flow-box">
         <div>物流信息：{{ logisticsInfo.company }}</div>
         <div class="exp-phone">物流电话：{{ logisticsInfo.expPhone }}</div>
-        <el-scrollbar style="height: 100%;"
-                      v-if="logistics.length">
+        <el-scrollbar style="height: 90%;"
+                      v-if="logistics && logistics.length">
           <el-timeline>
             <el-timeline-item v-for="(item, index) in logistics"
                               :key="index"
@@ -127,7 +132,7 @@ export default {
     },
     handleOpenFlow (item) {
       let opts = {
-        orderNo: item.orderNo
+        orderNo: '10956202003241425153525' || item.orderNo
       }
       getLogisticsMessage(opts).then(res => {
         const result = res.data
@@ -139,7 +144,7 @@ export default {
         })
         this.logisticsInfo = result
         this.logistics = result.traces
-        console.log(this.logistics)
+        console.log(this.logisticsInfo)
       }).catch(err => {
         console.log(err)
       })
@@ -201,12 +206,20 @@ export default {
     border: 1px solid #ddd;
     margin-bottom: 20px;
     &__hd {
+      position: relative;
       height: 38px;
       line-height: 38px;
       font-size: 14px;
       color: #999;
       padding-left: 20px;
       border-bottom: 1px solid #ddd;
+      .payment-time {
+        position: absolute;
+        right: 20px;
+      }
+      .order-no {
+        margin-left: 10px;
+      }
     }
     &__bd {
       text-align: center;

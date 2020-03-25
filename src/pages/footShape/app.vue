@@ -125,8 +125,8 @@
                    class="video-group__item"
                    v-for="item in videoList"
                    :key="item.id">
-            <img :src="item.image"
-                 alt="">
+            <el-image :src="item.image"
+                      fit="cover"></el-image>
           </el-link>
         </el-row>
       </el-col>
@@ -707,8 +707,7 @@ export default {
       }
     }
     img {
-      width: 105px;
-      height: 100px;
+      // height: 100px;
     }
   }
 }
