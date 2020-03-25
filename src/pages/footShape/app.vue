@@ -125,7 +125,7 @@
                    class="video-group__item"
                    v-for="item in videoList"
                    :key="item.id">
-            <el-image :src="item.image"
+            <el-image :src="item.imagesm"
                       fit="cover"></el-image>
           </el-link>
         </el-row>
