@@ -18,7 +18,7 @@
         <el-col :span="6">扫描时间</el-col>
         <el-col :span="6">客户资料</el-col>
         <el-col :span="2">数量</el-col>
-        <el-col :span="3">价格</el-col>
+        <el-col :span="3">总价格</el-col>
         <el-col :span="4">操作</el-col>
       </el-row>
       <div class="table-content"
@@ -28,7 +28,7 @@
           <span>{{ item.createTime }}</span>
           <span class="order-no">订单号：{{item.orderNo}}</span>
           <span class="payment-time"
-                v-if="item.paymentTime">成交时间：{{ item.paymentTime }}</span>
+                v-if="item.paymentTime">付款时间：{{ item.paymentTime }}</span>
         </el-row>
         <el-row class="table-content__bd">
           <el-col :span="3">{{ item.consignee }}</el-col>
