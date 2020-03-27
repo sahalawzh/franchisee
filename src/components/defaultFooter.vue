@@ -4,14 +4,14 @@
       <div class="footer-main">
         <h4>兰湾在线定制</h4>
         <div class="footer-main-en">LANWAN Online</div>
-        <el-link class="footer-main-link">关于我们</el-link>
-        <el-link class="footer-main-link">联系我们</el-link>
-        <el-link class="footer-main-link">保密政策</el-link>
+        <el-link href="http://3dprint.gdlwzn.com/page/aboutus" class="footer-main-link">关于我们</el-link>
+        <el-link href="http://3dprint.gdlwzn.com/page/cooperation" class="footer-main-link">联系我们</el-link>
+        <el-link href="http://3dprint.gdlwzn.com/page/commitment.html" class="footer-main-link">保密政策</el-link>
       </div>
       <div class="footer-main">
         <h4>联系&帮助</h4>
         <div class="footer-main-code">
-          <img src="../assets/common/concat_qrcode.png" alt="">
+          <img src="../assets/common/concat_qrcode.jpg" alt="">
           <p>微信客服</p>
         </div>
       </div>
