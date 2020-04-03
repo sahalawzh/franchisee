@@ -521,6 +521,26 @@ const getLogisticsMessage = (data, version = "v1") => {
   return ajax.get(url, data);
 };
 
+/*
+ * 花呗列表
+ */
+const getAlipayListHb = (data, version = "v1") => {
+  let url =
+    (apiConfig[version] && apiConfig[version].GET_ALIPAY_LISTHB) ||
+    apiConfig["v1"].GET_ALIPAY_LISTHB;
+  return ajax.get(url, data);
+};
+
+/*
+ * 支付宝支付
+ */
+const postAliPayPay = (data, version = "v1") => {
+  let url =
+    (apiConfig[version] && apiConfig[version].POST_ALIPAY_PAY) ||
+    apiConfig["v1"].POST_ALIPAY_PAY;
+  return ajax.post(url, data);
+};
+
 export {
   postMemberLogin,
   getMemberMessage,
@@ -573,5 +593,7 @@ export {
   getListLocation,
   getLocations,
   getCart,
-  getLogisticsMessage
+  getLogisticsMessage,
+  getAlipayListHb,
+  postAliPayPay
 };

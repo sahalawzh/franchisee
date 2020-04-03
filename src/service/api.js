@@ -52,7 +52,9 @@ const v1 = {
   GET_LIST_LOCATION: `${API_URL_SUFFIX}/scanLocation/listLocation`, // 获取地址
   GET_LOCATIONS: `${API_URL_SUFFIX}/scanLocation/locations`, // 获取扫描地址
   GET_CART: `${API_URL_SUFFIX}/cart/getCart`, // 获取扫描地址
-  GET_LOGISTICS_MESSAGE: `${API_URL_SUFFIX}/logistics/getLogisticsMessage` // 获取扫描地址
+  GET_LOGISTICS_MESSAGE: `${API_URL_SUFFIX}/logistics/getLogisticsMessage`, // 获取扫描地址
+  GET_ALIPAY_LISTHB: `${API_URL_SUFFIX}/aliPay/listHb`, // 获取花呗列表
+  POST_ALIPAY_PAY: `${API_URL_SUFFIX}/aliPay/pay` // 获取支付宝有关支付
 };
 
 export { v1 };
