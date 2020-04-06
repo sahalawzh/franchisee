@@ -4,7 +4,7 @@
     <el-divider></el-divider>
     <div class="pay-label">选择支付方式</div>
     <el-row class="pay-way">
-      <el-col :span="4" class="pay-col">
+      <el-col :md="4" :sm="6" class="pay-col">
         <el-radio v-model="payType"
                   @change="handleChangeWay"
                   class="pay-item"
@@ -13,7 +13,7 @@
           <span>支付宝支付</span>
         </el-radio>
       </el-col>
-      <el-col :span="12" class="pay-col">
+      <el-col :md="12" :sm="12" class="pay-col">
         <el-radio v-model="payType"
                   @change="handleChangeWay"
                   class="pay-item"
@@ -23,19 +23,23 @@
         </el-radio>
         <div class="huabei-item">
           <div class="huabei-item__label">花呗分期</div>
-          <div class="huabei-item__content">
-            <div class="huabei-li"
-              :class="{'active': hbIndex === index}"
+          <el-row class="huabei-item__content">
+            <el-col 
+              :md="8"
+              :sm="12"
               v-for="(item, index) in hbList"
               :key="index"
-              @click="handleChangeHuaBei(index)">
-              <div>￥{{ item.eachPay }}x{{ item.hbFqNum }}期</div>
-              <div>(含手续费￥{{ item.eachFee }})</div>
-            </div>
-          </div>
+              >
+              <div class="huabei-li" :class="{'active': hbIndex === index}" @click="handleChangeHuaBei(index)">
+                <div>￥{{ item.eachPay }}x{{ item.hbFqNum }}期</div>
+                <div>(含手续费￥{{ item.totalFee }})</div>
+              </div>
+            </el-col>
+          </el-row>
         </div>
+        <div class="huabei-tip">注：花呗支付金额仅供参考，实际支付金额以支付宝为准</div>
       </el-col>
-      <el-col :span="8" class="pay-col">
+      <el-col :md="8" :sm="6" class="pay-col">
         <el-radio v-model="payType"
                   @change="handleChangeWay"
                   class="pay-item"
@@ -155,6 +159,12 @@ export default {
       let params = {
         orderNo
       }
+      if (this.hbIndex === -1 && this.payType === 'alipayhuabei') {
+        return this.$message({
+          message: '您还未选择花呗分期',
+          type: 'warning'
+        })
+      }
       this.dialogVisible = true
       if (this.payType === 'wechat') {
         this.handlePayWechat(params)
@@ -167,12 +177,10 @@ export default {
       if (payType === 'alipay') { // 支付宝支付
         params.Huabei = {}
       } else { // 花呗
-        if (hbIndex !== -1) {
-          const { hbFqNum, hbFqSellerPercent } = hbList[hbIndex]
-          params.Huabei = {
-            hbFqNum,
-            hbFqSellerPercent
-          }
+        const { hbFqNum, hbFqSellerPercent } = hbList[hbIndex]
+        params.Huabei = {
+          hbFqNum,
+          hbFqSellerPercent
         }
       }
       postAliPayPay(params).then(res => {
@@ -304,6 +312,10 @@ export default {
         }
       }
     }
+  }
+  .huabei-tip {
+    margin-top: 10px;
+    color: #999;
   }
   .pay-dialog {
     text-align: center;

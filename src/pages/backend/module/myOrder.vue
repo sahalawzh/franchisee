@@ -132,7 +132,7 @@ export default {
     },
     handleOpenFlow (item) {
       let opts = {
-        orderNo: '10956202003241425153525' || item.orderNo
+        orderNo: item.orderNo
       }
       getLogisticsMessage(opts).then(res => {
         const result = res.data
