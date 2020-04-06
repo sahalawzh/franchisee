@@ -13,6 +13,7 @@
  */
 let path = require("path");
 let glob = require("glob");
+const TerserPlugin = require("terser-webpack-plugin");
 //配置pages多页面获取当前文件夹下的html和js
 function getEntry(globPath) {
   let entries = {},
@@ -20,7 +21,7 @@ function getEntry(globPath) {
     tmp,
     pathname;
 
-  glob.sync(globPath).forEach(function(entry) {
+  glob.sync(globPath).forEach(function (entry) {
     basename = path.basename(entry, path.extname(entry));
     // console.log(entry)
     tmp = entry.split("/").splice(-3);
@@ -30,7 +31,7 @@ function getEntry(globPath) {
       entry: "src/" + tmp[0] + "/" + tmp[1] + "/index.js",
       template: "src/" + tmp[0] + "/" + tmp[1] + "/" + tmp[2],
       title: tmp[2],
-      filename: tmp[2]
+      filename: tmp[2],
     };
   });
   return entries;
@@ -51,10 +52,10 @@ module.exports = {
       "/api": {
         target: "https://zxdzapi.gdlwzn.com:3000/",
         changeOrigin: true,
-        secure: false
-      }
+        secure: false,
+      },
     },
-    before: app => {}
+    before: (app) => {},
   },
   // css相关配置
   css: {
@@ -62,59 +63,67 @@ module.exports = {
     sourceMap: false, // 开启 CSS source maps?
     loaderOptions: {
       less: {
-        javascriptEnabled: true
-      }
+        javascriptEnabled: true,
+      },
     }, // css预设器配置项
-    modules: false // 启用 CSS modules for all css / pre-processor files.
+    modules: false, // 启用 CSS modules for all css / pre-processor files.
   },
   pluginOptions: {
     "style-resources-loader": {
       preProcessor: "less",
       patterns: [
         path.resolve(__dirname, "src/styles/common.less"),
-        path.resolve(__dirname, "src/styles/variable.less")
-      ] // 引入全局样式变量
-    }
+        path.resolve(__dirname, "src/styles/variable.less"),
+      ], // 引入全局样式变量
+    },
   },
   // 是否为 Babel 或 TypeScript 使用 thread-loader。该选项在系统的 CPU 有多于一个内核时自动启用，仅作用于生产构建。
   parallel: require("os").cpus().length > 1,
 
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     config.resolve.symlinks(true);
     config.module
       .rule("images")
       .use("url-loader")
       .loader("url-loader")
-      .tap(options => {
+      .tap((options) => {
         // 修改它的选项...
         options.limit = 100;
         return options;
       });
-    Object.keys(pages).forEach(entryName => {
+    Object.keys(pages).forEach((entryName) => {
       config.plugins.delete(`prefetch-${entryName}`);
     });
     if (process.env.NODE_ENV === "production") {
       config.plugin("extract-css").tap(() => [
         {
           path: path.join(__dirname, "./dist"),
-          filename: "css/[name].[contenthash:8].css"
-        }
+          filename: "css/[name].[contenthash:8].css",
+        },
       ]);
     }
   },
-  configureWebpack: config => {
-    config.optimization.minimizer[0].options.terserOptions.compress.warnings = false
-    config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
-    config.optimization.minimizer[0].options.terserOptions.compress.drop_debugger = true
-    config.optimization.minimizer[0].options.terserOptions.compress.pure_funcs = [
-      'console.log'
-    ]
+  configureWebpack: (config) => {
     if (process.env.NODE_ENV === "production") {
       config.output = {
         path: path.join(__dirname, "./dist"),
         publicPath: "/",
-        filename: "js/[name].[contenthash:8].js"
+        filename: "js/[name].[contenthash:8].js",
+      };
+      return {
+        optimization: {
+          minimizer: [
+            new TerserPlugin({
+              sourceMap: false,
+              terserOptions: {
+                compress: {
+                  drop_console: true,
+                }
+              },
+            }),
+          ],
+        },
       };
     }
-  }
+  },
 };
