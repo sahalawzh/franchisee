@@ -96,17 +96,17 @@
                :rules="rulesPassword">
         <el-form-item label="当前密码"
                       prop="oldPassword">
-          <el-input v-model="passwordForm.oldPassword"
+          <el-input type="password" v-model="passwordForm.oldPassword"
                     autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="新密码"
                       prop="password">
-          <el-input v-model="passwordForm.password"
+          <el-input type="password" v-model="passwordForm.password"
                     autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="确认新密码"
                       prop="confirmPassword">
-          <el-input v-model="passwordForm.confirmPassword"
+          <el-input type="password" v-model="passwordForm.confirmPassword"
                     autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item>
@@ -165,6 +165,7 @@
 <script>
 import { getMemberMessage, postUpdatePassword, getAddress, getListDstricts, postAddressAdd, deleteAddressDelete, putAddressUpdate } from '@/service/http'
 import axios from 'axios'
+import storage from "@/utils/storage"
 export default {
   data () {
     var validatePass = (rule, value, callback) => {
@@ -343,6 +344,7 @@ export default {
         if (valid) {
           const params = Object.assign({}, this.passwordForm)
           this.passwordBtnLoading = true
+          const that = this
           postUpdatePassword(params).then(res => {
             console.log(res)
             this.$notify({
@@ -350,8 +352,9 @@ export default {
               message: res.data,
               type: 'success',
               onClose () {
-                this.passwordBtnLoading = false
-                this.passwordVisible = false
+                that.passwordBtnLoading = false
+                window.location.href = '/index.html'
+                storage.remove("gdlwzn_login")
               }
             })
           }).catch(err => {
