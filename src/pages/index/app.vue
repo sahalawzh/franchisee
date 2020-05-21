@@ -120,7 +120,7 @@ export default {
           window.location.href = "footShape.html";
           break;
         case 2:
-          window.open("http://3dprint.gdlwzn.com", "_blank");
+          window.open("http://3dprint.gdlwzn.com/Fall/Fall/index.html", "_blank");
           break;
         case 3:
           window.open("business.html", "_blank");
